@@ -1,0 +1,90 @@
+JOURNAL WRITING — PROJECT EXPLAINER (3 clients)
+
+
+A complete description of what this project is, how it is built, and the reasoning behind every major decision. This single codebase serves three clients — Dhanashri, Pratiksha and Siddhesh — from one repository, sharing one engine while keeping their stories, themes and identities completely separate.
+
+
+1. WHAT IT IS, IN ONE SENTENCE
+
+Journal Writing is an aesthetic, scrapbook-style journaling system where each client privately writes illustrated journal "stories" and everyone else can read them, hosted entirely on free static hosting (GitHub Pages) with no server and no database.
+
+It hosts three independent journals from one repo: Dhanashri's Journal (soft lavender pastel theme), Pratiksha's Journal (warm cream pastel theme), and Siddhesh's Journal (soft rose / blush theme). Each has a public side (a homepage of story cards plus a reader with PDF export) and a private editor (admin.html) for creating, publishing, editing and deleting stories.
+
+
+2. WHY MERGE THE CLIENTS
+
+All three journals are the same product with a different coat of paint. As separate projects, every change had to be made more than once, and the copies slowly drifted out of sync (different washi sets, different layer controls, and so on).
+
+Merging fixes that. The entire engine — fonts, backgrounds, the photo/text/caption styling, the page renderer, the publishing logic — lives in one shared assets/ folder. A change made there reaches all three clients at once, so they can never drift again. Only each client's identity (which folder its data lives in, its title, its theme) is separate.
+
+
+3. FILE STRUCTURE
+
+Journal-Writing/ is one GitHub repo served by GitHub Pages.
+
+assets/ is the shared brain (edit once, all three clients update): core.js holds the client-agnostic engine (fonts, backgrounds, renderer, styling, GitHub helpers); style.css holds the structure plus all three colour themes (switched per client); backgrounds/ holds bg01.jpg to bg21.jpg (shared decorative page art); PROJECT.txt is this document; Setup.txt is the step-by-step setup and hosting guide.
+
+Dhanashri-Journal/ is client A (lavender): index.html, story.html, admin.html, and data/ (index.json plus posts/<id>.json). Pratiksha-Journal/ is client B (cream) with the same three pages and its own data/. Siddhesh-Journal/ is client C (rose) with the same three pages and its own data/.
+
+Folder names have no spaces, so the live URLs contain no %20: https://laxman-sidhu.github.io/Journal-Writing/Dhanashri-Journal/ , .../Pratiksha-Journal/ , and .../Siddhesh-Journal/ .
+
+
+4. HOW A CLIENT KNOWS WHO IT IS (THE ONLY CLIENT-SPECIFIC CODE)
+
+The shared core.js contains no client identity. Each client's three HTML pages declare who they are in a tiny block placed immediately before core.js loads — for example, window.JOURNAL_CLIENT = { USERNAME: "laxman-sidhu", REPO: "Journal-Writing", DATA_DIR: "Pratiksha-Journal/data", TITLE: "Pratiksha's Journal" } — followed by the shared script tag for ../assets/core.js.
+
+The data-client attribute on each page (for example data-client="pratiksha") selects that client's colour palette from the shared stylesheet. That, plus the block above, is the entire difference between the clients.
+
+
+5. THE DATA-ISOLATION GUARANTEE (WHY ONE EDITOR CANNOT WRITE ANOTHER'S FOLDER)
+
+This was the central worry when merging, so it is handled explicitly. A GitHub write has two independent parts: the token (an HTTP header) only answers "may you write to this repo at all?" and carries no folder information, while the path (in the URL) is the only thing that decides which file is written.
+
+Every read and write in admin.html is built from this client's own DATA_DIR through a small helper, ghPath, which joins DATA_DIR with the relative path and URL-encodes it. All calls go through it, so a publish always lands in this client's own posts folder.
+
+Because DATA_DIR is hard-coded into each client's own pages, an editor can only ever build paths under its own data folder. It is deterministic: the same token pasted into any editor changes nothing about the destination — the folder is fixed by the page, not by the key.
+
+The honest caveat: a fine-grained token grants write to the whole repo, not a single folder, so the separation above is enforced by the code, not by GitHub. If the same trusted person publishes all journals (the intended setup), there is no risk. If the clients were mutually untrusted, true isolation would require separate repos. See the Tokens section of Setup.txt.
+
+
+6. THE CORE IDEA: REPO-AS-DATABASE
+
+GitHub Pages is static hosting — it serves files and runs no code. So the Git repository is the database. Every story is a small JSON file committed into the repo. Public pages just fetch those static files and draw them, which makes "read-only for visitors" automatic, because there is no write path in the public pages at all.
+
+Publishing works without a server because the editor talks directly to the GitHub Contents API from the browser, authenticated with a token. One API call commits a file; GitHub Pages rebuilds and the new content appears within about a minute, with no backend, no build step and no hosting bill.
+
+When the editor presses Publish, it writes <DATA_DIR>/posts/<id>.json (the story, with photos embedded), then reads, updates and writes back <DATA_DIR>/index.json (the homepage list). Editing includes the file's current sha; deleting sends a delete and prunes the index.
+
+
+7. THE EDITOR'S FEATURES
+
+A freeform scrapbook canvas where elements are placed anywhere.
+
+Text boxes: twenty fonts (handwritten, elegant, serif and clean web fonts, plus classic system and Adobe families), size, bold/italic/underline, four alignments, a text colour and a separate text-box fill, and free rotation. New: bold, italic and underline now also work on a selection inside a box — pick a word or two and only those change, with no separate box needed.
+
+Photos: move, resize, rotate, crop and caption, with looks Card, Plain, Frame and Border. Fixed and new: Plain keeps PNG transparency, so a cut-out image such as a no-background aeroplane shows only the subject, with no box and no black fill — uploads with transparency are now saved as PNG instead of JPEG (which has no alpha channel). Shadow is now an independent toggle that can sit on any look — framed, card, border or a plain cutout — and turns fully off when unchecked. New: the caption has its own font, size and colour controls.
+
+Stickers: an emoji library, paste-any-emoji, and upload-your-own image with PNG transparency kept. Washi tape: a grid of pastel tapes, striped or plain. Doodles: stars, arrows, lines, hearts and more, each recolourable with adjustable weight. Layering: send an item behind or bring it in front of others. Plus multiple pages per story, per-page backgrounds (grid, dots or plain plus 21 decorative images), a cover photo picker, autosave, Save draft and Import JSON, and Publish, Open and Delete.
+
+
+8. THE DATA MODEL
+
+data/index.json is a list of lightweight entries (id, title, date, small thumbnail). data/posts/<id>.json is one complete story, shaped as id, title, date, and pages, where each page has a paper and a list of elements.
+
+Every element has a position in a fixed 760-pixel design space plus type-specific fields. A text element has content, an optional html field for rich inline runs, font, size, bold, italic, underline, align, color, fill, width and rotation. A photo has src, caption, style (card, plain, frame or border), frameColor, an independent shadow flag, capFont, capColor, capSize, noCap, width and rotation. A sticker has emoji, size and rotation. An imgsticker has src, width and rotation. A washi has color, a plain flag, width and rotation. A doodle has key, color, weight and rotation.
+
+Photos and stickers are embedded as data URLs so each story file is self-contained. Decorative page backgrounds are the deliberate exception — shared files referenced by a short key such as bg04.
+
+Backwards compatible: older stories with no html, shadow or caption-style fields render exactly as before; the new fields are optional and default to the previous look.
+
+Two bugs were fixed in this revision. First, the 21 decorative page backgrounds now load — their paths are ../assets/backgrounds/..., correct for pages that live one folder deep; previously the relative assets/... resolved inside the client folder and returned a 404. Second, transparent uploads no longer get a black background — the image compressor and the crop now auto-encode to PNG when the image has alpha, and JPEG otherwise.
+
+
+9. ADDING A FEATURE LATER (THE PAYOFF)
+
+Edit the relevant function in assets/core.js (and, if it has an editor control, the matching handler, which is identical in all three admin.html files). Because the engine is shared, the change applies to all clients at once. The only rule: a bug in the shared core affects every journal, so test before publishing.
+
+
+10. KNOWN LIMITATIONS
+
+Inline rich text supports bold, italic, underline and line breaks; per-word colour and size are still per-box, kept deliberately simple and safe to sanitize. Classic system and Adobe fonts render as the exact named font only where installed, and fall back elsewhere. A fine-grained token grants write to the whole repo, so folder isolation is enforced by the code rather than by GitHub (fine for a single trusted publisher; see section 5). There is a single editor per client and no multi-user conflict handling.

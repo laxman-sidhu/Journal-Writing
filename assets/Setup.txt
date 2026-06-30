@@ -1,0 +1,91 @@
+JOURNAL WRITING — SETUP & HOSTING (3 clients)
+
+
+One repository hosts three journals — Dhanashri (lavender), Pratiksha (cream) and Siddhesh (rose) — sharing one engine in /assets while keeping their stories, themes and identities separate. Folder names have no spaces, so the URLs are clean (no %20).
+
+
+URLS (AFTER SETUP)
+
+Dhanashri : https://laxman-sidhu.github.io/Journal-Writing/Dhanashri-Journal/    (editor: .../Dhanashri-Journal/admin.html)
+Pratiksha : https://laxman-sidhu.github.io/Journal-Writing/Pratiksha-Journal/    (editor: .../Pratiksha-Journal/admin.html)
+Siddhesh  : https://laxman-sidhu.github.io/Journal-Writing/Siddhesh-Journal/     (editor: .../Siddhesh-Journal/admin.html)
+
+If the repo is created under a different GitHub account, change USERNAME in the window.JOURNAL_CLIENT block at the top of each client's three HTML pages (index, story, admin). If you rename the repo, change REPO in the same blocks.
+
+
+FILE LAYOUT YOU ARE UPLOADING
+
+Journal-Writing/
+  assets/
+    core.js          shared engine (client-agnostic)
+    style.css        structure plus all three colour themes
+    backgrounds/     bg01.jpg ... bg21.jpg (shared page-background images)
+    PROJECT.txt      full project explainer
+    Setup.txt        this file
+  Dhanashri-Journal/   index.html  story.html  admin.html   data/index.json   data/posts/
+  Pratiksha-Journal/   index.html  story.html  admin.html   data/index.json   data/posts/
+  Siddhesh-Journal/    index.html  story.html  admin.html   data/index.json   data/posts/
+
+
+ONE-TIME SETUP
+
+1. Create a public repo named exactly Journal-Writing.
+2. Upload everything above, keeping the folder structure.
+3. Repo > Settings > Pages > Source: "Deploy from a branch", branch main, folder / (root). Save and wait about a minute for the first build.
+4. Create the publishing key (see Tokens), then open each editor, click the gear, paste the token, Save. Now you can write and publish.
+
+
+TOKENS (READ THIS)
+
+A GitHub fine-grained token only answers "may you write to this repo?" — it does not pick a folder. The folder is decided by each page's hard-coded DATA_DIR, so an editor can only ever write to its own client's data folder. That is deterministic and automatic.
+
+The caveat: a fine-grained token grants write to the whole repo, not a single folder, so the separation is enforced by the code, not by GitHub. Choose based on who publishes.
+
+- You publish for all clients (the intended setup): one token, repo access = Only select repositories > Journal-Writing, Permissions > Contents: Read and write. Paste it into each editor. Zero risk.
+- Each client self-publishes and they trust each other: give each their own token, all scoped to Journal-Writing. Separate tokens just let you revoke one without the others.
+- Clients who must be cryptographically walled off from each other: don't merge — use separate repos, because a repo is the only level a token isolates at.
+
+To create a token: GitHub > Settings > Developer settings > Personal access tokens > Fine-grained tokens > Generate new token. Set Resource owner to the account that owns the repo, Repository access to Only select repositories > Journal-Writing, and Permissions > Repository permissions > Contents: Read and write. Copy the token (it starts with github_pat_). If it ever leaks, revoke and reissue immediately.
+
+SECURITY: never paste a token into a chat, email, commit, or any file. It lives only in the editor's browser localStorage and is never written into a deployed file.
+
+
+HOW DATA IS STORED
+
+<Client>-Journal/data/index.json is that client's list of stories (id, title, date, thumbnail). <Client>-Journal/data/posts/<id>.json is one complete story (text, layout, embedded photos). The editor commits these via the GitHub API on Publish. Photos are embedded as compressed data URLs so each story file is self-contained; decorative page backgrounds are the one exception (shared files in assets/backgrounds/, referenced by a short key like bg14).
+
+
+PER-CLIENT BROWSER KEYS (SO JOURNALS NEVER CLASH IN ONE BROWSER)
+
+Dhanashri : jw-dhanashri-token / jw-dhanashri-draft
+Pratiksha : jw-pratiksha-token / jw-pratiksha-draft
+Siddhesh  : jw-siddhesh-token  / jw-siddhesh-draft
+
+
+THEMES
+
+Dhanashri is soft lavender pastel, Pratiksha is warm cream pastel, and Siddhesh is soft rose / blush. A client's palette is chosen by the data-client attribute on its pages (data-client="dhanashri", "pratiksha" or "siddhesh"), which selects the matching block in assets/style.css. To retune a colour, edit only that client's block; the others are unaffected.
+
+
+FEATURES (SAME FOR ALL THREE CLIENTS)
+
+- Photos, Plain look: keeps PNG transparency, so a cut-out image (for example an aeroplane with no background) shows only its subject, with no box and no black fill. Uploads with transparency are now saved as PNG; opaque photos stay small as JPEG.
+- Photos, Shadow: an independent toggle that works on any look (card, frame, border or a plain cutout) and turns fully off when unchecked.
+- Captions: their own font, size and colour controls.
+- Text, Bold / Italic / Underline: also work on a selection inside a box — select a word or two and only those change; with nothing selected they style the whole box as before.
+- Plus 20 fonts, alignment, text-box fill, rotation, crop, stickers, upload-your-own image stickers, washi tape, doodles, layering, multi-page stories, per-page backgrounds, cover picker, autosave, drafts, and PDF export.
+
+
+PAGE BACKGROUNDS
+
+In the editor click "Background" to choose a per-page background: grid, dots or plain paper, or one of 21 decorative images. A page saves only its short key, so story files stay small. The 21 images load from the shared assets/backgrounds/ folder, referenced one level up as ../assets/backgrounds/ since each client's pages sit in their own folder. To add more later, drop a compressed image into assets/backgrounds/ and add one line to the BACKGROUNDS list near the top of assets/core.js (key, label, "../assets/backgrounds/<file>", and a small inline thumbnail). Because assets/ is shared, the new background appears for all clients.
+
+
+ADDING FEATURES LATER (THE POINT OF MERGING)
+
+Edit the function in assets/core.js (and, if it has an editor control, the matching handler, which is identical in all three admin.html files). The change reaches every client at once. One rule: a bug in the shared core hits all journals, so test before publishing.
+
+
+ADDING A 4TH CLIENT LATER
+
+Copy any client folder (for example Siddhesh-Journal) to NewName-Journal, update the four window.JOURNAL_CLIENT values and the data-client attribute on its three pages, add a matching block for data-client="newname" in assets/style.css, and start its data/index.json as an empty list [].
