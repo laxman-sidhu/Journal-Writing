@@ -168,8 +168,16 @@ window.JOURNAL = (function(){
     if(d.noCap) el.classList.add('nocap'); else el.classList.remove('nocap');
     // independent shadow toggle (works on top of ANY look)
     if(d.shadow) el.classList.add('has-shadow'); else el.classList.remove('has-shadow');
+    // reset any inline overrides each call so switching looks stays clean (CSS governs unless set below)
+    el.style.background=''; el.style.padding=''; el.style.borderColor=''; el.style.borderWidth='';
     // only the custom "frame" look paints a background colour; everything else (incl. plain) stays clear
-    el.style.background=(st==='frame')?(d.frameColor||PHOTO_FRAME_DEFAULT):'';
+    if(st==='frame') el.style.background=(d.frameColor||PHOTO_FRAME_DEFAULT);
+    // BORDER look: optional colour + width. Defaults (white band, 6px, subtle 1px edge) come from
+    // CSS, so leaving these unset keeps the original look pixel-for-pixel; setting them overrides.
+    if(st==='border'){
+      if(d.borderColor){ el.style.background=d.borderColor; el.style.borderColor=d.borderColor; }
+      if(d.borderWidth!=null){ el.style.padding=d.borderWidth+'px'; }
+    }
   }
 
   /* caption styling — font, colour and size are now fully controllable per photo.

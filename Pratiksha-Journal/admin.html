@@ -162,6 +162,29 @@
     font-size:13px; font-weight:600; z-index:400; box-shadow:0 8px 24px var(--shadow); opacity:0; transition:.25s; pointer-events:none; max-width:90vw; text-align:center;}
   .toast.show{opacity:1;}
   @media(max-width:600px){ .story-title{max-width:34vw;font-size:21px;} .tool span.lbl{display:none;} .tool .ic{font-size:20px;} .actions .btn{padding:7px 9px;} .cover-row .btn{font-size:12px;} }
+  /* hamburger + dropdown (mobile only) */
+  .menuBtn{display:none; width:42px;height:38px;border-radius:10px;border:1px solid var(--paper-edge);background:#fff;color:var(--ink);font-size:19px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 6px var(--shadow);flex:none;}
+  .menuMask{display:none; position:fixed; inset:0; background:rgba(0,0,0,.18); z-index:240;}
+  .menuMask.open{display:block;}
+  .menuPanel{display:none;}
+  @media(max-width:600px){
+    .menuBtn{display:inline-flex;}
+    .menuPanel{ position:fixed; top:56px; right:10px; left:10px; z-index:250; display:none;
+      flex-direction:column; align-items:stretch; gap:8px; padding:12px;
+      background:var(--paper); border:1px solid var(--paper-edge); border-radius:16px;
+      box-shadow:0 18px 44px var(--shadow); max-height:calc(100vh - 76px); overflow:auto; }
+    .menuPanel.open{ display:flex; }
+    .menuPanel .actions{ display:flex; flex-direction:column; align-items:stretch; gap:8px; }
+    .menuPanel .actions .btn{ width:100%; justify-content:flex-start; font-size:15px; padding:11px 14px; }
+    .menuPanel .cover-row{ display:flex; padding:4px 0 0; border-top:1px solid var(--paper-edge); margin-top:2px; padding-top:10px; }
+    .menuPanel .cover-row .btn{ font-size:14px; }
+    /* hide the editing hint on phones (saves vertical space) */
+    .hint{ display:none; }
+    /* keep the bottom toolbar on a SINGLE row: no wrap, tighter padding/gap so Undo/Redo fit */
+    .toolbar{ flex-wrap:nowrap; gap:3px; padding:6px; max-width:96vw; }
+    .toolbar .tool{ padding:8px 9px; }
+    .toolbar .toolsep{ margin:3px 2px; }
+  }
 </style>
 </head>
 <body>
@@ -171,6 +194,7 @@
     <input class="story-title" id="storyTitle" placeholder="Story title" maxlength="60">
     <input type="date" class="sdate" id="storyDate">
     <div class="spacer"></div>
+    <button class="menuBtn" id="menuBtn" title="Menu" aria-label="Menu">☰</button>
     <div class="actions">
       <button class="btn ghost" id="bgBtn" title="Page background for this page">🎨 Background</button>
       <button class="btn ghost" id="newBtn">✦ New</button>
@@ -183,6 +207,8 @@
     </div>
   </div>
 
+  <div class="menuMask" id="menuMask"></div>
+  <div class="menuPanel" id="menuPanel"></div>
   <div class="cover-row">
     <div class="cover-prev" id="coverPrev">✿</div>
     <button class="btn ghost" id="coverBtn">Set cover photo (homepage card image)</button>
@@ -242,22 +268,20 @@
 
   <div class="fmtbar" id="photobar">
     <span class="fbl">Photo</span>
-    <button class="fb" data-pstyle="card" title="Photo card with caption">Card</button>
     <button class="fb" data-pstyle="plain" title="Plain image (keeps PNG transparency)">Plain</button>
-    <button class="fb" data-pstyle="frame" title="Coloured frame">Frame</button>
     <button class="fb" data-pstyle="border" title="Thin border">Border</button>
-    <div class="sep"></div>
-    <button class="fb" id="pShadow" title="Drop shadow (works on any look)">Shadow</button>
+    <button class="fb" data-pstyle="frame" title="Framed photo (pick a colour; white = a classic photo card)">Frame</button>
     <div class="sep"></div>
     <span class="fbl">Frame</span>
+    <span class="sw" data-pc="#ffffff" style="background:#ffffff"></span>
     <span class="sw" data-pc="#efe9fb" style="background:#efe9fb"></span>
     <span class="sw" data-pc="#f1e2f0" style="background:#f1e2f0"></span>
     <span class="sw" data-pc="#cfe7dc" style="background:#cfe7dc"></span>
     <span class="sw" data-pc="#fbf6e6" style="background:#fbf6e6"></span>
-    <span class="sw" data-pc="#ffffff" style="background:#ffffff"></span>
-    <input type="color" id="pColor" value="#efe9fb" title="Custom frame colour">
+    <input type="color" id="pColor" value="#ffffff" title="Custom frame colour">
     <div class="sep"></div>
     <button class="fb" id="pCap" title="Show / hide caption">Caption</button>
+    <button class="fb" id="pShadow" title="Drop shadow (works on any look)">Shadow</button>
   </div>
 
   <div class="fmtbar" id="capbar">
@@ -273,6 +297,20 @@
     <span class="sw" data-cc="#6c91c2" style="background:#6c91c2"></span>
     <span class="sw" data-cc="#5a9e86" style="background:#5a9e86"></span>
     <input type="color" id="capColor" value="#4b4361" title="Custom caption colour">
+  </div>
+
+  <div class="fmtbar" id="borderbar">
+    <span class="fbl">Border</span>
+    <span class="sw" data-bc="#ffffff" style="background:#ffffff"></span>
+    <span class="sw" data-bc="#544b6b" style="background:#544b6b"></span>
+    <span class="sw" data-bc="#c8697d" style="background:#c8697d"></span>
+    <span class="sw" data-bc="#6c91c2" style="background:#6c91c2"></span>
+    <span class="sw" data-bc="#5a9e86" style="background:#5a9e86"></span>
+    <span class="sw" data-bc="#d59a55" style="background:#d59a55"></span>
+    <input type="color" id="bColor" value="#ffffff" title="Custom border colour">
+    <div class="sep"></div>
+    <span class="fbl">Width</span>
+    <button class="fb" id="bwMinus" title="Thinner">−</button><span class="szval" id="bwVal">6</span><button class="fb" id="bwPlus" title="Thicker">+</button>
   </div>
 
   <div class="stage" id="stage">
@@ -466,18 +504,19 @@ document.getElementById('dColor').oninput=function(){ if(!selData) return; selDa
   Object.keys(J.FONTS).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=J.FONTS[k].label; o.style.fontFamily=J.FONTS[k].css; o.style.fontSize='16px'; f.appendChild(o); }); })();
 
 function showPhotoBar(){ photobar.style.display='flex';
-  const st=selData.style||'card';
-  photobar.querySelectorAll('[data-pstyle]').forEach(b=>b.classList.toggle('on', b.dataset.pstyle===st));
-  document.getElementById('pColor').value=toHex(selData.frameColor||'#efe9fb');
+  const st=selData.style||'frame';
+  const effSt=(st==='card')?'frame':st; // legacy 'card' photos are shown as a white Frame
+  photobar.querySelectorAll('[data-pstyle]').forEach(b=>b.classList.toggle('on', b.dataset.pstyle===effSt));
+  document.getElementById('pColor').value=toHex(selData.frameColor||'#ffffff');
   document.getElementById('pCap').classList.toggle('on', !selData.noCap);
   if(selData.shadow===undefined){ selData.shadow=(st==='card'||st==='frame'||st==='shadow'); }
   document.getElementById('pShadow').classList.toggle('on', !!selData.shadow);
-  showCapBar(); fitScale(); }
-function hidePhotoBar(){ photobar.style.display='none'; document.getElementById('capbar').style.display='none'; fitScale(); }
+  showCapBar(); showBorderBar(); fitScale(); }
+function hidePhotoBar(){ photobar.style.display='none'; document.getElementById('capbar').style.display='none'; document.getElementById('borderbar').style.display='none'; fitScale(); }
 function applyPhoto(){ if(!selNode||!selData||selData.type!=='photo') return; J.applyPhotoStyle(selNode, selData);
   const cap=selNode.querySelector('.cap'); if(cap) J.applyCaptionStyle(cap, selData); saveDraft(); }
 photobar.querySelectorAll('[data-pstyle]').forEach(b=>{ b.onclick=()=>{ if(!selData) return; selData.style=b.dataset.pstyle;
-  photobar.querySelectorAll('[data-pstyle]').forEach(x=>x.classList.toggle('on', x===b)); showCapBar(); applyPhoto(); }; });
+  photobar.querySelectorAll('[data-pstyle]').forEach(x=>x.classList.toggle('on', x===b)); showCapBar(); showBorderBar(); applyPhoto(); }; });
 photobar.querySelectorAll('.sw[data-pc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.frameColor=sw.dataset.pc; selData.style='frame';
   document.getElementById('pColor').value=toHex(sw.dataset.pc); photobar.querySelectorAll('[data-pstyle]').forEach(x=>x.classList.toggle('on', x.dataset.pstyle==='frame')); showCapBar(); applyPhoto(); }; });
 document.getElementById('pColor').oninput=function(){ if(!selData) return; selData.frameColor=this.value; selData.style='frame';
@@ -499,6 +538,18 @@ document.getElementById('capSzMinus').onclick=()=>{ if(!selData) return; selData
 document.getElementById('capSzPlus').onclick=()=>{ if(!selData) return; selData.capSize=Math.min(40,(selData.capSize||18)+1); document.getElementById('capSzVal').textContent=selData.capSize; applyCap(); };
 document.querySelectorAll('#capbar .sw[data-cc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.capColor=sw.dataset.cc; document.getElementById('capColor').value=toHex(sw.dataset.cc); applyCap(); }; });
 document.getElementById('capColor').oninput=function(){ if(!selData) return; selData.capColor=this.value; applyCap(); };
+
+/* border styling bar (colour + width) — only shown for the Border look */
+function showBorderBar(){ const bar=document.getElementById('borderbar');
+  if(!(selData && selData.style==='border')){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  document.getElementById('bColor').value=toHex(selData.borderColor||'#ffffff');
+  document.getElementById('bwVal').textContent=(selData.borderWidth!=null?selData.borderWidth:6); }
+function applyBorder(){ if(!selNode||!selData||selData.type!=='photo') return; J.applyPhotoStyle(selNode, selData); saveDraft(); }
+document.querySelectorAll('#borderbar .sw[data-bc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.borderColor=sw.dataset.bc; document.getElementById('bColor').value=toHex(sw.dataset.bc); applyBorder(); }; });
+document.getElementById('bColor').oninput=function(){ if(!selData) return; selData.borderColor=this.value; applyBorder(); };
+document.getElementById('bwMinus').onclick=()=>{ if(!selData) return; selData.borderWidth=Math.max(0,(selData.borderWidth!=null?selData.borderWidth:6)-1); document.getElementById('bwVal').textContent=selData.borderWidth; applyBorder(); };
+document.getElementById('bwPlus').onclick=()=>{ if(!selData) return; selData.borderWidth=Math.min(40,(selData.borderWidth!=null?selData.borderWidth:6)+1); document.getElementById('bwVal').textContent=selData.borderWidth; applyBorder(); };
 
 /* ---------- render ---------- */
 function renderTabs(){
@@ -622,7 +673,25 @@ document.getElementById('addText').onclick=()=>{ curPage().elements.push({id:J.u
 const photoFile=document.getElementById('photoFile');
 document.getElementById('addPhoto').onclick=()=>photoFile.click();
 photoFile.onchange=async(e)=>{ const f=e.target.files[0]; if(!f) return; try{ const src=await J.compress(f);
-  curPage().elements.push({id:J.uid(),type:'photo',x:200,y:330,w:220,src,caption:'',rot:0}); renderAll(); }catch(err){ showToast('Could not load image'); } photoFile.value=''; };
+  curPage().elements.push({id:J.uid(),type:'photo',x:200,y:330,w:220,src,caption:'',style:'frame',frameColor:'#ffffff',shadow:true,rot:0}); renderAll(); }catch(err){ showToast('Could not load image'); } photoFile.value=''; };
+/* ---------- mobile menu: relocate actions + cover into a dropdown, restore on desktop ---------- */
+(function(){
+  const mb=document.getElementById('menuBtn'), panel=document.getElementById('menuPanel'), mask=document.getElementById('menuMask');
+  const actions=document.querySelector('.actions'), cover=document.querySelector('.cover-row');
+  // remember each node's original home so we can put it back exactly
+  const homes=[actions,cover].map(n=> n?{n, parent:n.parentNode, next:n.nextSibling}:null);
+  let inPanel=false;
+  function setOpen(o){ panel.classList.toggle('open',o); mask.classList.toggle('open',o); }
+  function toPanel(){ if(inPanel) return; homes.forEach(h=>{ if(h) panel.appendChild(h.n); }); inPanel=true; }
+  function toHome(){ if(!inPanel) return; homes.forEach(h=>{ if(h){ h.parent.insertBefore(h.n, h.next); } }); inPanel=false; setOpen(false); }
+  function apply(){ if(window.innerWidth<=600) toPanel(); else toHome(); }
+  if(mb){ mb.onclick=()=>setOpen(!panel.classList.contains('open')); }
+  if(mask){ mask.onclick=()=>setOpen(false); }
+  // tapping any button inside the panel closes it so the page is visible again
+  panel.addEventListener('click', e=>{ if(e.target.closest('.btn')) setOpen(false); });
+  let rt; window.addEventListener('resize', ()=>{ clearTimeout(rt); rt=setTimeout(apply,150); });
+  apply();
+})();
 const coverFile=document.getElementById('coverFile');
 document.getElementById('coverBtn').onclick=()=>coverFile.click();
 coverFile.onchange=async(e)=>{ const f=e.target.files[0]; if(!f) return; try{ story.thumb=await J.compress(f,520,0.72); renderAll(); showToast('Cover set'); }catch(err){ showToast('Could not load image'); } coverFile.value=''; };

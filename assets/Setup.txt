@@ -70,7 +70,9 @@ Dhanashri is soft lavender pastel, Pratiksha is warm cream pastel, and Siddhesh 
 FEATURES (SAME FOR ALL THREE CLIENTS)
 
 - Photos, Plain look: keeps PNG transparency, so a cut-out image (for example an aeroplane with no background) shows only its subject, with no box and no black fill. Uploads with transparency are now saved as PNG; opaque photos stay small as JPEG.
-- Photos, Shadow: an independent toggle that works on any look (card, frame, border or a plain cutout) and turns fully off when unchecked.
+- Photos, Shadow: an independent toggle that works on any look (frame, border or a plain cutout) and turns fully off when unchecked.
+- Photos, Border: its colour and width are adjustable (the default stays the original thin white border).
+- Photos, Frame: pick any frame colour; white gives the classic photo-card look (this replaces the old separate Card option).
 - Captions: their own font, size and colour controls.
 - Text, Bold / Italic / Underline: also work on a selection inside a box — select a word or two and only those change; with nothing selected they style the whole box as before.
 - Plus 20 fonts, alignment, text-box fill, rotation, crop, stickers, upload-your-own image stickers, washi tape, doodles, layering, multi-page stories, per-page backgrounds, cover picker, autosave, drafts, and PDF export.
