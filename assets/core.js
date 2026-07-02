@@ -27,41 +27,123 @@ window.JOURNAL = (function(){
   const PAGE_W = 760;
 
   /* ---- fonts ----
-     The first 8 are free web fonts loaded from Google Fonts.
-     The rest are referenced by their installed system / Adobe names (never bundled, so no
-     font files to host and nothing heavy to download). On a device that has the named font
-     it renders exactly; otherwise it falls back to the generic family in the stack. */
+     A curated set where every font renders VISUALLY UNIQUE for visitors. Most entries are
+     free Google web fonts (loaded on every page, identical on every device); the rest are
+     classic system / Office / Adobe families that are widely installed (Times New Roman,
+     Cambria, Courier New, Daun Penh, Bodoni MT, ...) with sensible fallbacks.
+
+     Decorative named fonts from the inspiration sheets (Naive, Icing, Fontleroy, Belluccia,
+     and dozens more) were removed on purpose: they are not installed on most devices, so
+     they all rendered as their shared fallback web font and appeared as identical
+     duplicates in the dropdown. FONT_ALIASES below maps every removed key to the kept font
+     it used to fall back to, so any already-published story keeps rendering pixel-for-pixel. */
   const FONTS = {
+    /* handwritten & casual */
     gaegu:    { css:"'Gaegu', cursive",          label:"Gaegu" },
     caveat:   { css:"'Caveat', cursive",         label:"Caveat" },
     patrick:  { css:"'Patrick Hand', cursive",   label:"Patrick Hand" },
     indie:    { css:"'Indie Flower', cursive",   label:"Indie Flower" },
-    dancing:  { css:"'Dancing Script', cursive", label:"Dancing Script" },
-    playfair: { css:"'Playfair Display', serif", label:"Playfair Display" },
-    quicksand:{ css:"'Quicksand', sans-serif",   label:"Quicksand" },
-    nunito:   { css:"'Nunito', sans-serif",      label:"Nunito" },
+    kalam:    { css:"'Kalam', cursive",          label:"Kalam" },
+    shadows:  { css:"'Shadows Into Light', cursive",    label:"Shadows Into Light" },
+    amatic:   { css:"'Amatic SC', cursive",             label:"Amatic SC" },
+    walterturncoat:{css:"'Walter Turncoat', cursive",   label:"Walter Turncoat" },
+    cedarville: { css:"'Cedarville Cursive', cursive",  label:"Cedarville Cursive" },
+    mvboli:   { css:"'MV Boli', 'Kalam', cursive",      label:"MV Boli" },
 
+    /* elegant script & calligraphy */
     greatvibes:{ css:"'Great Vibes', cursive",          label:"Great Vibes" },
     sacramento:{ css:"'Sacramento', cursive",           label:"Sacramento" },
+    dancing:  { css:"'Dancing Script', cursive",        label:"Dancing Script" },
     satisfy:  { css:"'Satisfy', cursive",               label:"Satisfy" },
-    shadows:  { css:"'Shadows Into Light', cursive",    label:"Shadows Into Light" },
-    kalam:    { css:"'Kalam', cursive",                 label:"Kalam" },
-    amatic:   { css:"'Amatic SC', cursive",             label:"Amatic SC" },
-    cormorant:{ css:"'Cormorant Garamond', serif",      label:"Cormorant Garamond" },
+    parisienne: { css:"'Parisienne', cursive",          label:"Parisienne" },
+    herrvon:  { css:"'Herr Von Muellerhoff', cursive",  label:"Herr Von Muellerhoff" },
+    corsiva:  { css:"'Monotype Corsiva', 'Dancing Script', cursive", label:"Monotype Corsiva" },
 
+    /* brush & retro script */
+    grandhotel: { css:"'Grand Hotel', cursive",         label:"Grand Hotel" },
+    lobstertwo: { css:"'Lobster Two', cursive",         label:"Lobster Two" },
+    sail:       { css:"'Sail', cursive",                label:"Sail" },
+    gluten:     { css:"'Gluten', cursive",              label:"Gluten" },
+
+    /* serif & classic */
+    playfair: { css:"'Playfair Display', serif",        label:"Playfair Display" },
+    cormorant:{ css:"'Cormorant Garamond', serif",      label:"Cormorant Garamond" },
+    bodonimt: { css:"'Bodoni MT', 'Didot', 'Playfair Display', serif", label:"Bodoni MT" },
+    daunpenh: { css:"'DaunPenh', 'Daun Penh', 'Cormorant Garamond', serif", label:"Daun Penh" },
     timesnr:  { css:"'Times New Roman', Times, serif",            label:"Times New Roman" },
     cambria:  { css:"'Cambria', Georgia, serif",                  label:"Cambria" },
     bookantiqua:{ css:"'Book Antiqua', Palatino, 'Palatino Linotype', serif", label:"Book Antiqua" },
     bookman:  { css:"'Bookman Old Style', 'Bookman', serif",      label:"Bookman Old Style" },
     chaparral:{ css:"'Chaparral Pro Light', 'Chaparral Pro', Georgia, serif", label:"Chaparral Pro Light" },
+    adobearabic:{ css:"'Adobe Arabic', 'Times New Roman', serif", label:"Adobe Arabic" },
+
+    /* clean & modern */
+    quicksand:{ css:"'Quicksand', sans-serif",   label:"Quicksand" },
+    nunito:   { css:"'Nunito', sans-serif",      label:"Nunito" },
     calibri:  { css:"'Calibri', 'Segoe UI', sans-serif",          label:"Calibri" },
     franklin: { css:"'Franklin Gothic Book', 'Franklin Gothic', Arial, sans-serif", label:"Franklin Gothic Book" },
     mssans:   { css:"'Microsoft Sans Serif', Arial, sans-serif",  label:"Microsoft Sans Serif" },
-    corsiva:  { css:"'Monotype Corsiva', cursive",                label:"Monotype Corsiva" },
-    mvboli:   { css:"'MV Boli', cursive",                         label:"MV Boli" },
-    adobearabic:{ css:"'Adobe Arabic', 'Times New Roman', serif", label:"Adobe Arabic" },
-    segoefluent:{ css:"'Segoe Fluent Icons', 'Segoe UI', sans-serif", label:"Segoe Fluent Icons" }
+    segoefluent:{ css:"'Segoe Fluent Icons', 'Segoe UI', sans-serif", label:"Segoe Fluent Icons" },
+    bebas:    { css:"'Bebas Neue', sans-serif",  label:"Bebas Neue" },
+
+    /* monospace */
+    couriernew: { css:"'Courier New', Courier, monospace", label:"Courier New" }
   };
+
+  /* removed duplicate-looking keys → the kept font they fell back to.
+     resolveFontKey() keeps every already-published story rendering exactly as before. */
+  const FONT_ALIASES = {
+    naive:"amatic", icing:"amatic", northwest:"amatic", hammock:"amatic", barocca:"amatic",
+    everafter:"amatic", matilde:"amatic", windsorpark:"amatic",
+    clipper:"greatvibes", jellyka:"greatvibes", belluccia:"greatvibes", domlovesmary:"greatvibes",
+    bombshell:"greatvibes", katierose:"greatvibes", madelinette:"greatvibes", copperlove:"greatvibes",
+    dasha:"greatvibes", ciaobella:"greatvibes", cantoni:"greatvibes", asterism:"greatvibes",
+    annaclara:"greatvibes", aleka:"greatvibes", adorn:"greatvibes", burgues:"greatvibes",
+    rachella:"greatvibes", foundry:"greatvibes",
+    modesty:"sacramento", hollyhock:"sacramento", cerise:"sacramento", castro:"sacramento",
+    settascript:"sacramento", janda:"sacramento", learningcurve:"sacramento", goodtime:"sacramento",
+    sachiko:"dancing", nellyscript:"dancing", ondise:"dancing", peonipro:"dancing",
+    eliensee:"dancing", gemmadonati:"dancing", ahra:"dancing", ameglia:"dancing",
+    antrokas:"dancing", carolyna:"dancing", bookeyedsuzanne:"dancing", bromello:"dancing",
+    aline:"dancing", youngcoconut:"dancing", nautilus:"dancing", brannboll:"dancing",
+    debby:"caveat", quentin:"caveat", matchmaker:"caveat", jacquesgilles:"caveat",
+    littledays:"caveat", pinsetter:"caveat",
+    luna:"patrick", dragonfly:"patrick", trashhand:"patrick", argylesocks:"patrick",
+    frosted:"kalam", pacificnw:"kalam",
+    playlist:"grandhotel", selima:"grandhotel", sunbreath:"grandhotel", brusher:"grandhotel",
+    succulent:"grandhotel", kingbasil:"grandhotel",
+    hamurz:"bebas", sanek:"bebas", reckless:"bebas", grodna:"bebas",
+    fontleroy:"lobstertwo",
+    sequel:"franklin", swis721:"franklin",
+    champagne:"quicksand", nautik:"quicksand", frykas:"quicksand",
+    equable:"cormorant", auntmildred:"cormorant", jacobriley:"cormorant", complexf:"cormorant",
+    helsing:"playfair", bookeyedmartin:"playfair",
+    lumberjack:"bookman",
+    romand:"timesnr", euroroman:"timesnr",
+    bodoniathome:"bodonimt",
+    italicc:"corsiva"
+  };
+  function resolveFontKey(k){ if(FONTS[k]) return k; if(FONT_ALIASES[k] && FONTS[FONT_ALIASES[k]]) return FONT_ALIASES[k]; return 'gaegu'; }
+  function getFont(k){ return FONTS[resolveFontKey(k)]; }
+
+  /* ---- font groups ----
+     Order for the editor's font dropdowns: similar styles sit together, one after the
+     other, under a labelled heading (rendered as <optgroup>). Every FONTS key appears in
+     exactly one group; any key added later but forgotten here is appended automatically
+     to a trailing "More" group by the dropdown builder, so nothing can go missing. */
+  const FONT_GROUPS = [
+    { label:"Handwritten & Casual", keys:[
+      "gaegu","caveat","patrick","indie","kalam","shadows","amatic","walterturncoat","cedarville","mvboli" ]},
+    { label:"Elegant Script & Calligraphy", keys:[
+      "greatvibes","sacramento","dancing","satisfy","parisienne","herrvon","corsiva" ]},
+    { label:"Brush & Retro Script", keys:[
+      "grandhotel","lobstertwo","sail","gluten" ]},
+    { label:"Serif & Classic", keys:[
+      "playfair","cormorant","bodonimt","daunpenh","timesnr","cambria","bookantiqua","bookman","chaparral","adobearabic" ]},
+    { label:"Clean & Modern", keys:[
+      "quicksand","nunito","calibri","franklin","mssans","segoefluent","bebas" ]},
+    { label:"Monospace", keys:[ "couriernew" ]}
+  ];
 
   /* ---- page backgrounds ----
      Built-in styles (grid / dot / plain) plus image backgrounds stored as small files
@@ -170,6 +252,18 @@ window.JOURNAL = (function(){
     if(d.shadow) el.classList.add('has-shadow'); else el.classList.remove('has-shadow');
     // reset any inline overrides each call so switching looks stays clean (CSS governs unless set below)
     el.style.background=''; el.style.padding=''; el.style.borderColor=''; el.style.borderWidth='';
+    el.style.borderRadius='';
+    const im=el.querySelector('img'); if(im) im.style.borderRadius='';
+    /* CORNER ROUNDING: d.radius (px) controls how rounded the photo's corners are —
+       0 = completely square, higher = rounder. Applies to every look. Unset keeps the
+       original CSS defaults, so existing photos are untouched. On padded looks (frame /
+       card / border) the inner image gets a slightly smaller radius so the band of
+       frame/border stays visually even around the corner. */
+    if(d.radius!=null){
+      el.style.borderRadius=d.radius+'px';
+      const padded=(st==='frame'||st==='card'||st==='border');
+      if(im) im.style.borderRadius=Math.max(0, d.radius-(padded?6:0))+'px';
+    }
     // only the custom "frame" look paints a background colour; everything else (incl. plain) stays clear
     if(st==='frame') el.style.background=(d.frameColor||PHOTO_FRAME_DEFAULT);
     // BORDER look: optional colour + width. Defaults (white band, 6px, subtle 1px edge) come from
@@ -186,7 +280,7 @@ window.JOURNAL = (function(){
   const CAPTION_DEFAULTS={ font:'', color:'', size:0 };
   function applyCaptionStyle(cap, d){
     // font: a key into FONTS, or empty to inherit the theme's handwritten caption font (from CSS)
-    cap.style.fontFamily = d.capFont ? ((FONTS[d.capFont]||FONTS.gaegu).css) : '';
+    cap.style.fontFamily = d.capFont ? getFont(d.capFont).css : '';
     // colour: empty inherits the theme's --ink-soft (set in CSS)
     cap.style.color = d.capColor || '';
     // size: 0/undefined inherits the CSS default (18px)
@@ -240,7 +334,7 @@ window.JOURNAL = (function(){
   }
 
   function applyTextStyle(body, d){
-    body.style.fontFamily = (FONTS[d.font]||FONTS.gaegu).css;
+    body.style.fontFamily = getFont(d.font).css;
     body.style.fontSize   = (d.size||20)+'px';
     body.style.fontWeight = d.bold? '700':'400';
     body.style.fontStyle  = d.italic? 'italic':'normal';
@@ -248,6 +342,9 @@ window.JOURNAL = (function(){
     body.style.textAlign  = d.align||'left';
     body.style.color = d.color || '';
     body.style.background = d.fill || 'transparent';
+    /* paragraph / line spacing: a multiplier (1.0 – 3.0). Unset inherits the CSS
+       default (1.45), so every already-published story renders exactly as before. */
+    body.style.lineHeight = d.spacing ? String(d.spacing) : '';
   }
 
   /* INLINE FORMATTING
@@ -333,7 +430,7 @@ window.JOURNAL = (function(){
   function b64decode(b64){ const bin=atob((b64||'').replace(/\n/g,'')); const bytes=new Uint8Array(bin.length);
     for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
 
-  return { CONFIG, PAGE_W, FONTS, BACKGROUNDS, BG_MAP, BUILTIN_PAPERS, DOODLES, DOODLES_MAP, doodleSVG, applyPhotoStyle, applyCaptionStyle, applyPaper, normalizePaper,
+  return { CONFIG, PAGE_W, FONTS, FONT_GROUPS, FONT_ALIASES, resolveFontKey, getFont, BACKGROUNDS, BG_MAP, BUILTIN_PAPERS, DOODLES, DOODLES_MAP, doodleSVG, applyPhotoStyle, applyCaptionStyle, applyPaper, normalizePaper,
            uid, today, escapeHtml, slugify, formatDate, compress, encodeCanvas, applyTextStyle, sanitizeRich, hasRich, setTextContent, applyRot,
            buildElementRO, renderPageRO, b64encode, b64decode };
 })();

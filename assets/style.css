@@ -2,61 +2,61 @@
    Structure + layout live here once. The COLOUR THEME is switched per client by a
    data-client attribute on the <html> element:
 
-     <html data-client="dhanashri">   → soft lavender pastel   (the default :root below)
-     <html data-client="pratiksha">   → warm cream pastel      (override block)
-     <html data-client="siddhesh">    → soft rose / blush red  (override block)
+     <html data-client="dhanashri">   → pastel lavender        (the default :root below)
+     <html data-client="pratiksha">   → pastel blue            (override block)
+     <html data-client="siddhesh">    → pastel red / coral     (override block)
 
    All palettes are intentionally gentle, low-saturation pastels — soft, not bright.
    To tune a client's colour, edit only its token block; nothing structural changes. */
 
-/* -------- DEFAULT THEME = Dhanashri (soft lavender pastel) -------- */
+/* -------- DEFAULT THEME = Dhanashri (pastel lavender — tuned MORE lavender) -------- */
 :root{
   /* paper + ink */
-  --paper:#fcfaff; --paper-edge:#ece6f8; --ink:#544b6b; --ink-soft:#a89fc0;
-  --grid:#ece6f8;
+  --paper:#fbf8ff; --paper-edge:#e8def8; --ink:#514669; --ink-soft:#a498c4;
+  --grid:#eae1f8;
   /* accent family (names kept from the original system):
      --lav = lavender accent, --lav-deep = primary (buttons), --lilac = pale lilac,
      --blush = pink, --mint = soft sage, --peri = periwinkle, --soft = pale tint */
-  --lav:#c2b3e8; --lav-deep:#8f78cc; --lilac:#ded3f4;
-  --blush:#f1e2f0; --mint:#d3e8de; --peri:#cdd3f3; --soft:#f3eefc;
-  --shadow:rgba(84,75,107,.16);
-  --tape:rgba(194,179,232,.82);
-  --primary-hover:#7d65bd;
+  --lav:#c3adee; --lav-deep:#9377d6; --lilac:#ddccf7;
+  --blush:#efe0f6; --mint:#d9e6ec; --peri:#cbcdf6; --soft:#f3ebfd;
+  --shadow:rgba(81,70,105,.16);
+  --tape:rgba(195,173,238,.82);
+  --primary-hover:#8163c9;
   /* fonts */
   --hand:'Caveat', cursive; --cute:'Gaegu', cursive; --body:'Nunito', sans-serif;
   --script:'Great Vibes', cursive; --serif:'Cormorant Garamond', serif;
   /* page-art glow corners (homepage background) */
-  --glow1:#f3eaff; --glow2:#ece6fb; --glow3:#f5ecff; --glow4:#ecf4f0; --glow-base:#f7f3fd;
-  --pdf-bg:#fcfaff;
+  --glow1:#f1e6ff; --glow2:#eae0fb; --glow3:#f4e9ff; --glow4:#e9e7f8; --glow-base:#f6f0fe;
+  --pdf-bg:#fbf8ff;
 }
 
-/* -------- PRATIKSHA THEME (warm cream pastel) --------
-   Built from the cream palette: #e8d1c5 #eddcd2 #fff1e6 #f0efeb #eeddd3.
-   Warm taupe ink on soft cream paper, muted terracotta accent. */
+/* -------- PRATIKSHA THEME (pastel blue) --------
+   Soft sky-blue paper, slate-blue ink, muted cornflower accent. Gentle, low-saturation. */
 html[data-client="pratiksha"]{
-  --paper:#fff8f1; --paper-edge:#eeddd3; --ink:#6e5d51; --ink-soft:#b3a193;
-  --grid:#f0e3d8;
-  --lav:#d8b6a6; --lav-deep:#b07d66; --lilac:#eddcd2;
-  --blush:#f3e2da; --mint:#e6e9e1; --peri:#efe0d4; --soft:#fbf1e8;
-  --shadow:rgba(120,95,80,.16);
-  --tape:rgba(216,182,166,.72);
-  --primary-hover:#9d6d57;
-  --glow1:#f6e7da; --glow2:#f1e6df; --glow3:#fdeee2; --glow4:#efeae0; --glow-base:#fbf3ec;
-  --pdf-bg:#fff8f1;
+  --paper:#f8fbff; --paper-edge:#dde8f6; --ink:#4e5b76; --ink-soft:#98a8c7;
+  --grid:#e3ecf8;
+  --lav:#a9c3e8; --lav-deep:#6e90c9; --lilac:#d5e2f4;
+  --blush:#e2ecf9; --mint:#dcebe8; --peri:#cddcf3; --soft:#edf4fc;
+  --shadow:rgba(74,95,130,.16);
+  --tape:rgba(169,195,232,.78);
+  --primary-hover:#5c7fb9;
+  --glow1:#e5f0fd; --glow2:#e2ebf9; --glow3:#eaf3ff; --glow4:#e6edf5; --glow-base:#f2f7fd;
+  --pdf-bg:#f8fbff;
 }
 
-/* -------- SIDDHESH THEME (soft rose / blush red) --------
-   Rose-tinted paper, deep rose-brown ink, soft rose-red accent. Kept gentle, not loud. */
+/* -------- SIDDHESH THEME (pastel red) --------
+   Shifted off pink toward a soft coral-red: warm red-tinted paper, red-brown ink,
+   muted terracotta-red accent. Still gentle and pastel, never loud. */
 html[data-client="siddhesh"]{
-  --paper:#fff6f6; --paper-edge:#f4dcdf; --ink:#6b4750; --ink-soft:#bb9aa1;
-  --grid:#f7e3e6;
-  --lav:#e8aab4; --lav-deep:#c8697d; --lilac:#f3d9de;
-  --blush:#fbe2ea; --mint:#e3ece6; --peri:#f1dde2; --soft:#fdeef1;
-  --shadow:rgba(120,70,82,.16);
-  --tape:rgba(232,170,180,.72);
-  --primary-hover:#b65a6e;
-  --glow1:#fbe2e7; --glow2:#f6e1ea; --glow3:#fdeaee; --glow4:#f0e6e8; --glow-base:#fdf1f3;
-  --pdf-bg:#fff6f6;
+  --paper:#fff6f4; --paper-edge:#f5dcd5; --ink:#6e453e; --ink-soft:#bd988f;
+  --grid:#f8e3dc;
+  --lav:#e8a294; --lav-deep:#cc6553; --lilac:#f4d7cd;
+  --blush:#fbdfd6; --mint:#e7ece2; --peri:#f2ddd4; --soft:#fdeee9;
+  --shadow:rgba(130,72,60,.16);
+  --tape:rgba(232,162,148,.72);
+  --primary-hover:#ba5442;
+  --glow1:#fbe1d9; --glow2:#f7ded6; --glow3:#fde9e1; --glow4:#f1e5df; --glow-base:#fdf1ec;
+  --pdf-bg:#fff6f4;
 }
 
 
@@ -148,10 +148,15 @@ a{color:inherit; text-decoration:none;}
 
 /* ===== homepage ===== */
 .site-head{padding:50px 22px 10px; text-align:center;}
-.site-head .kicker{font-size:12px; letter-spacing:4px; text-transform:uppercase; color:var(--lav-deep); font-weight:700;}
-.site-head h1{font-family:var(--script); font-size:92px; margin:0 0 2px; color:var(--ink); font-weight:400; line-height:1;}
+.site-head h1{font-family:'DaunPenh','Daun Penh','Cormorant Garamond',serif; font-size:84px; margin:0 0 2px; color:var(--ink); font-weight:400; line-height:1;}
 .site-head .rule{width:60px; height:2px; border-radius:3px; background:var(--lav); margin:12px auto 0; opacity:.8;}
 .site-head p{color:var(--ink-soft); margin:14px 0 0; font-size:17px; font-family:var(--serif); font-style:italic; font-weight:500;}
+
+/* homepage identity fonts are the SAME for all three clients: Daun Penh (falling back to
+   Cormorant Garamond where not installed) on the heading and the status texts, with
+   Playfair Display on the story-card titles — set directly in the base rules below. */
+
+
 .cards{display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-start; gap:36px 28px; padding:42px 22px 96px;}
 .card{width:300px; max-width:320px; background:#fffdfb; padding:13px 13px 18px; border-radius:8px;
   box-shadow:0 10px 28px var(--shadow); transition:.2s cubic-bezier(.2,.7,.3,1); cursor:pointer; display:block;}
@@ -161,12 +166,12 @@ a{color:inherit; text-decoration:none;}
 .card .thumb{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:5px; background:var(--soft); display:block;}
 .card .thumb.placeholder{display:flex; align-items:center; justify-content:center; font-size:46px; color:var(--lilac);}
 .card .c-date{font-size:11px; font-weight:700; letter-spacing:1px; color:var(--lav-deep); margin:13px 3px 0; text-transform:uppercase;}
-.card .c-title{font-family:var(--serif); font-weight:600; font-size:25px; line-height:1.1; color:var(--ink); margin:4px 3px 0;
+.card .c-title{font-family:'Playfair Display','Bodoni MT',serif; font-weight:500; font-size:25px; line-height:1.1; color:var(--ink); margin:4px 3px 0;
   overflow-wrap:anywhere;
   display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2;
   overflow:hidden; min-height:2.24em;}
 .empty{text-align:center; color:var(--ink-soft); max-width:380px; margin:70px auto; padding:0 20px;}
-.empty .big{font-family:var(--script); font-size:52px; color:var(--ink); margin-bottom:8px;}
+.empty .big{font-family:'DaunPenh','Daun Penh','Cormorant Garamond',serif; font-size:52px; color:var(--ink); margin-bottom:8px;}
 
 /* ===== reader ===== */
 .reader-top{padding:16px 20px 0; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
@@ -175,13 +180,12 @@ a{color:inherit; text-decoration:none;}
 .story-headline h1{font-family:var(--serif); font-weight:600; font-size:clamp(40px,8vw,64px); margin:8px 0 0; color:var(--ink); line-height:1.04;}
 .story-headline .rule{width:60px; height:2px; border-radius:3px; background:var(--lav); margin:16px auto 0; opacity:.8;}
 .reader-stage{padding:18px 10px 90px; display:flex; flex-direction:column; align-items:center; gap:26px; overflow-x:hidden;}
-.loading{text-align:center; color:var(--ink-soft); padding:80px 20px; font-family:var(--script); font-size:34px;}
+.loading{text-align:center; color:var(--ink-soft); padding:80px 20px; font-family:'DaunPenh','Daun Penh','Cormorant Garamond',serif; font-size:34px;}
 
 /* ===== mobile ===== */
 @media(max-width:600px){
   .site-head{padding:34px 16px 6px;}
-  .site-head h1{font-size:64px;}
-  .site-head .kicker{letter-spacing:3px; font-size:11px;}
+  .site-head h1{font-size:56px;}
   .site-head p{font-size:14px;}
   .cards{gap:18px 12px; padding:26px 14px 80px;}
   .card{width:calc(50% - 8px); max-width:none; padding:8px 8px 12px; border-radius:8px;}

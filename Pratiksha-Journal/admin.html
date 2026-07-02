@@ -6,7 +6,7 @@
 <title>Editor — Pratiksha's Journal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Caveat:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Gaegu:wght@400;700&family=Great+Vibes&family=Indie+Flower&family=Kalam:wght@300;400;700&family=Nunito:wght@400;600;700&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;600;700&family=Sacramento&family=Satisfy&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bebas+Neue&family=Caveat:wght@400;600;700&family=Cedarville+Cursive&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Gaegu:wght@400;700&family=Great+Vibes&family=Herr+Von+Muellerhoff&family=Indie+Flower&family=Gluten&family=Grand+Hotel&family=Kalam:wght@300;400;700&family=Lobster+Two:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&family=Parisienne&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;600;700&family=Sacramento&family=Sail&family=Satisfy&family=Shadows+Into+Light&family=Walter+Turncoat&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   body{overflow:hidden; height:100vh;}
@@ -29,26 +29,39 @@
   .tab .x{color:var(--lav-deep); margin-left:8px; opacity:.6;}
   .hint{font-size:11px; color:var(--ink-soft); text-align:center; padding:0 14px 4px;}
 
-  .fmtbar{display:none; align-items:center; gap:6px; padding:8px 12px; margin:0 12px 6px; background:#fff;
-    border:1px solid var(--paper-edge); border-radius:14px; box-shadow:0 4px 14px var(--shadow); overflow-x:auto;}
-  .fmtbar > *{flex:none;}
-  .fmtbar select{font-family:var(--body); font-size:13px; padding:6px 8px; border:1px solid var(--paper-edge); border-radius:9px; background:var(--soft); color:var(--ink);}
-  .fmtbar .fb{width:34px;height:34px;border:1px solid var(--paper-edge);background:#fff;border-radius:9px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--ink);}
-  .fmtbar .fb.active{background:var(--lav-deep);color:#fff;border-color:var(--lav-deep);}
-  .fmtbar .sep{width:1px;height:24px;background:var(--paper-edge);margin:0 2px;}
-  .fmtbar .szval{min-width:28px;text-align:center;font-weight:700;font-size:13px;}
-  .fmtbar .sw{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--paper-edge);}
+  /* ---- format bars: professional grouped layout ----
+     Controls are organised into labelled groups (.grp) that wrap as neat rows instead of
+     one long horizontal scroll, so every feature is reachable at a glance. All controls
+     share one 34px height rhythm; labels sit above nothing — they lead each group. */
+  .fmtbar{display:none; align-items:stretch; gap:8px; row-gap:8px; flex-wrap:wrap; padding:9px 12px; margin:0 12px 6px; background:#fff;
+    border:1px solid var(--paper-edge); border-radius:14px; box-shadow:0 4px 14px var(--shadow);}
+  .fmtbar .grp{display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:11px;
+    background:var(--soft); border:1px solid var(--paper-edge); flex:none;}
+  .fmtbar .grp > *{flex:none;}
+  .fmtbar select{font-family:var(--body); font-size:13px; height:34px; padding:0 8px; border:1px solid var(--paper-edge); border-radius:9px; background:#fff; color:var(--ink); max-width:190px;}
+  .fmtbar .fb{width:34px;height:34px;border:1px solid var(--paper-edge);background:#fff;border-radius:9px;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink);transition:.12s;}
+  .fmtbar .fb:hover{border-color:var(--lav); background:var(--blush);}
+  .fmtbar .fb.active, .fmtbar .fb.on{background:var(--lav-deep);color:#fff;border-color:var(--lav-deep);}
+  .fmtbar .fb svg{display:block;}
+  .fmtbar .sep{width:1px;height:24px;background:var(--paper-edge);margin:0 2px; align-self:center;}
+  .fmtbar .szval{min-width:34px;text-align:center;font-weight:700;font-size:13px;}
+  .fmtbar .sw{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--paper-edge);transition:.12s;}
+  .fmtbar .sw:hover{transform:scale(1.14);}
   .fmtbar input[type=color]{width:32px;height:32px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;}
-  /* photo bar: text-label buttons need room, spacing and a clear active state */
-  #photobar{gap:8px; flex-wrap:wrap; row-gap:8px; padding:9px 14px;}
-  #photobar .fb{width:auto; height:32px; padding:0 15px; font-size:13px; font-weight:600; border-radius:999px; white-space:nowrap; transition:.15s;}
-  #photobar .fb:hover{background:var(--soft); border-color:var(--lav);}
+  /* photo bar: text-label buttons need room and a clear active state */
+  #photobar .fb{width:auto; height:32px; padding:0 14px; font-size:13px; font-weight:600; border-radius:999px; white-space:nowrap;}
+  #photobar #prMinus, #photobar #prPlus{width:34px; padding:0; border-radius:9px;}
   #photobar .fb.on{background:var(--lav-deep); color:#fff; border-color:var(--lav-deep); box-shadow:0 3px 8px var(--shadow);}
-  #photobar .sw{width:26px; height:26px; transition:.12s;}
-  #photobar .sw:hover{transform:scale(1.12);}
+  #photobar .sw{width:26px; height:26px;}
   #photobar input[type=color]{width:30px;height:30px;}
-  #photobar .sep{margin:0 5px;}
-  #photobar .fbl{margin:0 1px;}
+  @media(max-width:600px){
+    /* on phones every format bar stays ONE row and scrolls sideways (like before),
+       so it never stacks up and eats the page area */
+    .fmtbar{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
+      margin:0 8px 6px; padding:7px 8px; gap:6px; row-gap:6px;}
+    .fmtbar .grp{flex:none; padding:4px 7px; gap:5px; white-space:nowrap;}
+    .fmtbar select{max-width:130px;}
+  }
 
   .stage{flex:1; overflow:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y; display:flex; align-items:flex-start; justify-content:center; padding:6px 14px 120px;}
   .stage-inner{margin:0 auto; position:relative; overflow:hidden;}
@@ -118,7 +131,7 @@
   .washigrid button:hover{transform:translateY(-1px);}
   @media(max-width:600px){ .washigrid{gap:5px;} }
 
-  .fmtbar .fbl{font-size:11px; font-weight:700; color:var(--ink-soft); letter-spacing:.3px;}
+  .fmtbar .fbl{font-size:10px; font-weight:800; color:var(--ink-soft); letter-spacing:.7px; text-transform:uppercase; margin-right:2px;}
   /* background picker */
   .bggrid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:4px;}
   .bgitem{border:none; background:transparent; cursor:pointer; padding:0; display:flex; flex-direction:column; align-items:center; gap:5px;}
@@ -219,98 +232,109 @@
   <div class="hint">Tap an item to move (✥), resize (corner), tilt (⟳ drag, hold Shift to snap), layer it behind (⤓) or in front (⤒), or delete (×). Photos also crop (✂). Add stars, arrows and lines from the Doodles menu, then recolour and set their weight.</div>
 
   <div class="fmtbar" id="fmtbar">
-    <select id="fFont" title="Font"></select>
-    <div class="sep"></div>
-    <button class="fb" id="szMinus" title="Smaller">A−</button><span class="szval" id="szVal">20</span><button class="fb" id="szPlus" title="Bigger">A+</button>
-    <div class="sep"></div>
-    <button class="fb" id="fBold" title="Bold (whole box, or just the selected words)"><b>B</b></button>
-    <button class="fb" id="fItalic" title="Italic (whole box, or just the selected words)"><i>I</i></button>
-    <button class="fb" id="fUnder" title="Underline (whole box, or just the selected words)"><u>U</u></button>
-    <div class="sep"></div>
-    <button class="fb" id="alL" title="Align left">L</button>
-    <button class="fb" id="alC" title="Align centre">C</button>
-    <button class="fb" id="alR" title="Align right">R</button>
-    <button class="fb" id="alJ" title="Justify">J</button>
-    <div class="sep"></div>
-    <span class="fbl">Text</span>
-    <span class="sw" data-c="#4b4361" style="background:#4b4361"></span>
-    <span class="sw" data-c="#8f78cc" style="background:#8f78cc"></span>
-    <span class="sw" data-c="#c8697d" style="background:#c8697d"></span>
-    <span class="sw" data-c="#6c91c2" style="background:#6c91c2"></span>
-    <span class="sw" data-c="#5a9e86" style="background:#5a9e86"></span>
-    <span class="sw" data-c="#d59a55" style="background:#d59a55"></span>
-    <input type="color" id="fColor" value="#4b4361" title="Custom text colour">
-    <div class="sep"></div>
-    <span class="fbl">Fill</span>
-    <button class="fb" id="fFillClear" title="No fill">⌀</button>
-    <span class="sw" data-fill="#fff3c4" style="background:#fff3c4"></span>
-    <span class="sw" data-fill="#ffd9e6" style="background:#ffd9e6"></span>
-    <span class="sw" data-fill="#e3d9ff" style="background:#e3d9ff"></span>
-    <span class="sw" data-fill="#d6ecff" style="background:#d6ecff"></span>
-    <span class="sw" data-fill="#d9f2e4" style="background:#d9f2e4"></span>
-    <span class="sw" data-fill="#ffffff" style="background:#ffffff"></span>
-    <input type="color" id="fFillColor" value="#fff3c4" title="Custom fill colour">
+    <span class="grp"><span class="fbl">Font</span>
+      <select id="fFont" title="Font"></select>
+      <button class="fb" id="szMinus" title="Smaller">A−</button><span class="szval" id="szVal">20</span><button class="fb" id="szPlus" title="Bigger">A+</button>
+    </span>
+    <span class="grp"><span class="fbl">Style</span>
+      <button class="fb" id="fBold" title="Bold (whole box, or just the selected words)"><b>B</b></button>
+      <button class="fb" id="fItalic" title="Italic (whole box, or just the selected words)"><i>I</i></button>
+      <button class="fb" id="fUnder" title="Underline (whole box, or just the selected words)"><u>U</u></button>
+    </span>
+    <span class="grp"><span class="fbl">Align</span>
+      <button class="fb" id="alL" title="Align left"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.4h8M2 9.8h12M2 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <button class="fb" id="alC" title="Align centre"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M4 6.4h8M2 9.8h12M4 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <button class="fb" id="alR" title="Align right"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M6 6.4h8M2 9.8h12M6 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <button class="fb" id="alJ" title="Justify"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.4h12M2 9.8h12M2 13.2h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+    </span>
+    <span class="grp"><span class="fbl">Spacing</span>
+      <button class="fb" id="lsMinus" title="Tighter paragraph / line spacing">−</button><span class="szval" id="lsVal">1.45</span><button class="fb" id="lsPlus" title="Looser paragraph / line spacing">+</button>
+    </span>
+    <span class="grp"><span class="fbl">Text</span>
+      <span class="sw" data-c="#4b4361" style="background:#4b4361"></span>
+      <span class="sw" data-c="#8f78cc" style="background:#8f78cc"></span>
+      <span class="sw" data-c="#c8697d" style="background:#c8697d"></span>
+      <span class="sw" data-c="#6c91c2" style="background:#6c91c2"></span>
+      <span class="sw" data-c="#5a9e86" style="background:#5a9e86"></span>
+      <input type="color" id="fColor" value="#4b4361" title="Custom text colour">
+    </span>
+    <span class="grp"><span class="fbl">Fill</span>
+      <button class="fb" id="fFillClear" title="No fill">⌀</button>
+      <span class="sw" data-fill="#fff3c4" style="background:#fff3c4"></span>
+      <span class="sw" data-fill="#ffd9e6" style="background:#ffd9e6"></span>
+      <span class="sw" data-fill="#e3d9ff" style="background:#e3d9ff"></span>
+      <span class="sw" data-fill="#d6ecff" style="background:#d6ecff"></span>
+      <span class="sw" data-fill="#d9f2e4" style="background:#d9f2e4"></span>
+      <input type="color" id="fFillColor" value="#fff3c4" title="Custom fill colour">
+    </span>
   </div>
 
   <div class="fmtbar" id="doodlebar">
-    <span class="fbl">Colour</span>
-    <span class="sw" data-dc="#4b4361" style="background:#4b4361"></span>
-    <span class="sw" data-dc="#8f78cc" style="background:#8f78cc"></span>
-    <span class="sw" data-dc="#c8697d" style="background:#c8697d"></span>
-    <span class="sw" data-dc="#6c91c2" style="background:#6c91c2"></span>
-    <span class="sw" data-dc="#5a9e86" style="background:#5a9e86"></span>
-    <span class="sw" data-dc="#d59a55" style="background:#d59a55"></span>
-    <input type="color" id="dColor" value="#4b4361" title="Custom doodle colour">
-    <div class="sep"></div>
-    <span class="fbl">Weight</span>
-    <button class="fb" id="dwMinus" title="Thinner">−</button><span class="szval" id="dwVal">6</span><button class="fb" id="dwPlus" title="Thicker">+</button>
+    <span class="grp"><span class="fbl">Colour</span>
+      <span class="sw" data-dc="#4b4361" style="background:#4b4361"></span>
+      <span class="sw" data-dc="#8f78cc" style="background:#8f78cc"></span>
+      <span class="sw" data-dc="#c8697d" style="background:#c8697d"></span>
+      <span class="sw" data-dc="#6c91c2" style="background:#6c91c2"></span>
+      <span class="sw" data-dc="#5a9e86" style="background:#5a9e86"></span>
+      <span class="sw" data-dc="#d59a55" style="background:#d59a55"></span>
+      <input type="color" id="dColor" value="#4b4361" title="Custom doodle colour">
+    </span>
+    <span class="grp"><span class="fbl">Weight</span>
+      <button class="fb" id="dwMinus" title="Thinner">−</button><span class="szval" id="dwVal">6</span><button class="fb" id="dwPlus" title="Thicker">+</button>
+    </span>
   </div>
 
   <div class="fmtbar" id="photobar">
-    <span class="fbl">Photo</span>
-    <button class="fb" data-pstyle="plain" title="Plain image (keeps PNG transparency)">Plain</button>
-    <button class="fb" data-pstyle="border" title="Thin border">Border</button>
-    <button class="fb" data-pstyle="frame" title="Framed photo (pick a colour; white = a classic photo card)">Frame</button>
-    <div class="sep"></div>
-    <span class="fbl">Frame</span>
-    <span class="sw" data-pc="#ffffff" style="background:#ffffff"></span>
-    <span class="sw" data-pc="#efe9fb" style="background:#efe9fb"></span>
-    <span class="sw" data-pc="#f1e2f0" style="background:#f1e2f0"></span>
-    <span class="sw" data-pc="#cfe7dc" style="background:#cfe7dc"></span>
-    <span class="sw" data-pc="#fbf6e6" style="background:#fbf6e6"></span>
-    <input type="color" id="pColor" value="#ffffff" title="Custom frame colour">
-    <div class="sep"></div>
-    <button class="fb" id="pCap" title="Show / hide caption">Caption</button>
-    <button class="fb" id="pShadow" title="Drop shadow (works on any look)">Shadow</button>
+    <span class="grp"><span class="fbl">Photo</span>
+      <button class="fb" data-pstyle="plain" title="Plain image (keeps PNG transparency)">Plain</button>
+      <button class="fb" data-pstyle="border" title="Thin border">Border</button>
+      <button class="fb" data-pstyle="frame" title="Framed photo (pick a colour; white = a classic photo card)">Frame</button>
+    </span>
+    <span class="grp"><span class="fbl">Frame</span>
+      <span class="sw" data-pc="#ffffff" style="background:#ffffff"></span>
+      <span class="sw" data-pc="#efe9fb" style="background:#efe9fb"></span>
+      <span class="sw" data-pc="#f1e2f0" style="background:#f1e2f0"></span>
+      <span class="sw" data-pc="#cfe7dc" style="background:#cfe7dc"></span>
+      <span class="sw" data-pc="#fbf6e6" style="background:#fbf6e6"></span>
+      <input type="color" id="pColor" value="#ffffff" title="Custom frame colour">
+    </span>
+    <span class="grp"><span class="fbl">Corners</span>
+      <button class="fb" id="prMinus" title="Squarer corners (0 = fully square)">−</button><span class="szval" id="prVal">3</span><button class="fb" id="prPlus" title="Rounder corners">+</button>
+    </span>
+    <span class="grp">
+      <button class="fb" id="pCap" title="Show / hide caption">Caption</button>
+      <button class="fb" id="pShadow" title="Drop shadow (works on any look)">Shadow</button>
+    </span>
   </div>
 
   <div class="fmtbar" id="capbar">
-    <span class="fbl">Caption</span>
-    <select id="capFont" title="Caption font"></select>
-    <div class="sep"></div>
-    <button class="fb" id="capSzMinus" title="Smaller">A−</button><span class="szval" id="capSzVal">18</span><button class="fb" id="capSzPlus" title="Bigger">A+</button>
-    <div class="sep"></div>
-    <span class="fbl">Colour</span>
-    <span class="sw" data-cc="#4b4361" style="background:#4b4361"></span>
-    <span class="sw" data-cc="#8f78cc" style="background:#8f78cc"></span>
-    <span class="sw" data-cc="#c8697d" style="background:#c8697d"></span>
-    <span class="sw" data-cc="#6c91c2" style="background:#6c91c2"></span>
-    <span class="sw" data-cc="#5a9e86" style="background:#5a9e86"></span>
-    <input type="color" id="capColor" value="#4b4361" title="Custom caption colour">
+    <span class="grp"><span class="fbl">Caption</span>
+      <select id="capFont" title="Caption font"></select>
+      <button class="fb" id="capSzMinus" title="Smaller">A−</button><span class="szval" id="capSzVal">18</span><button class="fb" id="capSzPlus" title="Bigger">A+</button>
+    </span>
+    <span class="grp"><span class="fbl">Colour</span>
+      <span class="sw" data-cc="#4b4361" style="background:#4b4361"></span>
+      <span class="sw" data-cc="#8f78cc" style="background:#8f78cc"></span>
+      <span class="sw" data-cc="#c8697d" style="background:#c8697d"></span>
+      <span class="sw" data-cc="#6c91c2" style="background:#6c91c2"></span>
+      <span class="sw" data-cc="#5a9e86" style="background:#5a9e86"></span>
+      <input type="color" id="capColor" value="#4b4361" title="Custom caption colour">
+    </span>
   </div>
 
   <div class="fmtbar" id="borderbar">
-    <span class="fbl">Border</span>
-    <span class="sw" data-bc="#ffffff" style="background:#ffffff"></span>
-    <span class="sw" data-bc="#544b6b" style="background:#544b6b"></span>
-    <span class="sw" data-bc="#c8697d" style="background:#c8697d"></span>
-    <span class="sw" data-bc="#6c91c2" style="background:#6c91c2"></span>
-    <span class="sw" data-bc="#5a9e86" style="background:#5a9e86"></span>
-    <span class="sw" data-bc="#d59a55" style="background:#d59a55"></span>
-    <input type="color" id="bColor" value="#ffffff" title="Custom border colour">
-    <div class="sep"></div>
-    <span class="fbl">Width</span>
-    <button class="fb" id="bwMinus" title="Thinner">−</button><span class="szval" id="bwVal">6</span><button class="fb" id="bwPlus" title="Thicker">+</button>
+    <span class="grp"><span class="fbl">Border</span>
+      <span class="sw" data-bc="#ffffff" style="background:#ffffff"></span>
+      <span class="sw" data-bc="#544b6b" style="background:#544b6b"></span>
+      <span class="sw" data-bc="#c8697d" style="background:#c8697d"></span>
+      <span class="sw" data-bc="#6c91c2" style="background:#6c91c2"></span>
+      <span class="sw" data-bc="#5a9e86" style="background:#5a9e86"></span>
+      <span class="sw" data-bc="#d59a55" style="background:#d59a55"></span>
+      <input type="color" id="bColor" value="#ffffff" title="Custom border colour">
+    </span>
+    <span class="grp"><span class="fbl">Width</span>
+      <button class="fb" id="bwMinus" title="Thinner">−</button><span class="szval" id="bwVal">6</span><button class="fb" id="bwPlus" title="Thicker">+</button>
+    </span>
   </div>
 
   <div class="stage" id="stage">
@@ -450,15 +474,34 @@ function fitScale(){ const avail=stage.clientWidth-28; scale=Math.min(1, avail/P
 window.addEventListener('resize', fitScale);
 
 /* ---------- format bar ---------- */
-(function(){ const f=document.getElementById('fFont'); Object.keys(J.FONTS).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=J.FONTS[k].label; o.style.fontFamily=J.FONTS[k].css; o.style.fontSize='16px'; f.appendChild(o); }); f.style.fontFamily=J.FONTS.gaegu.css; })();
+/* Fill a font <select> with grouped options: similar styles sit together under a labelled
+   <optgroup> (handwritten, script, brush, serif, clean, mono). Any font key not covered by
+   J.FONT_GROUPS is appended to a trailing "More" group so nothing is ever left out. */
+function fillFontSelect(sel){
+  const used={};
+  (J.FONT_GROUPS||[]).forEach(g=>{
+    const og=document.createElement('optgroup'); og.label=g.label; let any=false;
+    g.keys.forEach(k=>{ const f=J.FONTS[k]; if(!f) return; used[k]=1; any=true;
+      const o=document.createElement('option'); o.value=k; o.textContent=f.label;
+      o.style.fontFamily=f.css; o.style.fontSize='16px'; og.appendChild(o); });
+    if(any) sel.appendChild(og);
+  });
+  const rest=Object.keys(J.FONTS).filter(k=>!used[k]);
+  if(rest.length){ const og=document.createElement('optgroup'); og.label='More';
+    rest.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=J.FONTS[k].label;
+      o.style.fontFamily=J.FONTS[k].css; o.style.fontSize='16px'; og.appendChild(o); });
+    sel.appendChild(og); }
+}
+(function(){ const f=document.getElementById('fFont'); fillFontSelect(f); f.style.fontFamily=J.FONTS.gaegu.css; })();
 function toHex(c){ try{ const ctx=document.createElement('canvas').getContext('2d'); ctx.fillStyle='#000'; ctx.fillStyle=c; return ctx.fillStyle; }catch(e){ return '#4b4361'; } }
 function setAlign(a){ ['alL','alC','alR','alJ'].forEach(id=>document.getElementById(id).classList.remove('active')); document.getElementById(a==='center'?'alC':a==='right'?'alR':a==='justify'?'alJ':'alL').classList.add('active'); }
 function showFmt(){ fmtbar.style.display='flex';
-  const ff=document.getElementById('fFont'); ff.value=selData.font||'gaegu'; ff.style.fontFamily=(J.FONTS[ff.value]||J.FONTS.gaegu).css; document.getElementById('szVal').textContent=(selData.size||20);
+  const ff=document.getElementById('fFont'); ff.value=J.resolveFontKey(selData.font||'gaegu'); ff.style.fontFamily=(J.FONTS[ff.value]||J.FONTS.gaegu).css; document.getElementById('szVal').textContent=(selData.size||20);
   document.getElementById('fBold').classList.toggle('active', !!selData.bold);
   document.getElementById('fItalic').classList.toggle('active', !!selData.italic);
   document.getElementById('fUnder').classList.toggle('active', !!selData.underline);
   setAlign(selData.align||'left'); document.getElementById('fColor').value=toHex(selData.color||'#4b4361');
+  document.getElementById('lsVal').textContent=(selData.spacing||1.45);
   document.getElementById('fFillColor').value=toHex(selData.fill||'#fff3c4'); fitScale(); }
 function hideFmt(){ fmtbar.style.display='none'; fitScale(); }
 function applyToSel(){ if(!selNode||!selData||selData.type!=='text') return; J.applyTextStyle(selNode.querySelector('.text-body'), selData); saveDraft(); }
@@ -480,6 +523,11 @@ document.getElementById('alL').onclick=()=>{ if(!selData) return; selData.align=
 document.getElementById('alC').onclick=()=>{ if(!selData) return; selData.align='center'; setAlign('center'); applyToSel(); };
 document.getElementById('alR').onclick=()=>{ if(!selData) return; selData.align='right'; setAlign('right'); applyToSel(); };
 document.getElementById('alJ').onclick=()=>{ if(!selData) return; selData.align='justify'; setAlign('justify'); applyToSel(); };
+/* paragraph / line spacing: 1.0 – 3.0 in 0.05 steps; default 1.45 (the CSS default) */
+function setSpacing(n){ if(!selData||selData.type!=='text') return; selData.spacing=Math.round(Math.max(1,Math.min(3,n))*100)/100;
+  document.getElementById('lsVal').textContent=selData.spacing; applyToSel(); }
+document.getElementById('lsMinus').onclick=()=>setSpacing((selData&&selData.spacing?selData.spacing:1.45)-0.05);
+document.getElementById('lsPlus').onclick=()=>setSpacing((selData&&selData.spacing?selData.spacing:1.45)+0.05);
 document.querySelectorAll('.fmtbar .sw[data-c]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.color=sw.dataset.c; document.getElementById('fColor').value=toHex(sw.dataset.c); applyToSel(); }; });
 document.getElementById('fColor').oninput=function(){ if(!selData) return; selData.color=this.value; applyToSel(); };
 document.querySelectorAll('.fmtbar .sw[data-fill]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.fill=sw.dataset.fill; document.getElementById('fFillColor').value=toHex(sw.dataset.fill); applyToSel(); }; });
@@ -501,7 +549,7 @@ document.getElementById('dColor').oninput=function(){ if(!selData) return; selDa
 /* ---------- photo bar (look: card / plain / shadow / frame / border) ---------- */
 (function(){ const f=document.getElementById('capFont');
   const inh=document.createElement('option'); inh.value=''; inh.textContent='(caption font)'; f.appendChild(inh);
-  Object.keys(J.FONTS).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=J.FONTS[k].label; o.style.fontFamily=J.FONTS[k].css; o.style.fontSize='16px'; f.appendChild(o); }); })();
+  fillFontSelect(f); })();
 
 function showPhotoBar(){ photobar.style.display='flex';
   const st=selData.style||'frame';
@@ -511,6 +559,7 @@ function showPhotoBar(){ photobar.style.display='flex';
   document.getElementById('pCap').classList.toggle('on', !selData.noCap);
   if(selData.shadow===undefined){ selData.shadow=(st==='card'||st==='frame'||st==='shadow'); }
   document.getElementById('pShadow').classList.toggle('on', !!selData.shadow);
+  document.getElementById('prVal').textContent=(selData.radius!=null?selData.radius:3);
   showCapBar(); showBorderBar(); fitScale(); }
 function hidePhotoBar(){ photobar.style.display='none'; document.getElementById('capbar').style.display='none'; document.getElementById('borderbar').style.display='none'; fitScale(); }
 function applyPhoto(){ if(!selNode||!selData||selData.type!=='photo') return; J.applyPhotoStyle(selNode, selData);
@@ -523,13 +572,18 @@ document.getElementById('pColor').oninput=function(){ if(!selData) return; selDa
   photobar.querySelectorAll('[data-pstyle]').forEach(x=>x.classList.toggle('on', x.dataset.pstyle==='frame')); showCapBar(); applyPhoto(); };
 document.getElementById('pCap').onclick=function(){ if(!selData) return; selData.noCap=!selData.noCap; this.classList.toggle('on', !selData.noCap); showCapBar(); applyPhoto(); };
 document.getElementById('pShadow').onclick=function(){ if(!selData) return; selData.shadow=!selData.shadow; this.classList.toggle('on', !!selData.shadow); applyPhoto(); };
+/* corner rounding: 0 (fully square) – 60px, works on every look */
+function setRadius(n){ if(!selData||selData.type!=='photo') return; selData.radius=Math.max(0,Math.min(60,n));
+  document.getElementById('prVal').textContent=selData.radius; applyPhoto(); }
+document.getElementById('prMinus').onclick=()=>setRadius((selData&&selData.radius!=null?selData.radius:3)-2);
+document.getElementById('prPlus').onclick=()=>setRadius((selData&&selData.radius!=null?selData.radius:3)+2);
 
 /* caption styling bar (font / size / colour) */
 function captionVisible(){ const st=selData&&selData.style; return selData && !selData.noCap && (st==='card'||st==='frame'); }
 function showCapBar(){ const bar=document.getElementById('capbar');
   if(!captionVisible()){ bar.style.display='none'; return; }
   bar.style.display='flex';
-  const cf=document.getElementById('capFont'); cf.value=selData.capFont||''; cf.style.fontFamily=(J.FONTS[cf.value]||J.FONTS.gaegu).css;
+  const cf=document.getElementById('capFont'); cf.value=selData.capFont?J.resolveFontKey(selData.capFont):''; cf.style.fontFamily=(J.FONTS[cf.value]||J.FONTS.gaegu).css;
   document.getElementById('capSzVal').textContent=(selData.capSize||18);
   document.getElementById('capColor').value=toHex(selData.capColor||'#4b4361'); }
 function applyCap(){ if(!selNode||!selData||selData.type!=='photo') return; const cap=selNode.querySelector('.cap'); if(cap) J.applyCaptionStyle(cap, selData); saveDraft(); }
