@@ -19,7 +19,7 @@ Journal-Writing/
   assets/
     core.js          shared engine (client-agnostic)
     style.css        structure plus all three colour themes
-    backgrounds/     bg01.jpg ... bg21.jpg (shared page-background images)
+    backgrounds/     bg01.jpg ... bg28.jpg (shared page-background images)
     PROJECT.txt      full project explainer
     Setup.txt        this file
   Dhanashri-Journal/   index.html  story.html  admin.html   data/index.json   data/posts/
@@ -74,13 +74,74 @@ FEATURES (SAME FOR ALL THREE CLIENTS)
 - Photos, Border: its colour and width are adjustable (the default stays the original thin white border).
 - Photos, Frame: pick any frame colour; white gives the classic photo-card look (this replaces the old separate Card option).
 - Captions: their own font, size and colour controls.
-- Text, Bold / Italic / Underline: also work on a selection inside a box — select a word or two and only those change; with nothing selected they style the whole box as before.
-- Plus 20 fonts, alignment, text-box fill, rotation, crop, stickers, upload-your-own image stickers, washi tape, doodles, layering, multi-page stories, per-page backgrounds, cover picker, autosave, drafts, and PDF export.
+- Text, Bold / Italic / Underline / Strikethrough, and bulleted and numbered lists: all work on a selection inside a box — select a word or two and only those change; with nothing selected they style the whole box.
+- The editor is a fixed ribbon at the top: document actions, then Insert / Edit / Arrange / Pages, then a contextual formatting row that swaps for whatever is selected. That row keeps its height, so the canvas never jumps.
+- Text, Font / Size / Colour: these work on a selection as well as on the whole box. Highlight a word or a line and change the font, nudge the size, or pick a colour, and only that run changes. With nothing highlighted the control styles the whole box as before.
+- Text boxes have two modes. One click on an unselected box selects it and drags it from anywhere. A double-click starts typing, and while typing the box is held still so it cannot be nudged. To move it again, click the empty part of the box (not the words): that leaves typing and starts the move in the same gesture. Clicking the words moves the caret as normal, and Escape also leaves typing. On a phone, tap an already-selected box to start typing.
+- Everything resizes from all eight corners and walls. A text box's height is a minimum, so text can grow past it and is never clipped; the ribbon's Fit button shrinks the box back around its text.
+- Items are no longer clipped at the page edge while editing, so a box slid off the side stays visible. The published reader still clips at the page edge, as printing does in Word.
+- Dragging snaps to the page centre and to other items' edges, with guide lines; hold Alt to place freely. Arrow keys nudge (Shift for 10px), Ctrl+D duplicates, Delete removes, Escape backs out.
+- Videos: added by link, not uploaded. See VIDEOS below.
+- Plus around forty fonts, alignment, line spacing, text-box fill, rotation, crop, stickers, upload-your-own image stickers, washi tape, doodles, layering, multi-page stories, 28 per-page backgrounds, cover picker, autosave, drafts, and PDF export.
+
+
+VIDEOS
+
+Click "Video" in the editor's Insert group. It asks for two things: a link to the clip, and a thumbnail image you choose. Only the thumbnail is saved into the story, so the story file stays small however long the video is, and the clip streams from wherever it is hosted.
+
+WHERE TO HOST
+
+The link must be a DIRECT FILE -- an .mp4 or .webm served over https. Cloudinary is the easy way to get one:
+
+1. Make a free Cloudinary account.
+2. Media Library > Upload > pick your clip.
+3. When it finishes, copy its delivery URL. It looks like
+   https://res.cloudinary.com/your-cloud/video/upload/v1699.../clip.mp4
+4. Paste that into the editor.
+
+Any other host works too, as long as the link ends at the file itself rather than at a web page about the file.
+
+YOUTUBE AND VIMEO ARE NOT ACCEPTED, ON PURPOSE. Their embeds are iframes and drag their own branding, channel name, title, and like and share buttons onto your page. None of that can be turned off (the old modestbranding switch is deprecated and does nothing, and hiding it with CSS breaks their terms), a Shorts embed is the busiest of the lot, and an iframe cannot go into the PDF at all. A direct file plays in the browser's own player: your clip, plain controls, nothing else. If you paste a YouTube link the editor tells you so rather than failing quietly.
+
+Cloudinary's free tier is 25 credits a month and video is the expensive thing to serve. A handful of clips with light traffic is comfortably fine; if you ever go over, delivery is suspended until the month resets.
+
+HOW IT BEHAVES
+
+The page shows your thumbnail with a play badge on it and loads nothing else. Click it and the real player appears, with the usual play, volume, mute, scrub and fullscreen controls. Several clips can sit on one page: starting one puts the others back to their thumbnails, so two can never play over each other.
+
+A video takes the same looks as a photo. Plain is the clip on its own; Card puts it on a white photo-card with the caption underneath, and you can set the card colour, the corner rounding, the shadow, and the caption's font, size and colour -- so a clip and a photo next to each other match. Double-click the caption to type in it, exactly as with a photo.
+
+The PDF export keeps the thumbnail and the play badge, so a printed page still reads as a video rather than as a photo. This is why the thumbnail is compulsory and why the editor will not let you save a video without one.
+
+WORTH KNOWING
+
+A video is a link, so the story depends on the file staying reachable. Delete it from Cloudinary, or rename it, and the thumbnail remains but the player will not load.
+
+The link is not private. Anyone can read it out of the story JSON, so treat a video the same way you treat anything else you publish to the journal.
 
 
 PAGE BACKGROUNDS
 
-In the editor click "Background" to choose a per-page background: grid, dots or plain paper, or one of 21 decorative images. A page saves only its short key, so story files stay small. The 21 images load from the shared assets/backgrounds/ folder, referenced one level up as ../assets/backgrounds/ since each client's pages sit in their own folder. To add more later, drop a compressed image into assets/backgrounds/ and add one line to the BACKGROUNDS list near the top of assets/core.js (key, label, "../assets/backgrounds/<file>", and a small inline thumbnail). Because assets/ is shared, the new background appears for all clients.
+In the editor click "Background" to choose a per-page background: grid, dots or plain paper, or one of 28 decorative images. A page saves only its short key, so story files stay small. The images load from the shared assets/backgrounds/ folder, referenced one level up as ../assets/backgrounds/ since each client's pages sit in their own folder.
+
+
+ADDING MORE BACKGROUNDS
+
+Three steps. Because assets/ is shared, a new background appears for all three clients at once.
+
+1. Prepare the image. Portrait, about 1100px wide, and cropped or padded to roughly a 0.76 width-to-height ratio, because the page is 760x1000 and the engine stretches a background to fill it (a landscape image will look squashed). Save as a JPEG at quality 75-80; aim to stay under about 150KB. Name it with the next free number, e.g. bg31.jpg, and drop it into assets/backgrounds/.
+
+2. Add one line to the BACKGROUNDS list near the top of assets/core.js, just before the closing ]; of the array:
+
+     {key:"bg31", label:"Your Label", file:"../assets/backgrounds/bg31.jpg", thumb:"data:image/jpeg;base64,..."},
+
+   WATCH THE COMMA. Every entry in the list needs a trailing comma except the last one. When you append a new entry, add a comma to the end of the line above it, or the file will not parse and the whole editor will fail to load. (This is exactly what happened when the bg22+ images were added: the old bg21 line had no trailing comma.)
+
+   The keys run bg01 to bg28 with no gaps, so the next one is bg29. Keep it that way if you can, but a gap is harmless if one ever appears: the key is only a label, and a page whose background key no longer exists falls back to the plain grid paper rather than breaking. Before renumbering or reusing a key, check that no story uses it — grep the data folders for "paper":"bgNN".
+
+3. The thumb is a tiny inline preview shown in the picker, so the picker does not have to download every full-size image. Make one by scaling the image down to about 84x120 and saving it as a JPEG at quality ~50, then base64-encoding it and prefixing "data:image/jpeg;base64,". Any image tool or a few lines of Python with Pillow will do it. If you leave thumb as an empty string the picker still works, it just shows a blank tile.
+
+To remove a background, delete its line and its file. Any story already using that key falls back to the plain grid paper rather than breaking.
 
 
 ADDING FEATURES LATER (THE POINT OF MERGING)

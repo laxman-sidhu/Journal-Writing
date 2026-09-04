@@ -9,92 +9,122 @@
 <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bebas+Neue&family=Caveat:wght@400;600;700&family=Cedarville+Cursive&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Gaegu:wght@400;700&family=Great+Vibes&family=Herr+Von+Muellerhoff&family=Indie+Flower&family=Gluten&family=Grand+Hotel&family=Kalam:wght@300;400;700&family=Lobster+Two:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&family=Parisienne&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;600;700&family=Sacramento&family=Sail&family=Satisfy&family=Shadows+Into+Light&family=Walter+Turncoat&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
+  /* ===== editor shell ===== */
   body{overflow:hidden; height:100vh;}
   .app{display:flex; flex-direction:column; height:100vh;}
-  .topbar{display:flex; align-items:center; gap:8px; padding:11px 14px 6px; flex-wrap:wrap;}
+
+  /* ===== ribbon: a fixed Word-style command bar that never shifts the canvas ===== */
+  .ribbon{flex:none; position:relative; z-index:120; background:linear-gradient(180deg,#fff,var(--paper));
+    border-bottom:1px solid var(--paper-edge); box-shadow:0 8px 20px -14px var(--shadow);}
+  .rb-row{display:flex; align-items:center; gap:9px; padding:8px 14px;}
+  .rb-row + .rb-row{border-top:1px solid var(--paper-edge);}
+  .spacer{flex:1;}
+
   .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--lav),var(--peri));
     display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;box-shadow:0 4px 12px var(--shadow);flex:none;}
-  .story-title{font-family:var(--hand); font-size:26px; font-weight:700; color:var(--ink); border:none; background:transparent; outline:none; min-width:70px; max-width:32vw; padding:2px 6px; border-radius:8px;}
-  .story-title:focus{background:rgba(255,255,255,.65);}
-  .sdate{font-weight:700; font-size:13px; color:var(--lav-deep); border:none; background:transparent; outline:none; max-width:130px;}
-  .spacer{flex:1;}
+  .story-title{font-family:var(--hand); font-size:26px; font-weight:700; color:var(--ink); border:none; background:transparent;
+    outline:none; min-width:70px; max-width:32vw; padding:2px 8px; border-radius:8px; transition:.15s;}
+  .story-title:hover{background:var(--soft);}
+  .story-title:focus{background:#fff; box-shadow:inset 0 0 0 1px var(--lav);}
+  .sdate{font-weight:700; font-size:13px; color:var(--lav-deep); border:1px solid transparent; background:transparent;
+    outline:none; max-width:135px; padding:5px 7px; border-radius:8px; transition:.15s;}
+  .sdate:hover{background:var(--soft);}
+  .sdate:focus{background:#fff; border-color:var(--lav);}
   .actions{display:flex; gap:6px; flex-wrap:wrap;}
-  .cover-row{display:flex; align-items:center; gap:10px; padding:0 14px 6px;}
-  .cover-prev{width:54px;height:42px;border-radius:8px;border:1px solid var(--paper-edge);background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--lilac);font-size:20px;overflow:hidden;flex:none;}
-  .tabs{display:flex; gap:8px; padding:2px 14px 8px; overflow-x:auto; align-items:center;}
-  .tab{flex:none; cursor:pointer; padding:7px 15px; border-radius:14px; background:#fff; border:1px solid var(--paper-edge);
-    box-shadow:0 2px 6px rgba(52,64,90,.06); font-weight:700; font-size:13px;}
-  .tab.active{background:var(--blush); border-color:var(--lav);}
-  .tab.add{font-size:18px; color:var(--lav-deep); border:2px dashed var(--lilac); background:transparent;}
-  .tab .x{color:var(--lav-deep); margin-left:8px; opacity:.6;}
-  .hint{font-size:11px; color:var(--ink-soft); text-align:center; padding:0 14px 4px;}
 
-  /* ---- format bars: professional grouped layout ----
-     Controls are organised into labelled groups (.grp) that wrap as neat rows instead of
-     one long horizontal scroll, so every feature is reachable at a glance. All controls
-     share one 34px height rhythm; labels sit above nothing — they lead each group. */
-  .fmtbar{display:none; align-items:stretch; gap:8px; row-gap:8px; flex-wrap:wrap; padding:9px 12px; margin:0 12px 6px; background:#fff;
-    border:1px solid var(--paper-edge); border-radius:14px; box-shadow:0 4px 14px var(--shadow);}
-  .fmtbar .grp{display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:11px;
+  /* a labelled cluster of related controls, the ribbon's basic building block */
+  .grp{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:12px;
     background:var(--soft); border:1px solid var(--paper-edge); flex:none;}
-  .fmtbar .grp > *{flex:none;}
-  .fmtbar select{font-family:var(--body); font-size:13px; height:34px; padding:0 8px; border:1px solid var(--paper-edge); border-radius:9px; background:#fff; color:var(--ink); max-width:190px;}
-  .fmtbar .fb{width:34px;height:34px;border:1px solid var(--paper-edge);background:#fff;border-radius:9px;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink);transition:.12s;}
-  .fmtbar .fb:hover{border-color:var(--lav); background:var(--blush);}
-  .fmtbar .fb.active, .fmtbar .fb.on{background:var(--lav-deep);color:#fff;border-color:var(--lav-deep);}
-  .fmtbar .fb svg{display:block;}
-  .fmtbar .sep{width:1px;height:24px;background:var(--paper-edge);margin:0 2px; align-self:center;}
-  .fmtbar .szval{min-width:34px;text-align:center;font-weight:700;font-size:13px;}
-  .fmtbar .sw{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--paper-edge);transition:.12s;}
-  .fmtbar .sw:hover{transform:scale(1.14);}
-  .fmtbar input[type=color]{width:32px;height:32px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;}
-  /* photo bar: text-label buttons need room and a clear active state */
-  #photobar .fb{width:auto; height:32px; padding:0 14px; font-size:13px; font-weight:600; border-radius:999px; white-space:nowrap;}
-  #photobar #prMinus, #photobar #prPlus{width:34px; padding:0; border-radius:9px;}
-  #photobar .fb.on{background:var(--lav-deep); color:#fff; border-color:var(--lav-deep); box-shadow:0 3px 8px var(--shadow);}
-  #photobar .sw{width:26px; height:26px;}
-  #photobar input[type=color]{width:30px;height:30px;}
-  @media(max-width:600px){
-    /* on phones every format bar stays ONE row and scrolls sideways (like before),
-       so it never stacks up and eats the page area */
-    .fmtbar{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
-      margin:0 8px 6px; padding:7px 8px; gap:6px; row-gap:6px;}
-    .fmtbar .grp{flex:none; padding:4px 7px; gap:5px; white-space:nowrap;}
-    .fmtbar select{max-width:130px;}
-  }
+  .grp > *{flex:none;}
+  .grp .lbl{font-size:9.5px; font-weight:800; color:var(--ink-soft); letter-spacing:.8px; text-transform:uppercase; margin-right:1px;}
+  .rb-sep{width:1px; align-self:stretch; background:var(--paper-edge); margin:2px 1px; flex:none;}
 
-  .stage{flex:1; overflow:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y; display:flex; align-items:flex-start; justify-content:center; padding:6px 14px 120px;}
-  .stage-inner{margin:0 auto; position:relative; overflow:hidden;}
+  /* every square-ish ribbon button shares one 32px rhythm */
+  .rbtn{width:32px; height:32px; border:1px solid transparent; background:#fff; border-radius:9px; cursor:pointer;
+    font-family:var(--body); font-size:14px; color:var(--ink); display:inline-flex; align-items:center; justify-content:center;
+    transition:.13s; box-shadow:0 1px 2px var(--shadow);}
+  .rbtn:hover{border-color:var(--lav); background:var(--blush); transform:translateY(-1px);}
+  .rbtn:active{transform:none;}
+  .rbtn.active, .rbtn.on{background:var(--lav-deep); color:#fff; border-color:var(--lav-deep); box-shadow:0 3px 8px var(--shadow);}
+  .rbtn:disabled{opacity:.32; cursor:default; background:#fff; transform:none; border-color:transparent;}
+  .rbtn svg{display:block;}
+  .rbtn.wide{width:auto; padding:0 13px; gap:6px; font-size:13px; font-weight:700; white-space:nowrap;}
+  .rbtn.wide .ic{font-size:15px;}
 
-  .el.selected{outline:1.5px dashed var(--lav); outline-offset:4px; z-index:50; border-radius:6px;}
+  .grp select{font-family:var(--body); font-size:13px; height:32px; padding:0 8px; border:1px solid var(--paper-edge);
+    border-radius:9px; background:#fff; color:var(--ink); max-width:195px; cursor:pointer;}
+  .grp select:hover{border-color:var(--lav);}
+  .stepval{min-width:36px; text-align:center; font-weight:800; font-size:12.5px; color:var(--ink);}
+  .sw{width:21px;height:21px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--paper-edge);transition:.13s;}
+  .sw:hover{transform:scale(1.16);}
+  .grp input[type=color]{width:30px;height:30px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;}
+
+  /* ===== contextual row: fixed height, so showing a bar never moves the page ===== */
+  .rb-ctx{display:flex; align-items:center; gap:9px; padding:8px 14px; min-height:56px;
+    overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; background:rgba(255,255,255,.55);}
+  .fmtbar{display:none; align-items:center; gap:8px; flex:none;}
+  .ctxhint{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); font-weight:600; white-space:nowrap;}
+
+  /* ===== page tabs ===== */
+  .tabs{display:flex; gap:5px; align-items:center;}
+  .tab{flex:none; cursor:pointer; padding:6px 12px; border-radius:9px; background:#fff; border:1px solid var(--paper-edge);
+    font-weight:700; font-size:12.5px; white-space:nowrap; transition:.13s;}
+  .tab:hover{border-color:var(--lav);}
+  .tab.active{background:var(--lav-deep); border-color:var(--lav-deep); color:#fff;}
+  .tab.add{color:var(--lav-deep); border:1px dashed var(--lilac); background:transparent; font-size:15px; padding:4px 11px;}
+  .tab .x{margin-left:7px; opacity:.6;}
+  .tab.active .x{color:#fff;}
+
+  .cover-row{display:flex; align-items:center; gap:8px;}
+  .cover-prev{width:38px;height:30px;border-radius:7px;border:1px solid var(--paper-edge);background:var(--soft);
+    display:flex;align-items:center;justify-content:center;color:var(--lilac);font-size:15px;overflow:hidden;flex:none;}
+
+  /* ===== canvas ===== */
+  .stage{flex:1; overflow:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y;
+    display:flex; align-items:flex-start; justify-content:center; padding:22px 30px 90px;}
+  .stage-inner{margin:0 auto; position:relative;}
+  /* the editor lets items sit outside the page (Word-style) instead of clipping them */
+  #page{overflow:visible;}
+
+  /* ===== selection frame + 8 resize handles ===== */
   .el{touch-action:none;}
-  .el .ctrl{position:absolute; top:-13px; right:-13px; display:none; gap:4px; z-index:60;}
+  .el.selected{outline:1.5px solid var(--lav); outline-offset:3px; z-index:50; border-radius:4px;}
+  .el-text{cursor:move;}
+  .el-text:not(.editing) .text-body{user-select:none; cursor:move;}
+  .el-text.editing{cursor:auto;}
+  .el-text.editing .text-body{user-select:text; cursor:text;}
+  .el-text.editing.selected{outline:1.5px dashed var(--lav-deep); outline-offset:3px;}
+  .el-photo .cap, .el-video .cap{user-select:none;}
+  .el-photo.editing .cap, .el-video.editing .cap{user-select:text; cursor:text;}
+
+  .hnd{position:absolute; display:none; z-index:62; width:11px; height:11px; background:#fff;
+    border:1.5px solid var(--lav-deep); border-radius:3px; box-shadow:0 1px 3px var(--shadow); touch-action:none;}
+  .el.selected .hnd{display:block;}
+  .hnd:hover{background:var(--lav-deep);}
+  .hnd.nw{left:-9px; top:-9px; cursor:nwse-resize;}
+  .hnd.n {left:50%; top:-9px; margin-left:-5.5px; cursor:ns-resize;}
+  .hnd.ne{right:-9px; top:-9px; cursor:nesw-resize;}
+  .hnd.e {right:-9px; top:50%; margin-top:-5.5px; cursor:ew-resize;}
+  .hnd.se{right:-9px; bottom:-9px; cursor:nwse-resize;}
+  .hnd.s {left:50%; bottom:-9px; margin-left:-5.5px; cursor:ns-resize;}
+  .hnd.sw{left:-9px; bottom:-9px; cursor:nesw-resize;}
+  .hnd.w {left:-9px; top:50%; margin-top:-5.5px; cursor:ew-resize;}
+
+  .el .ctrl{position:absolute; top:-15px; right:-15px; display:none; gap:4px; z-index:63;}
   .el.selected .ctrl{display:flex;}
   .ctrl .dot{width:25px;height:25px;border-radius:50%; background:#fff; border:1px solid var(--paper-edge);
     display:flex;align-items:center;justify-content:center; cursor:pointer; font-size:13px; color:var(--ink); box-shadow:0 2px 6px var(--shadow);}
+  .ctrl .dot:hover{background:var(--blush); border-color:var(--lav);}
   .ctrl .dot.del{color:#c2607f;}
-  .grip{position:absolute; top:-13px; left:-13px; width:25px;height:25px;border-radius:50%; background:var(--lav); color:#fff;
-    display:none; align-items:center;justify-content:center; cursor:grab; font-size:12px; box-shadow:0 2px 6px var(--shadow); z-index:60; touch-action:none;}
-  .el.selected .grip{display:flex;}
-  .resize{position:absolute; bottom:-11px; right:-11px; width:23px;height:23px;border-radius:50%; background:var(--lav-deep); color:#fff;
-    display:none; align-items:center;justify-content:center; cursor:nwse-resize; font-size:11px; box-shadow:0 2px 6px var(--shadow); z-index:60; touch-action:none;}
-  .el.selected .resize{display:flex;}
   .el-text .text-body:empty:before{content:'Write here...'; color:var(--ink-soft);}
-  .el-photo .cap:empty:before{content:'caption'; color:#aeb8cf;}
+  .el-photo .cap:empty:before, .el-video .cap:empty:before{content:'caption'; color:#aeb8cf;}
 
-  .paper-toggle{display:flex; gap:4px; align-items:center;}
-  .paper-toggle .pt{width:24px;height:24px;border-radius:7px;cursor:pointer;border:1px solid var(--paper-edge); background:#fff;}
-  .paper-toggle .pt.sel{outline:2px solid var(--lav); outline-offset:1px;}
+  /* alignment guides shown while dragging */
+  .guide{position:absolute; display:none; background:var(--lav-deep); z-index:70; pointer-events:none; opacity:.75;}
+  .guide.v{top:0; bottom:0; width:1px;}
+  .guide.h{left:0; right:0; height:1px;}
 
-  .toolbar{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); display:flex; gap:6px; padding:8px;
-    background:#fff; border-radius:999px; box-shadow:0 12px 32px var(--shadow); border:1px solid var(--paper-edge); z-index:200; max-width:94vw; flex-wrap:wrap; justify-content:center;}
-  .tool{border:none; background:transparent; cursor:pointer; font-family:var(--body); font-weight:700; font-size:13px; color:var(--ink);
-    padding:9px 14px; border-radius:999px; display:flex; align-items:center; gap:6px;}
-  .tool:hover{background:var(--soft);}
-  .tool:disabled{opacity:.34; cursor:default; background:transparent;}
-  .toolsep{width:1px; align-self:stretch; background:var(--paper-edge); margin:3px 4px;}
-  .tool .ic{font-size:17px;}
-
+  /* ===== modals + sheets ===== */
   .mask{position:fixed; inset:0; background:rgba(52,64,90,.34); z-index:300; display:none; align-items:center; justify-content:center; padding:18px;}
   .mask.open{display:flex;}
   .modal{background:var(--paper); width:min(460px,100%); max-height:84vh; overflow:auto; border-radius:18px; padding:22px; box-shadow:0 20px 50px var(--shadow);}
@@ -131,8 +161,17 @@
   .washigrid button:hover{transform:translateY(-1px);}
   @media(max-width:600px){ .washigrid{gap:5px;} }
 
-  .fmtbar .fbl{font-size:10px; font-weight:800; color:var(--ink-soft); letter-spacing:.7px; text-transform:uppercase; margin-right:2px;}
-  /* background picker */
+  /* ===== video ===== */
+  .vidkind{font-size:12px; font-weight:700; margin-top:8px; min-height:16px; color:var(--ink-soft);}
+  .vidkind.ok{color:var(--lav-deep);}
+  .vidkind.bad{color:#c2607f;}
+  .vidprev{flex:1; min-width:140px; font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:9px;}
+  .vidprev img{width:72px; height:48px; object-fit:cover; border-radius:8px; border:1px solid var(--paper-edge);}
+  .vkind{font-size:10px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--ink-soft);}
+  /* the editor never loads a player: it shows the same poster the PDF will get */
+  .el-video .vwrap{cursor:move;}
+
+  /* ===== background picker ===== */
   .bggrid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:4px;}
   .bgitem{border:none; background:transparent; cursor:pointer; padding:0; display:flex; flex-direction:column; align-items:center; gap:5px;}
   .bgsw{width:100%; aspect-ratio:3/4; border-radius:11px; background-size:cover; background-position:center top;
@@ -145,22 +184,22 @@
   .bgsw.bg-plain{background-image:none;}
   @media(max-width:600px){ .bggrid{grid-template-columns:repeat(3,1fr); gap:10px;} }
 
-  /* crop */
+  /* ===== crop ===== */
   #cropArea{position:relative; touch-action:none; user-select:none; margin:0 auto; max-width:100%; line-height:0;}
   #cropImg{display:block; width:100%; pointer-events:none; border-radius:6px;}
   #cropBox{position:absolute; border:2px solid #fff; box-shadow:0 0 0 9999px rgba(52,64,90,.5); cursor:move; touch-action:none;}
   #cropHandle{position:absolute; right:-10px; bottom:-10px; width:22px;height:22px;border-radius:50%;background:var(--lav-deep);border:2px solid #fff; cursor:nwse-resize; touch-action:none;}
 
-  /* smooth rotate handle + degree bubble */
-  .roth{position:absolute; left:50%; bottom:-34px; transform:translateX(-50%); width:26px;height:26px;border-radius:50%;
+  /* ===== rotate handle + degree bubble ===== */
+  .roth{position:absolute; left:50%; bottom:-36px; transform:translateX(-50%); width:26px;height:26px;border-radius:50%;
     background:var(--lav); color:#fff; display:none; align-items:center;justify-content:center; cursor:grab; font-size:14px;
-    box-shadow:0 2px 6px var(--shadow); z-index:60; touch-action:none;}
-  .roth:before{content:""; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:2px;height:12px; background:var(--lav); opacity:.55;}
+    box-shadow:0 2px 6px var(--shadow); z-index:63; touch-action:none;}
+  .roth:before{content:""; position:absolute; top:-13px; left:50%; transform:translateX(-50%); width:2px;height:13px; background:var(--lav); opacity:.55;}
   .el.selected .roth{display:flex;}
   .rotbubble{position:fixed; display:none; transform:translateX(-50%); background:var(--ink); color:#fff; font-size:12px; font-weight:700;
     padding:3px 8px; border-radius:999px; z-index:400; pointer-events:none; box-shadow:0 4px 12px var(--shadow);}
 
-  /* doodle / arrow / line picker */
+  /* ===== doodle picker ===== */
   .doodlecolors{display:flex; gap:8px; flex-wrap:wrap; margin:2px 0 10px;}
   .dcolor{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid #fff; box-shadow:0 0 0 1px var(--paper-edge); padding:0;}
   .dcolor.sel{outline:2px solid var(--lav-deep); outline-offset:2px;}
@@ -174,183 +213,244 @@
   .toast{position:fixed; left:50%; top:14px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px;
     font-size:13px; font-weight:600; z-index:400; box-shadow:0 8px 24px var(--shadow); opacity:0; transition:.25s; pointer-events:none; max-width:90vw; text-align:center;}
   .toast.show{opacity:1;}
-  @media(max-width:600px){ .story-title{max-width:34vw;font-size:21px;} .tool span.lbl{display:none;} .tool .ic{font-size:20px;} .actions .btn{padding:7px 9px;} .cover-row .btn{font-size:12px;} }
-  /* hamburger + dropdown (mobile only) */
-  .menuBtn{display:none; width:42px;height:38px;border-radius:10px;border:1px solid var(--paper-edge);background:#fff;color:var(--ink);font-size:19px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 6px var(--shadow);flex:none;}
+
+  /* ===== hamburger + dropdown (mobile only) ===== */
+  .menuBtn{display:none; width:40px;height:34px;border-radius:9px;border:1px solid var(--paper-edge);background:#fff;color:var(--ink);font-size:18px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 6px var(--shadow);flex:none;}
   .menuMask{display:none; position:fixed; inset:0; background:rgba(0,0,0,.18); z-index:240;}
   .menuMask.open{display:block;}
   .menuPanel{display:none;}
+
   @media(max-width:600px){
+    /* every ribbon row stays a single sideways-scrolling strip so it never eats the canvas */
+    .rb-row{padding:6px 9px; gap:7px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+    .rb-ctx{padding:6px 9px; gap:7px; min-height:50px;}
+    .grp{padding:3px 7px; gap:5px; white-space:nowrap;}
+    .grp select{max-width:128px;}
+    .story-title{max-width:38vw; font-size:21px;}
+    .rbtn.wide .lbl{display:none;}
+    .rbtn.wide{width:32px; padding:0;}
+    .hnd{width:15px; height:15px; border-radius:4px;}
+    .hnd.nw,.hnd.sw{left:-11px;} .hnd.ne,.hnd.se{right:-11px;}
+    .hnd.nw,.hnd.n,.hnd.ne{top:-11px;} .hnd.sw,.hnd.s,.hnd.se{bottom:-11px;}
+    .hnd.n,.hnd.s{margin-left:-7.5px;} .hnd.e,.hnd.w{margin-top:-7.5px;}
+    .stage{padding:12px 10px 80px;}
     .menuBtn{display:inline-flex;}
-    .menuPanel{ position:fixed; top:56px; right:10px; left:10px; z-index:250; display:none;
+    .menuPanel{ position:fixed; top:52px; right:10px; left:10px; z-index:250; display:none;
       flex-direction:column; align-items:stretch; gap:8px; padding:12px;
       background:var(--paper); border:1px solid var(--paper-edge); border-radius:16px;
-      box-shadow:0 18px 44px var(--shadow); max-height:calc(100vh - 76px); overflow:auto; }
+      box-shadow:0 18px 44px var(--shadow); max-height:calc(100vh - 72px); overflow:auto; }
     .menuPanel.open{ display:flex; }
     .menuPanel .actions{ display:flex; flex-direction:column; align-items:stretch; gap:8px; }
     .menuPanel .actions .btn{ width:100%; justify-content:flex-start; font-size:15px; padding:11px 14px; }
-    .menuPanel .cover-row{ display:flex; padding:4px 0 0; border-top:1px solid var(--paper-edge); margin-top:2px; padding-top:10px; }
-    .menuPanel .cover-row .btn{ font-size:14px; }
-    /* hide the editing hint on phones (saves vertical space) */
-    .hint{ display:none; }
-    /* keep the bottom toolbar on a SINGLE row: no wrap, tighter padding/gap so Undo/Redo fit */
-    .toolbar{ flex-wrap:nowrap; gap:3px; padding:6px; max-width:96vw; }
-    .toolbar .tool{ padding:8px 9px; }
-    .toolbar .toolsep{ margin:3px 2px; }
+    .menuPanel .cover-row{ display:flex; padding-top:10px; border-top:1px solid var(--paper-edge); }
   }
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="topbar">
-    <div class="mark">✿</div>
-    <input class="story-title" id="storyTitle" placeholder="Story title" maxlength="60">
-    <input type="date" class="sdate" id="storyDate">
-    <div class="spacer"></div>
-    <button class="menuBtn" id="menuBtn" title="Menu" aria-label="Menu">☰</button>
-    <div class="actions">
-      <button class="btn ghost" id="bgBtn" title="Page background for this page">🎨 Background</button>
-      <button class="btn ghost" id="newBtn">✦ New</button>
-      <button class="btn ghost" id="importBtn">⇪ Import JSON</button>
-      <input type="file" id="importFile" accept=".json,application/json" hidden>
-      <button class="btn ghost" id="saveDraftBtn" title="Download this story as a JSON draft you can re-import later">💾 Save draft</button>
-      <button class="btn ghost" id="openBtn">📂 Open</button>
-      <button class="btn ghost" id="settingsBtn">⚙</button>
-      <button class="btn primary" id="publishBtn">▲ Publish</button>
+  <div class="ribbon">
+
+    <div class="rb-row">
+      <div class="mark">✿</div>
+      <input class="story-title" id="storyTitle" placeholder="Story title" maxlength="60">
+      <input type="date" class="sdate" id="storyDate">
+      <div class="spacer"></div>
+      <button class="menuBtn" id="menuBtn" title="Menu" aria-label="Menu">☰</button>
+      <div class="actions">
+        <button class="btn ghost" id="bgBtn" title="Page background for this page">🎨 Background</button>
+        <button class="btn ghost" id="newBtn">✦ New</button>
+        <button class="btn ghost" id="importBtn">⇪ Import JSON</button>
+        <input type="file" id="importFile" accept=".json,application/json" hidden>
+        <button class="btn ghost" id="saveDraftBtn" title="Download this story as a JSON draft you can re-import later">💾 Save draft</button>
+        <button class="btn ghost" id="openBtn">📂 Open</button>
+        <button class="btn ghost" id="settingsBtn">⚙</button>
+        <button class="btn primary" id="publishBtn">▲ Publish</button>
+      </div>
     </div>
+
+    <div class="rb-row">
+      <span class="grp"><span class="lbl">Insert</span>
+        <button class="rbtn wide" id="addText" title="Add a text box (T)"><span class="ic">✎</span><span class="lbl2">Text</span></button>
+        <button class="rbtn wide" id="addPhoto" title="Add a photo"><span class="ic">🖼</span><span class="lbl2">Photo</span></button>
+        <button class="rbtn wide" id="addVideo" title="Add a video by link, with your own thumbnail"><span class="ic">▶</span><span class="lbl2">Video</span></button>
+        <button class="rbtn wide" id="addSticker" title="Doodles, washi tape and image stickers"><span class="ic">✦</span><span class="lbl2">Doodles</span></button>
+        <input type="file" id="photoFile" accept="image/*" hidden>
+      </span>
+      <span class="grp"><span class="lbl">Edit</span>
+        <button class="rbtn" id="undoBtn" title="Undo (Ctrl+Z)" disabled>↶</button>
+        <button class="rbtn" id="redoBtn" title="Redo (Ctrl+Y)" disabled>↷</button>
+        <button class="rbtn" id="dupBtn" title="Duplicate (Ctrl+D)" disabled>⧉</button>
+        <button class="rbtn" id="delBtn" title="Delete (Del)" disabled>🗑</button>
+      </span>
+      <span class="grp"><span class="lbl">Arrange</span>
+        <button class="rbtn" id="backBtn" title="Send behind everything" disabled>⤓</button>
+        <button class="rbtn" id="frontBtn" title="Bring to the front" disabled>⤒</button>
+        <button class="rbtn" id="centerXBtn" title="Centre on the page horizontally" disabled>⇹</button>
+      </span>
+      <span class="grp"><span class="lbl">Pages</span>
+        <span class="tabs" id="tabs"></span>
+      </span>
+      <div class="spacer"></div>
+      <div class="cover-row">
+        <div class="cover-prev" id="coverPrev">✿</div>
+        <button class="btn ghost" id="coverBtn">Set cover photo</button>
+        <input type="file" id="coverFile" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <div class="rb-ctx" id="rbctx">
+      <span class="ctxhint" id="ctxhint">Nothing selected — click an item to format it, or double-click a text box to type.</span>
+
+      <div class="fmtbar" id="fmtbar">
+        <span class="grp"><span class="lbl">Font</span>
+          <select id="fFont" title="Font"></select>
+          <button class="rbtn" id="szMinus" title="Smaller">A−</button><span class="stepval" id="szVal">20</span><button class="rbtn" id="szPlus" title="Bigger">A+</button>
+        </span>
+        <span class="grp"><span class="lbl">Style</span>
+          <button class="rbtn" id="fBold" title="Bold (whole box, or just the selected words)"><b>B</b></button>
+          <button class="rbtn" id="fItalic" title="Italic (whole box, or just the selected words)"><i>I</i></button>
+          <button class="rbtn" id="fUnder" title="Underline (whole box, or just the selected words)"><u>U</u></button>
+          <button class="rbtn" id="fStrike" title="Strikethrough the selected words"><s>S</s></button>
+          <button class="rbtn" id="fClear" title="Clear inline formatting">⌫</button>
+        </span>
+        <span class="grp"><span class="lbl">Lists</span>
+          <button class="rbtn" id="fUl" title="Bulleted list"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="2.6" cy="4" r="1.3" fill="currentColor"/><circle cx="2.6" cy="8" r="1.3" fill="currentColor"/><circle cx="2.6" cy="12" r="1.3" fill="currentColor"/><path d="M6 4h8M6 8h8M6 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <button class="rbtn" id="fOl" title="Numbered list"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><text x="0" y="5.6" font-size="5.4" font-weight="700" fill="currentColor">1</text><text x="0" y="10" font-size="5.4" font-weight="700" fill="currentColor">2</text><text x="0" y="14.4" font-size="5.4" font-weight="700" fill="currentColor">3</text><path d="M6 4h8M6 8.4h8M6 12.8h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </span>
+        <span class="grp"><span class="lbl">Align</span>
+          <button class="rbtn" id="alL" title="Align left"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.4h8M2 9.8h12M2 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+          <button class="rbtn" id="alC" title="Align centre"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M4 6.4h8M2 9.8h12M4 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+          <button class="rbtn" id="alR" title="Align right"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M6 6.4h8M2 9.8h12M6 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+          <button class="rbtn" id="alJ" title="Justify"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.4h12M2 9.8h12M2 13.2h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </span>
+        <span class="grp"><span class="lbl">Spacing</span>
+          <button class="rbtn" id="lsMinus" title="Tighter paragraph / line spacing">−</button><span class="stepval" id="lsVal">1.45</span><button class="rbtn" id="lsPlus" title="Looser paragraph / line spacing">+</button>
+        </span>
+        <span class="grp"><span class="lbl">Text</span>
+          <span class="sw" data-c="#4b4361" style="background:#4b4361"></span>
+          <span class="sw" data-c="#8f78cc" style="background:#8f78cc"></span>
+          <span class="sw" data-c="#c8697d" style="background:#c8697d"></span>
+          <span class="sw" data-c="#6c91c2" style="background:#6c91c2"></span>
+          <span class="sw" data-c="#5a9e86" style="background:#5a9e86"></span>
+          <input type="color" id="fColor" value="#4b4361" title="Custom text colour">
+        </span>
+        <span class="grp"><span class="lbl">Fill</span>
+          <button class="rbtn" id="fFillClear" title="No fill">⌀</button>
+          <span class="sw" data-fill="#fff3c4" style="background:#fff3c4"></span>
+          <span class="sw" data-fill="#ffd9e6" style="background:#ffd9e6"></span>
+          <span class="sw" data-fill="#e3d9ff" style="background:#e3d9ff"></span>
+          <span class="sw" data-fill="#d6ecff" style="background:#d6ecff"></span>
+          <span class="sw" data-fill="#d9f2e4" style="background:#d9f2e4"></span>
+          <input type="color" id="fFillColor" value="#fff3c4" title="Custom fill colour">
+        </span>
+        <span class="grp"><span class="lbl">Box</span>
+          <button class="rbtn" id="fFit" title="Shrink the box back to fit its text">⤡</button>
+        </span>
+      </div>
+
+      <div class="fmtbar" id="doodlebar">
+        <span class="grp"><span class="lbl">Colour</span>
+          <span class="sw" data-dc="#4b4361" style="background:#4b4361"></span>
+          <span class="sw" data-dc="#8f78cc" style="background:#8f78cc"></span>
+          <span class="sw" data-dc="#c8697d" style="background:#c8697d"></span>
+          <span class="sw" data-dc="#6c91c2" style="background:#6c91c2"></span>
+          <span class="sw" data-dc="#5a9e86" style="background:#5a9e86"></span>
+          <span class="sw" data-dc="#d59a55" style="background:#d59a55"></span>
+          <input type="color" id="dColor" value="#4b4361" title="Custom doodle colour">
+        </span>
+        <span class="grp"><span class="lbl">Weight</span>
+          <button class="rbtn" id="dwMinus" title="Thinner">−</button><span class="stepval" id="dwVal">6</span><button class="rbtn" id="dwPlus" title="Thicker">+</button>
+        </span>
+      </div>
+
+      <div class="fmtbar" id="photobar">
+        <span class="grp"><span class="lbl">Photo</span>
+          <button class="rbtn wide" data-pstyle="plain" title="Plain image (keeps PNG transparency)">Plain</button>
+          <button class="rbtn wide" data-pstyle="border" title="Thin border">Border</button>
+          <button class="rbtn wide" data-pstyle="frame" title="Framed photo (pick a colour; white = a classic photo card)">Frame</button>
+        </span>
+        <span class="grp"><span class="lbl">Frame</span>
+          <span class="sw" data-pc="#ffffff" style="background:#ffffff"></span>
+          <span class="sw" data-pc="#efe9fb" style="background:#efe9fb"></span>
+          <span class="sw" data-pc="#f1e2f0" style="background:#f1e2f0"></span>
+          <span class="sw" data-pc="#cfe7dc" style="background:#cfe7dc"></span>
+          <span class="sw" data-pc="#fbf6e6" style="background:#fbf6e6"></span>
+          <input type="color" id="pColor" value="#ffffff" title="Custom frame colour">
+        </span>
+        <span class="grp"><span class="lbl">Corners</span>
+          <button class="rbtn" id="prMinus" title="Squarer corners (0 = fully square)">−</button><span class="stepval" id="prVal">3</span><button class="rbtn" id="prPlus" title="Rounder corners">+</button>
+        </span>
+        <span class="grp">
+          <button class="rbtn wide" id="pCap" title="Show / hide caption">Caption</button>
+          <button class="rbtn wide" id="pShadow" title="Drop shadow (works on any look)">Shadow</button>
+        </span>
+      </div>
+
+      <div class="fmtbar" id="videobar">
+        <span class="grp"><span class="lbl">Video</span>
+          <button class="rbtn wide" id="vEdit" title="Change the link or the thumbnail">Link &amp; thumbnail</button>
+        </span>
+        <span class="grp"><span class="lbl">Look</span>
+          <button class="rbtn wide" data-vstyle="plain" title="Just the video">Plain</button>
+          <button class="rbtn wide" data-vstyle="card" title="White photo-card with the caption underneath">Card</button>
+        </span>
+        <span class="grp"><span class="lbl">Card</span>
+          <span class="sw" data-vc="#fffdfb" style="background:#fffdfb"></span>
+          <span class="sw" data-vc="#efe9fb" style="background:#efe9fb"></span>
+          <span class="sw" data-vc="#f1e2f0" style="background:#f1e2f0"></span>
+          <span class="sw" data-vc="#cfe7dc" style="background:#cfe7dc"></span>
+          <span class="sw" data-vc="#fbf6e6" style="background:#fbf6e6"></span>
+          <input type="color" id="vColor" value="#fffdfb" title="Custom card colour">
+        </span>
+        <span class="grp"><span class="lbl">Corners</span>
+          <button class="rbtn" id="vrMinus" title="Squarer corners">−</button><span class="stepval" id="vrVal">8</span><button class="rbtn" id="vrPlus" title="Rounder corners">+</button>
+        </span>
+        <span class="grp">
+          <button class="rbtn wide" id="vCap" title="Show / hide caption">Caption</button>
+          <button class="rbtn wide" id="vShadow" title="Drop shadow">Shadow</button>
+        </span>
+      </div>
+
+      <div class="fmtbar" id="capbar">
+        <span class="grp"><span class="lbl">Caption</span>
+          <select id="capFont" title="Caption font"></select>
+          <button class="rbtn" id="capSzMinus" title="Smaller">A−</button><span class="stepval" id="capSzVal">18</span><button class="rbtn" id="capSzPlus" title="Bigger">A+</button>
+        </span>
+        <span class="grp"><span class="lbl">Colour</span>
+          <span class="sw" data-cc="#4b4361" style="background:#4b4361"></span>
+          <span class="sw" data-cc="#8f78cc" style="background:#8f78cc"></span>
+          <span class="sw" data-cc="#c8697d" style="background:#c8697d"></span>
+          <span class="sw" data-cc="#6c91c2" style="background:#6c91c2"></span>
+          <span class="sw" data-cc="#5a9e86" style="background:#5a9e86"></span>
+          <input type="color" id="capColor" value="#4b4361" title="Custom caption colour">
+        </span>
+      </div>
+
+      <div class="fmtbar" id="borderbar">
+        <span class="grp"><span class="lbl">Border</span>
+          <span class="sw" data-bc="#ffffff" style="background:#ffffff"></span>
+          <span class="sw" data-bc="#544b6b" style="background:#544b6b"></span>
+          <span class="sw" data-bc="#c8697d" style="background:#c8697d"></span>
+          <span class="sw" data-bc="#6c91c2" style="background:#6c91c2"></span>
+          <span class="sw" data-bc="#5a9e86" style="background:#5a9e86"></span>
+          <span class="sw" data-bc="#d59a55" style="background:#d59a55"></span>
+          <input type="color" id="bColor" value="#ffffff" title="Custom border colour">
+        </span>
+        <span class="grp"><span class="lbl">Width</span>
+          <button class="rbtn" id="bwMinus" title="Thinner">−</button><span class="stepval" id="bwVal">6</span><button class="rbtn" id="bwPlus" title="Thicker">+</button>
+        </span>
+      </div>
+    </div>
+
   </div>
 
   <div class="menuMask" id="menuMask"></div>
   <div class="menuPanel" id="menuPanel"></div>
-  <div class="cover-row">
-    <div class="cover-prev" id="coverPrev">✿</div>
-    <button class="btn ghost" id="coverBtn">Set cover photo (homepage card image)</button>
-    <input type="file" id="coverFile" accept="image/*" hidden>
-  </div>
-
-  <div class="tabs" id="tabs"></div>
-  <div class="hint">Tap an item to move (✥), resize (corner), tilt (⟳ drag, hold Shift to snap), layer it behind (⤓) or in front (⤒), or delete (×). Photos also crop (✂). Add stars, arrows and lines from the Doodles menu, then recolour and set their weight.</div>
-
-  <div class="fmtbar" id="fmtbar">
-    <span class="grp"><span class="fbl">Font</span>
-      <select id="fFont" title="Font"></select>
-      <button class="fb" id="szMinus" title="Smaller">A−</button><span class="szval" id="szVal">20</span><button class="fb" id="szPlus" title="Bigger">A+</button>
-    </span>
-    <span class="grp"><span class="fbl">Style</span>
-      <button class="fb" id="fBold" title="Bold (whole box, or just the selected words)"><b>B</b></button>
-      <button class="fb" id="fItalic" title="Italic (whole box, or just the selected words)"><i>I</i></button>
-      <button class="fb" id="fUnder" title="Underline (whole box, or just the selected words)"><u>U</u></button>
-    </span>
-    <span class="grp"><span class="fbl">Align</span>
-      <button class="fb" id="alL" title="Align left"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.4h8M2 9.8h12M2 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
-      <button class="fb" id="alC" title="Align centre"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M4 6.4h8M2 9.8h12M4 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
-      <button class="fb" id="alR" title="Align right"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M6 6.4h8M2 9.8h12M6 13.2h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
-      <button class="fb" id="alJ" title="Justify"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6.4h12M2 9.8h12M2 13.2h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
-    </span>
-    <span class="grp"><span class="fbl">Spacing</span>
-      <button class="fb" id="lsMinus" title="Tighter paragraph / line spacing">−</button><span class="szval" id="lsVal">1.45</span><button class="fb" id="lsPlus" title="Looser paragraph / line spacing">+</button>
-    </span>
-    <span class="grp"><span class="fbl">Text</span>
-      <span class="sw" data-c="#4b4361" style="background:#4b4361"></span>
-      <span class="sw" data-c="#8f78cc" style="background:#8f78cc"></span>
-      <span class="sw" data-c="#c8697d" style="background:#c8697d"></span>
-      <span class="sw" data-c="#6c91c2" style="background:#6c91c2"></span>
-      <span class="sw" data-c="#5a9e86" style="background:#5a9e86"></span>
-      <input type="color" id="fColor" value="#4b4361" title="Custom text colour">
-    </span>
-    <span class="grp"><span class="fbl">Fill</span>
-      <button class="fb" id="fFillClear" title="No fill">⌀</button>
-      <span class="sw" data-fill="#fff3c4" style="background:#fff3c4"></span>
-      <span class="sw" data-fill="#ffd9e6" style="background:#ffd9e6"></span>
-      <span class="sw" data-fill="#e3d9ff" style="background:#e3d9ff"></span>
-      <span class="sw" data-fill="#d6ecff" style="background:#d6ecff"></span>
-      <span class="sw" data-fill="#d9f2e4" style="background:#d9f2e4"></span>
-      <input type="color" id="fFillColor" value="#fff3c4" title="Custom fill colour">
-    </span>
-  </div>
-
-  <div class="fmtbar" id="doodlebar">
-    <span class="grp"><span class="fbl">Colour</span>
-      <span class="sw" data-dc="#4b4361" style="background:#4b4361"></span>
-      <span class="sw" data-dc="#8f78cc" style="background:#8f78cc"></span>
-      <span class="sw" data-dc="#c8697d" style="background:#c8697d"></span>
-      <span class="sw" data-dc="#6c91c2" style="background:#6c91c2"></span>
-      <span class="sw" data-dc="#5a9e86" style="background:#5a9e86"></span>
-      <span class="sw" data-dc="#d59a55" style="background:#d59a55"></span>
-      <input type="color" id="dColor" value="#4b4361" title="Custom doodle colour">
-    </span>
-    <span class="grp"><span class="fbl">Weight</span>
-      <button class="fb" id="dwMinus" title="Thinner">−</button><span class="szval" id="dwVal">6</span><button class="fb" id="dwPlus" title="Thicker">+</button>
-    </span>
-  </div>
-
-  <div class="fmtbar" id="photobar">
-    <span class="grp"><span class="fbl">Photo</span>
-      <button class="fb" data-pstyle="plain" title="Plain image (keeps PNG transparency)">Plain</button>
-      <button class="fb" data-pstyle="border" title="Thin border">Border</button>
-      <button class="fb" data-pstyle="frame" title="Framed photo (pick a colour; white = a classic photo card)">Frame</button>
-    </span>
-    <span class="grp"><span class="fbl">Frame</span>
-      <span class="sw" data-pc="#ffffff" style="background:#ffffff"></span>
-      <span class="sw" data-pc="#efe9fb" style="background:#efe9fb"></span>
-      <span class="sw" data-pc="#f1e2f0" style="background:#f1e2f0"></span>
-      <span class="sw" data-pc="#cfe7dc" style="background:#cfe7dc"></span>
-      <span class="sw" data-pc="#fbf6e6" style="background:#fbf6e6"></span>
-      <input type="color" id="pColor" value="#ffffff" title="Custom frame colour">
-    </span>
-    <span class="grp"><span class="fbl">Corners</span>
-      <button class="fb" id="prMinus" title="Squarer corners (0 = fully square)">−</button><span class="szval" id="prVal">3</span><button class="fb" id="prPlus" title="Rounder corners">+</button>
-    </span>
-    <span class="grp">
-      <button class="fb" id="pCap" title="Show / hide caption">Caption</button>
-      <button class="fb" id="pShadow" title="Drop shadow (works on any look)">Shadow</button>
-    </span>
-  </div>
-
-  <div class="fmtbar" id="capbar">
-    <span class="grp"><span class="fbl">Caption</span>
-      <select id="capFont" title="Caption font"></select>
-      <button class="fb" id="capSzMinus" title="Smaller">A−</button><span class="szval" id="capSzVal">18</span><button class="fb" id="capSzPlus" title="Bigger">A+</button>
-    </span>
-    <span class="grp"><span class="fbl">Colour</span>
-      <span class="sw" data-cc="#4b4361" style="background:#4b4361"></span>
-      <span class="sw" data-cc="#8f78cc" style="background:#8f78cc"></span>
-      <span class="sw" data-cc="#c8697d" style="background:#c8697d"></span>
-      <span class="sw" data-cc="#6c91c2" style="background:#6c91c2"></span>
-      <span class="sw" data-cc="#5a9e86" style="background:#5a9e86"></span>
-      <input type="color" id="capColor" value="#4b4361" title="Custom caption colour">
-    </span>
-  </div>
-
-  <div class="fmtbar" id="borderbar">
-    <span class="grp"><span class="fbl">Border</span>
-      <span class="sw" data-bc="#ffffff" style="background:#ffffff"></span>
-      <span class="sw" data-bc="#544b6b" style="background:#544b6b"></span>
-      <span class="sw" data-bc="#c8697d" style="background:#c8697d"></span>
-      <span class="sw" data-bc="#6c91c2" style="background:#6c91c2"></span>
-      <span class="sw" data-bc="#5a9e86" style="background:#5a9e86"></span>
-      <span class="sw" data-bc="#d59a55" style="background:#d59a55"></span>
-      <input type="color" id="bColor" value="#ffffff" title="Custom border colour">
-    </span>
-    <span class="grp"><span class="fbl">Width</span>
-      <button class="fb" id="bwMinus" title="Thinner">−</button><span class="szval" id="bwVal">6</span><button class="fb" id="bwPlus" title="Thicker">+</button>
-    </span>
-  </div>
 
   <div class="stage" id="stage">
     <div class="stage-inner">
       <div class="page-scaler" id="scaler"><div class="page grid" id="page"></div></div>
     </div>
-  </div>
-
-  <div class="toolbar">
-    <button class="tool" id="addText"><span class="ic">✎</span><span class="lbl">Text</span></button>
-    <button class="tool" id="addPhoto"><span class="ic">🖼</span><span class="lbl">Photo</span></button>
-    <button class="tool" id="addSticker"><span class="ic">✦</span><span class="lbl">Doodles</span></button>
-    <div class="toolsep"></div>
-    <button class="tool" id="undoBtn" title="Undo (Ctrl+Z)" disabled><span class="ic">↶</span><span class="lbl">Undo</span></button>
-    <button class="tool" id="redoBtn" title="Redo (Ctrl+Y)" disabled><span class="ic">↷</span><span class="lbl">Redo</span></button>
-    <input type="file" id="photoFile" accept="image/*" hidden>
   </div>
 </div>
 
@@ -378,6 +478,22 @@
     <p>Drag the box to choose the area, drag the corner to resize, then Apply.</p>
     <div id="cropArea"><img id="cropImg" alt=""><div id="cropBox"><div id="cropHandle"></div></div></div>
     <div class="row"><button class="btn ghost" id="cropCancel">Cancel</button><button class="btn primary" id="cropApply">Apply</button></div>
+  </div>
+</div>
+
+<div class="mask" id="videoMask">
+  <div class="modal">
+    <h3 id="vidTitle">Add a video</h3>
+    <p>Paste the <b>direct file link</b> to the clip — a Cloudinary upload, or any .mp4 or .webm served over https. It plays in the browser's own player, so the page stays clean with no channel name, branding or share buttons. YouTube and Vimeo links are not accepted, because their embeds bring all of that with them and cannot go into the PDF.</p>
+    <p>Then choose a thumbnail. Only the thumbnail is saved into the story, so the file stays small however long the video is.</p>
+    <input type="text" id="vidUrl" placeholder="https://res.cloudinary.com/your-cloud/video/upload/clip.mp4" autocomplete="off" spellcheck="false">
+    <div class="vidkind" id="vidKind"></div>
+    <div class="customrow" style="margin-top:14px;">
+      <button class="btn ghost" id="vidThumbBtn">🖼 Choose thumbnail</button>
+      <input type="file" id="vidThumbFile" accept="image/*" hidden>
+      <div class="vidprev" id="vidPrev">no thumbnail chosen</div>
+    </div>
+    <div class="row"><button class="btn ghost" id="vidCancel">Cancel</button><button class="btn primary" id="vidSave">Add video</button></div>
   </div>
 </div>
 
@@ -430,6 +546,7 @@ if(typeof story.current!=='number') story.current=0;
 /* origId = the filename id this session is bound to in GitHub (null until first publish) */
 if(story.origId===undefined) story.origId = (story._loaded && story.id) ? story.id : null;
 let selNode=null, selData=null, zTop=10, scale=1;
+let guideV=null, guideH=null;
 
 const stage=document.getElementById('stage'), page=document.getElementById('page'), scaler=document.getElementById('scaler');
 const stageInner=document.querySelector('.stage-inner');
@@ -502,20 +619,102 @@ function showFmt(){ fmtbar.style.display='flex';
   document.getElementById('fUnder').classList.toggle('active', !!selData.underline);
   setAlign(selData.align||'left'); document.getElementById('fColor').value=toHex(selData.color||'#4b4361');
   document.getElementById('lsVal').textContent=(selData.spacing||1.45);
-  document.getElementById('fFillColor').value=toHex(selData.fill||'#fff3c4'); fitScale(); }
-function hideFmt(){ fmtbar.style.display='none'; fitScale(); }
+  document.getElementById('fFit').classList.toggle('active', !!selData.h);
+  document.getElementById('fFillColor').value=toHex(selData.fill||'#fff3c4'); }
+function hideFmt(){ fmtbar.style.display='none'; }
 function applyToSel(){ if(!selNode||!selData||selData.type!=='text') return; J.applyTextStyle(selNode.querySelector('.text-body'), selData); saveDraft(); }
 
-function selectionInsideBody(body){ const s=window.getSelection(); if(!s||s.rangeCount===0||s.isCollapsed) return false;
-  let n=s.anchorNode; while(n){ if(n===body) return true; n=n.parentNode; } return false; }
+/* Clicking a ribbon control can blur the box and lose the highlight, so the last real
+   selection made inside a text body is remembered and restored just before a command runs.
+   Without this, "change only these words" silently becomes "change the whole box". */
+let savedRange=null;
+document.addEventListener('selectionchange',()=>{
+  if(!selNode) return;
+  const body=selNode.querySelector('.text-body'); if(!body) return;
+  const sel=window.getSelection(); if(!sel||sel.rangeCount===0||sel.isCollapsed) return;
+  const r=sel.getRangeAt(0);
+  if(body.contains(r.commonAncestorContainer)) savedRange=r.cloneRange();
+});
+function activeRangeIn(body){
+  const sel=window.getSelection();
+  if(sel && sel.rangeCount && !sel.isCollapsed){
+    const r=sel.getRangeAt(0);
+    if(body.contains(r.commonAncestorContainer)) return r;
+  }
+  if(savedRange && body.contains(savedRange.commonAncestorContainer)) return savedRange;
+  return null;
+}
+function useRange(body, r){ body.focus(); const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r); return sel; }
+function selectionInsideBody(body){ return !!activeRangeIn(body); }
+function unwrapNode(n){ const p=n.parentNode; while(n.firstChild) p.insertBefore(n.firstChild,n); p.removeChild(n); }
+
+/* Wrap just the highlighted words in a <span> carrying one property. Returns false when
+   there is no selection, which is the signal to fall back to styling the whole box. */
+function styleSelection(prop, value){
+  if(!selNode||!selData||selData.type!=='text') return false;
+  const body=selNode.querySelector('.text-body'); if(!body) return false;
+  if(!isEditing(selNode)) return false;          // whole-box styling until you are typing
+  const r=activeRangeIn(body); if(!r) return false;
+  useRange(body, r);
+  /* If the selection already lines up exactly with a span, restyle THAT span instead of
+     wrapping another one around it. Without this, nudging a colour or size repeatedly
+     nests a new span every time and the markup grows without bound. */
+  let span=null;
+  const startEl = r.startContainer.nodeType===3 ? r.startContainer.parentNode : r.startContainer;
+  if(startEl && startEl!==body && startEl.nodeName==='SPAN' && body.contains(startEl)){
+    const whole=document.createRange(); whole.selectNodeContents(startEl);
+    if(whole.compareBoundaryPoints(Range.START_TO_START, r)===0 &&
+       whole.compareBoundaryPoints(Range.END_TO_END, r)===0) span=startEl;
+  }
+  if(span){ span.style[prop]=value; }
+  else {
+    span=document.createElement('span'); span.style[prop]=value;
+    try{ r.surroundContents(span); }
+    catch(e){ // the selection crosses element boundaries, so lift it out and rewrap
+      const frag=r.extractContents(); span.appendChild(frag); r.insertNode(span); }
+  }
+  // clear the same property from anything nested inside, so the new value actually wins
+  span.querySelectorAll('span').forEach(n=>{ n.style[prop]=''; if(!n.getAttribute('style')) unwrapNode(n); });
+  // keep the same words highlighted so several properties can be applied in a row
+  const rr=document.createRange(); rr.selectNodeContents(span);
+  const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(rr); savedRange=rr.cloneRange();
+  syncRichFromBody(body,selData); saveDraft();
+  return true;
+}
+function selectionFontSize(body, r){
+  let n=r.startContainer; if(n.nodeType===3) n=n.parentNode;
+  if(!body.contains(n)) n=body;
+  return Math.round(parseFloat(getComputedStyle(n).fontSize)||(selData.size||20));
+}
 function syncRichFromBody(body,d){ d.html=J.sanitizeRich(body.innerHTML); d.content=body.innerText; if(!J.hasRich(d)) d.html=''; }
 function inlineOrBlock(cmd){ if(!selData||selData.type!=='text') return false;
   const body=selNode && selNode.querySelector('.text-body'); if(!body) return false;
-  if(selectionInsideBody(body)){ body.focus(); document.execCommand(cmd,false,null); syncRichFromBody(body,selData); saveDraft(); return true; }
-  return false; }
-document.getElementById('fFont').onchange=function(){ this.style.fontFamily=(J.FONTS[this.value]||J.FONTS.gaegu).css; if(selData){ selData.font=this.value; applyToSel(); } };
-document.getElementById('szMinus').onclick=()=>{ if(!selData) return; selData.size=Math.max(12,(selData.size||20)-2); document.getElementById('szVal').textContent=selData.size; applyToSel(); };
-document.getElementById('szPlus').onclick=()=>{ if(!selData) return; selData.size=Math.min(80,(selData.size||20)+2); document.getElementById('szVal').textContent=selData.size; applyToSel(); };
+  const r=activeRangeIn(body); if(!r) return false;
+  useRange(body, r);
+  document.execCommand(cmd,false,null);
+  syncRichFromBody(body,selData); saveDraft(); return true; }
+document.getElementById('fFont').onchange=function(){
+  const css=(J.FONTS[this.value]||J.FONTS.gaegu).css;
+  this.style.fontFamily=css;
+  if(!selData) return;
+  if(styleSelection('fontFamily', css)) return;   // only the highlighted words
+  selData.font=this.value; applyToSel();          // otherwise the whole box
+};
+function stepFontSize(delta){
+  if(!selData||selData.type!=='text') return;
+  const body=selNode && selNode.querySelector('.text-body');
+  if(body && isEditing(selNode)){
+    const r=activeRangeIn(body);
+    if(r){
+      const next=Math.max(8, Math.min(140, selectionFontSize(body,r)+delta));
+      if(styleSelection('fontSize', next+'px')){ document.getElementById('szVal').textContent=next; return; }
+    }
+  }
+  selData.size=Math.max(12, Math.min(80,(selData.size||20)+delta));
+  document.getElementById('szVal').textContent=selData.size; applyToSel();
+}
+document.getElementById('szMinus').onclick=()=>stepFontSize(-2);
+document.getElementById('szPlus').onclick=()=>stepFontSize(2);
 document.getElementById('fBold').onclick=function(){ if(!selData) return; if(inlineOrBlock('bold')) return; selData.bold=!selData.bold; this.classList.toggle('active',selData.bold); applyToSel(); };
 document.getElementById('fItalic').onclick=function(){ if(!selData) return; if(inlineOrBlock('italic')) return; selData.italic=!selData.italic; this.classList.toggle('active',selData.italic); applyToSel(); };
 document.getElementById('fUnder').onclick=function(){ if(!selData) return; if(inlineOrBlock('underline')) return; selData.underline=!selData.underline; this.classList.toggle('active',selData.underline); applyToSel(); };
@@ -528,17 +727,57 @@ function setSpacing(n){ if(!selData||selData.type!=='text') return; selData.spac
   document.getElementById('lsVal').textContent=selData.spacing; applyToSel(); }
 document.getElementById('lsMinus').onclick=()=>setSpacing((selData&&selData.spacing?selData.spacing:1.45)-0.05);
 document.getElementById('lsPlus').onclick=()=>setSpacing((selData&&selData.spacing?selData.spacing:1.45)+0.05);
-document.querySelectorAll('.fmtbar .sw[data-c]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.color=sw.dataset.c; document.getElementById('fColor').value=toHex(sw.dataset.c); applyToSel(); }; });
-document.getElementById('fColor').oninput=function(){ if(!selData) return; selData.color=this.value; applyToSel(); };
+function setTextColour(c){
+  if(!selData) return;
+  document.getElementById('fColor').value=toHex(c);
+  if(styleSelection('color', c)) return;
+  selData.color=c; applyToSel();
+}
+document.querySelectorAll('.fmtbar .sw[data-c]').forEach(sw=>{ sw.onclick=()=>setTextColour(sw.dataset.c); });
+document.getElementById('fColor').oninput=function(){ setTextColour(this.value); };
 document.querySelectorAll('.fmtbar .sw[data-fill]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.fill=sw.dataset.fill; document.getElementById('fFillColor').value=toHex(sw.dataset.fill); applyToSel(); }; });
 document.getElementById('fFillColor').oninput=function(){ if(!selData) return; selData.fill=this.value; applyToSel(); };
 document.getElementById('fFillClear').onclick=()=>{ if(!selData) return; selData.fill=''; applyToSel(); };
 
+/* Strikethrough, lists and clear run through execCommand like B / I / U above.
+   With nothing selected inside the box they apply to the whole box. */
+function execRich(cmd){
+  if(!selNode||!selData||selData.type!=='text') return;
+  const b=selNode.querySelector('.text-body'); if(!b) return;
+  if(!isEditing(selNode)) enterEdit(selNode,b);
+  b.focus();
+  if(!selectionInsideBody(b)) selectAllIn(b);
+  document.execCommand(cmd,false,null);
+  syncRichFromBody(b,selData); saveDraft();
+}
+document.getElementById('fStrike').onclick=()=>execRich('strikeThrough');
+document.getElementById('fUl').onclick=()=>execRich('insertUnorderedList');
+document.getElementById('fOl').onclick=()=>execRich('insertOrderedList');
+document.getElementById('fClear').onclick=()=>{
+  if(!selNode||!selData||selData.type!=='text') return;
+  const body=selNode.querySelector('.text-body'); if(!body) return;
+  if(!isEditing(selNode)) enterEdit(selNode,body);
+  let r=activeRangeIn(body);
+  if(!r){ selectAllIn(body); r=activeRangeIn(body); if(!r) return; }
+  useRange(body, r);
+  document.execCommand('removeFormat',false,null);
+  // removeFormat leaves styled spans behind in some browsers, so flatten them by hand
+  const live=window.getSelection().getRangeAt(0);
+  const frag=live.extractContents();
+  frag.querySelectorAll('span').forEach(unwrapNode);
+  live.insertNode(frag);
+  syncRichFromBody(body,selData); saveDraft();
+};
+/* drop a manual height so the box shrinks back around its text */
+document.getElementById('fFit').onclick=()=>{
+  if(!selNode||!selData||selData.type!=='text') return;
+  delete selData.h; selNode.querySelector('.text-body').style.minHeight=''; saveDraft(); };
+
 /* ---------- doodle bar (colour + weight, after placing) ---------- */
 function showDoodleBar(){ doodlebar.style.display='flex';
   document.getElementById('dwVal').textContent=(selData.weight==null?6:selData.weight);
-  document.getElementById('dColor').value=toHex(selData.color||'#4b4361'); fitScale(); }
-function hideDoodleBar(){ doodlebar.style.display='none'; fitScale(); }
+  document.getElementById('dColor').value=toHex(selData.color||'#4b4361'); }
+function hideDoodleBar(){ doodlebar.style.display='none'; }
 function applyDoodle(){ if(!selNode||!selData||selData.type!=='doodle') return; updateDoodle(selNode, selData); saveDraft(); }
 function setWeight(n){ if(!selData||selData.type!=='doodle') return; selData.weight=Math.max(1,Math.min(16,n)); document.getElementById('dwVal').textContent=selData.weight; applyDoodle(); }
 document.getElementById('dwMinus').onclick=()=>setWeight((selData&&selData.weight!=null?selData.weight:6)-1);
@@ -561,7 +800,7 @@ function showPhotoBar(){ photobar.style.display='flex';
   document.getElementById('pShadow').classList.toggle('on', !!selData.shadow);
   document.getElementById('prVal').textContent=(selData.radius!=null?selData.radius:3);
   showCapBar(); showBorderBar(); fitScale(); }
-function hidePhotoBar(){ photobar.style.display='none'; document.getElementById('capbar').style.display='none'; document.getElementById('borderbar').style.display='none'; fitScale(); }
+function hidePhotoBar(){ photobar.style.display='none'; document.getElementById('capbar').style.display='none'; document.getElementById('borderbar').style.display='none'; }
 function applyPhoto(){ if(!selNode||!selData||selData.type!=='photo') return; J.applyPhotoStyle(selNode, selData);
   const cap=selNode.querySelector('.cap'); if(cap) J.applyCaptionStyle(cap, selData); saveDraft(); }
 photobar.querySelectorAll('[data-pstyle]').forEach(b=>{ b.onclick=()=>{ if(!selData) return; selData.style=b.dataset.pstyle;
@@ -579,14 +818,17 @@ document.getElementById('prMinus').onclick=()=>setRadius((selData&&selData.radiu
 document.getElementById('prPlus').onclick=()=>setRadius((selData&&selData.radius!=null?selData.radius:3)+2);
 
 /* caption styling bar (font / size / colour) */
-function captionVisible(){ const st=selData&&selData.style; return selData && !selData.noCap && (st==='card'||st==='frame'); }
+function captionVisible(){ if(!selData || selData.noCap) return false;
+  if(selData.type==='video') return true;
+  const st=selData.style; return (st==='card'||st==='frame'); }
 function showCapBar(){ const bar=document.getElementById('capbar');
   if(!captionVisible()){ bar.style.display='none'; return; }
   bar.style.display='flex';
   const cf=document.getElementById('capFont'); cf.value=selData.capFont?J.resolveFontKey(selData.capFont):''; cf.style.fontFamily=(J.FONTS[cf.value]||J.FONTS.gaegu).css;
   document.getElementById('capSzVal').textContent=(selData.capSize||18);
   document.getElementById('capColor').value=toHex(selData.capColor||'#4b4361'); }
-function applyCap(){ if(!selNode||!selData||selData.type!=='photo') return; const cap=selNode.querySelector('.cap'); if(cap) J.applyCaptionStyle(cap, selData); saveDraft(); }
+function applyCap(){ if(!selNode||!selData||(selData.type!=='photo'&&selData.type!=='video')) return;
+  const cap=selNode.querySelector('.cap'); if(cap) J.applyCaptionStyle(cap, selData); saveDraft(); }
 document.getElementById('capFont').onchange=function(){ if(!selData) return; selData.capFont=this.value; this.style.fontFamily=(J.FONTS[this.value]||J.FONTS.gaegu).css; applyCap(); };
 document.getElementById('capSzMinus').onclick=()=>{ if(!selData) return; selData.capSize=Math.max(10,(selData.capSize||18)-1); document.getElementById('capSzVal').textContent=selData.capSize; applyCap(); };
 document.getElementById('capSzPlus').onclick=()=>{ if(!selData) return; selData.capSize=Math.min(40,(selData.capSize||18)+1); document.getElementById('capSzVal').textContent=selData.capSize; applyCap(); };
@@ -605,11 +847,102 @@ document.getElementById('bColor').oninput=function(){ if(!selData) return; selDa
 document.getElementById('bwMinus').onclick=()=>{ if(!selData) return; selData.borderWidth=Math.max(0,(selData.borderWidth!=null?selData.borderWidth:6)-1); document.getElementById('bwVal').textContent=selData.borderWidth; applyBorder(); };
 document.getElementById('bwPlus').onclick=()=>{ if(!selData) return; selData.borderWidth=Math.min(40,(selData.borderWidth!=null?selData.borderWidth:6)+1); document.getElementById('bwVal').textContent=selData.borderWidth; applyBorder(); };
 
+/* ---------- video bar (link, thumbnail, corners, caption, shadow) ---------- */
+const videobar=document.getElementById('videobar');
+function showVideoBar(){ videobar.style.display='flex';
+  const st=(selData.style==='card')?'card':'plain';
+  videobar.querySelectorAll('[data-vstyle]').forEach(b=>b.classList.toggle('on', b.dataset.vstyle===st));
+  document.getElementById('vrVal').textContent=(selData.radius!=null? selData.radius : 8);
+  document.getElementById('vColor').value=toHex(selData.frameColor||'#fffdfb');
+  document.getElementById('vCap').classList.toggle('on', !selData.noCap);
+  document.getElementById('vShadow').classList.toggle('on', selData.shadow!==false);
+  showCapBar(); }
+function hideVideoBar(){ videobar.style.display='none'; }
+function applyVideo(){ if(!selNode||!selData||selData.type!=='video') return; J.applyVideoStyle(selNode, selData); saveDraft(); }
+function setVideoRadius(n){ if(!selData||selData.type!=='video') return;
+  selData.radius=Math.max(0,Math.min(60,n)); document.getElementById('vrVal').textContent=selData.radius; applyVideo(); }
+document.getElementById('vrMinus').onclick=()=>setVideoRadius((selData&&selData.radius!=null?selData.radius:8)-2);
+document.getElementById('vrPlus').onclick=()=>setVideoRadius((selData&&selData.radius!=null?selData.radius:8)+2);
+document.getElementById('vCap').onclick=function(){ if(!selData) return; selData.noCap=!selData.noCap;
+  this.classList.toggle('on', !selData.noCap); showCapBar(); applyVideo(); };
+document.getElementById('vShadow').onclick=function(){ if(!selData) return; selData.shadow=(selData.shadow===false);
+  this.classList.toggle('on', selData.shadow!==false); applyVideo(); };
+document.getElementById('vEdit').onclick=()=>{ if(selData&&selData.type==='video') openVideoModal(selData); };
+videobar.querySelectorAll('[data-vstyle]').forEach(b=>{ b.onclick=()=>{ if(!selData) return;
+  selData.style=b.dataset.vstyle;
+  videobar.querySelectorAll('[data-vstyle]').forEach(x=>x.classList.toggle('on', x===b)); applyVideo(); }; });
+videobar.querySelectorAll('.sw[data-vc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return;
+  selData.frameColor=sw.dataset.vc; selData.style='card';
+  document.getElementById('vColor').value=toHex(sw.dataset.vc);
+  videobar.querySelectorAll('[data-vstyle]').forEach(x=>x.classList.toggle('on', x.dataset.vstyle==='card'));
+  applyVideo(); }; });
+document.getElementById('vColor').oninput=function(){ if(!selData) return; selData.frameColor=this.value; selData.style='card';
+  videobar.querySelectorAll('[data-vstyle]').forEach(x=>x.classList.toggle('on', x.dataset.vstyle==='card')); applyVideo(); };
+
+/* ---------- add / edit a video ---------- */
+const videoMask=document.getElementById('videoMask');
+const vidUrl=document.getElementById('vidUrl'), vidThumbFile=document.getElementById('vidThumbFile');
+let vidState=null;
+function openVideoModal(d){
+  vidState={target:d||null, poster:(d&&d.poster)||''};
+  document.getElementById('vidTitle').textContent = d? 'Edit video' : 'Add a video';
+  document.getElementById('vidSave').textContent = d? 'Save changes' : 'Add video';
+  vidUrl.value = d? (d.src||'') : '';
+  refreshVidKind(); refreshVidPrev();
+  videoMask.classList.add('open');
+  setTimeout(()=>vidUrl.focus(), 60);
+}
+function refreshVidKind(){
+  const tag=document.getElementById('vidKind'), raw=vidUrl.value.trim();
+  if(!raw){ tag.textContent=''; tag.className='vidkind'; return; }
+  const v=J.parseVideoUrl(raw);
+  if(!v){ tag.textContent='That does not look like a link.'; tag.className='vidkind bad'; return; }
+  if(v.kind==='unsupported'){ tag.textContent='Streaming links are not supported. Upload the clip to Cloudinary and paste its direct .mp4 link.'; tag.className='vidkind bad'; return; }
+  if(v.kind==='insecure'){ tag.textContent='Use an https link. A plain http video is blocked on a secure page.'; tag.className='vidkind bad'; return; }
+  tag.textContent='Direct video file, plays with the browser\u2019s own controls.';
+  tag.className='vidkind ok';
+}
+function refreshVidPrev(){
+  const p=document.getElementById('vidPrev');
+  p.innerHTML = vidState && vidState.poster
+    ? '<img src="'+vidState.poster+'" alt=""><span>thumbnail ready</span>'
+    : 'no thumbnail chosen';
+}
+vidUrl.addEventListener('input', refreshVidKind);
+document.getElementById('vidThumbBtn').onclick=()=>vidThumbFile.click();
+vidThumbFile.onchange=async(e)=>{ const f=e.target.files[0]; if(!f) return;
+  try{ vidState.poster=await J.compress(f, 700, 0.78); refreshVidPrev(); }
+  catch(err){ showToast('Could not load that image'); }
+  e.target.value=''; };
+document.getElementById('vidCancel').onclick=()=>{ videoMask.classList.remove('open'); vidState=null; };
+videoMask.onclick=(e)=>{ if(e.target===videoMask){ videoMask.classList.remove('open'); vidState=null; } };
+document.getElementById('vidSave').onclick=()=>{
+  const v=J.parseVideoUrl(vidUrl.value);
+  if(!v){ showToast('Paste a valid video link first'); vidUrl.focus(); return; }
+  if(v.kind==='unsupported'){ showToast('YouTube and Vimeo links cannot be used \u2014 paste a direct .mp4 link'); vidUrl.focus(); return; }
+  if(v.kind==='insecure'){ showToast('That link must start with https://'); vidUrl.focus(); return; }
+  // the thumbnail is required: it is the only thing the PDF and the unplayed page can show
+  if(!vidState.poster){ showToast('Choose a thumbnail image first'); return; }
+  const t=vidState.target;
+  if(t){
+    t.src=v.src; t.kind=v.kind; t.poster=vidState.poster;
+    videoMask.classList.remove('open'); vidState=null; renderAll(); reselect(t);
+  } else {
+    const d={id:J.uid(), type:'video', x:170, y:300, w:320, src:v.src, kind:v.kind,
+             poster:vidState.poster, caption:'', style:'card', frameColor:'#fffdfb',
+             radius:8, shadow:true, rot:0};
+    curPage().elements.push(d);
+    videoMask.classList.remove('open'); vidState=null; renderAll(); reselect(d);
+  }
+};
+document.getElementById('addVideo').onclick=()=>openVideoModal(null);
+
 /* ---------- render ---------- */
 function renderTabs(){
   tabsEl.innerHTML='';
   story.pages.forEach((pg,i)=>{ const t=document.createElement('div'); t.className='tab'+(i===story.current?' active':'');
-    t.innerHTML='Page '+(i+1)+(story.pages.length>1?'<span class="x">×</span>':'');
+    t.innerHTML=(i+1)+(story.pages.length>1?'<span class="x">×</span>':'');
+    t.title='Page '+(i+1);
     t.onclick=(e)=>{ if(e.target.classList.contains('x')){ if(confirm('Delete this page?')){ story.pages.splice(i,1); if(story.current>=story.pages.length) story.current=story.pages.length-1; deselect(); saveDraft(); renderAll(); } return; } story.current=i; deselect(); renderAll(); };
     tabsEl.appendChild(t); });
   const add=document.createElement('div'); add.className='tab add'; add.textContent='+'; add.title='Add page';
@@ -622,32 +955,101 @@ function renderAll(){
   coverPrev.innerHTML = story.thumb ? '<img src="'+story.thumb+'" style="width:100%;height:100%;object-fit:cover;">' : '✿';
   const pg=curPage(); page.className='page'; J.applyPaper(page, pg.paper);
   page.innerHTML='';
+  guideV=document.createElement('div'); guideV.className='guide v'; page.appendChild(guideV);
+  guideH=document.createElement('div'); guideH.className='guide h'; page.appendChild(guideH);
   pg.elements.forEach(d=> page.appendChild(buildEl(d, pg)));
   page.onpointerdown=(e)=>{ if(e.target===page) deselect(); };
   requestAnimationFrame(fitScale); saveDraft();
 }
-function deselect(){ if(selNode) selNode.classList.remove('selected'); selNode=null; selData=null; hideFmt(); hideDoodleBar(); hidePhotoBar(); }
-function select(node){ if(selNode && selNode!==node) selNode.classList.remove('selected'); selNode=node; selData=node.__data; node.classList.add('selected'); zTop++; node.style.zIndex=zTop;
+function deselect(){ if(selNode){ exitEdit(selNode); selNode.classList.remove('selected'); }
+  selNode=null; selData=null; hideFmt(); hideDoodleBar(); hidePhotoBar(); hideVideoBar(); updateCtx(); }
+function select(node){
+  if(selNode && selNode!==node){ exitEdit(selNode); selNode.classList.remove('selected'); }
+  selNode=node; selData=node.__data; node.classList.add('selected'); zTop++; node.style.zIndex=zTop;
   if(selData && selData.type==='text') showFmt(); else hideFmt();
   if(selData && selData.type==='doodle') showDoodleBar(); else hideDoodleBar();
-  if(selData && selData.type==='photo') showPhotoBar(); else hidePhotoBar(); }
+  if(selData && selData.type==='photo') showPhotoBar(); else hidePhotoBar();
+  if(selData && selData.type==='video') showVideoBar(); else hideVideoBar();
+  updateCtx();
+}
+/* the contextual ribbon row always keeps its height; only its contents swap */
+function updateCtx(){
+  const on=!!selData;
+  ['dupBtn','delBtn','backBtn','frontBtn','centerXBtn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=!on; });
+  const anyBar=[].slice.call(document.querySelectorAll('.rb-ctx .fmtbar')).some(b=>b.style.display==='flex');
+  const hint=document.getElementById('ctxhint'); if(hint) hint.style.display=anyBar?'none':'flex';
+}
 function applyRot(el,d){ el.style.transform='rotate('+(d.rot||0)+'deg)'; }
+
+/* ---------- typing: select the box first, double-click to edit (as in Word) ---------- */
+function isEditing(el){ return !!el && el.classList.contains('editing'); }
+function editParts(el){ return [el.querySelector('.text-body'), el.querySelector('.cap')].filter(Boolean); }
+function enterEdit(el, target, x, y){
+  if(!el) return;
+  const t=target || el.querySelector('.text-body') || el.querySelector('.cap');
+  if(!t) return;
+  el.classList.add('editing'); t.contentEditable='true'; t.focus();
+  if(x!=null) placeCaret(x,y); else caretToEnd(t);
+}
+function exitEdit(el){
+  if(!isEditing(el)) return;
+  savedRange=null;
+  editParts(el).forEach(t=> t.contentEditable='false');
+  el.classList.remove('editing');
+  const s=window.getSelection(); if(s) s.removeAllRanges();
+}
+function placeCaret(x,y){
+  let r=null;
+  if(document.caretRangeFromPoint) r=document.caretRangeFromPoint(x,y);
+  else if(document.caretPositionFromPoint){ const p=document.caretPositionFromPoint(x,y);
+    if(p){ r=document.createRange(); r.setStart(p.offsetNode,p.offset); r.collapse(true); } }
+  if(!r) return;
+  const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+function caretToEnd(node){ const r=document.createRange(); r.selectNodeContents(node); r.collapse(false);
+  const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+function selectAllIn(node){ const r=document.createRange(); r.selectNodeContents(node);
+  const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+/* True only when the point lands on a real glyph. That is what makes the drag "smart":
+   clicking the words puts the caret there, clicking the empty part of the box moves it. */
+function overGlyphs(node, x, y){
+  const w=document.createTreeWalker(node, NodeFilter.SHOW_TEXT), r=document.createRange();
+  let n;
+  while((n=w.nextNode())){
+    if(!n.nodeValue || !n.nodeValue.trim()) continue;
+    r.selectNodeContents(n);
+    const rects=r.getClientRects();
+    for(let i=0;i<rects.length;i++){ const b=rects[i];
+      if(x>=b.left && x<=b.right && y>=b.top && y<=b.bottom) return true; }
+  }
+  return false;
+}
 
 function buildEl(d, pg){
   const el=document.createElement('div'); el.className='el el-'+d.type; el.__data=d;
   el.style.left=(d.x||40)+'px'; el.style.top=(d.y||120)+'px'; if(d.w) el.style.width=d.w+'px';
   if(d.type==='text'){
-    const b=document.createElement('div'); b.className='text-body'; b.contentEditable='true';
+    const b=document.createElement('div'); b.className='text-body'; b.contentEditable='false';
     if(J.hasRich(d)) b.innerHTML=J.sanitizeRich(d.html); else b.innerText=d.content||'';
     J.applyTextStyle(b,d);
-    b.addEventListener('input',()=>{ d.content=b.innerText; d.html=J.sanitizeRich(b.innerHTML); if(!J.hasRich(d)) d.html=''; saveDraft(); });
-    b.addEventListener('pointerdown',e=>{ select(el); e.stopPropagation(); }); el.appendChild(b); applyRot(el,d);
+    b.addEventListener('input',()=>{ syncRichFromBody(b,d); saveDraft(); });
+    el.addEventListener('dblclick',(e)=>{ if(isEditing(el)) return; enterEdit(el,b,e.clientX,e.clientY); e.stopPropagation(); });
+    el.appendChild(b); applyRot(el,d);
   } else if(d.type==='photo'){
     const img=document.createElement('img'); img.src=d.src; img.draggable=false; el.appendChild(img);
-    const cap=document.createElement('div'); cap.className='cap'; cap.contentEditable='true'; cap.innerText=d.caption||'';
+    const cap=document.createElement('div'); cap.className='cap'; cap.contentEditable='false'; cap.innerText=d.caption||'';
     cap.addEventListener('input',()=>{ d.caption=cap.innerText; saveDraft(); });
-    cap.addEventListener('pointerdown',e=>{ select(el); e.stopPropagation(); });
+    el.addEventListener('dblclick',(e)=>{ if(isEditing(el)||!e.target.closest('.cap')) return; enterEdit(el,cap,e.clientX,e.clientY); e.stopPropagation(); });
     el.appendChild(cap); J.applyPhotoStyle(el,d); J.applyCaptionStyle(cap,d); applyRot(el,d);
+  } else if(d.type==='video'){
+    /* the editor shows the poster only, never a live player: an iframe would swallow the
+       drag and resize gestures, and this is exactly what the PDF export will rasterise */
+    el.appendChild(J.buildVideoFace(d));
+    const cap=document.createElement('div'); cap.className='cap'; cap.contentEditable='false'; cap.innerText=d.caption||'';
+    cap.addEventListener('input',()=>{ d.caption=cap.innerText; saveDraft(); });
+    el.appendChild(cap);
+    el.addEventListener('dblclick',(e)=>{ if(isEditing(el)||!e.target.closest('.cap')) return; enterEdit(el,cap,e.clientX,e.clientY); e.stopPropagation(); });
+    J.applyVideoStyle(el,d); J.applyCaptionStyle(cap,d); applyRot(el,d);
   } else if(d.type==='sticker'){
     const s=document.createElement('span'); s.className='s-emoji'; s.textContent=d.emoji; if(d.size) s.style.fontSize=d.size+'px'; el.appendChild(s); applyRot(el,d);
   } else if(d.type==='imgsticker'){
@@ -659,28 +1061,18 @@ function buildEl(d, pg){
   } else if(d.type==='washi'){
     const t=document.createElement('div'); t.className='tape'; t.style.background=d.color||'#bfcae6'; if(d.plain) t.classList.add('plain'); if(d.w) t.style.width=d.w+'px'; el.appendChild(t); applyRot(el,d);
   }
-  const grip=document.createElement('div'); grip.className='grip'; grip.textContent='✥'; el.appendChild(grip);
   const ctrl=document.createElement('div'); ctrl.className='ctrl';
   if(d.type==='photo'){ const crop=document.createElement('div'); crop.className='dot'; crop.textContent='✂'; crop.title='crop';
     crop.onpointerdown=(e)=>{ e.stopPropagation(); openCrop(d); }; ctrl.appendChild(crop); }
-  {
-    const bk=document.createElement('div'); bk.className='dot'; bk.textContent='⤓'; bk.title='send to back (behind other items)';
-    bk.onpointerdown=(e)=>{ e.stopPropagation(); const i=pg.elements.indexOf(d); if(i>0){ pg.elements.splice(i,1); pg.elements.unshift(d); saveDraft(); renderAll(); reselect(d); } }; ctrl.appendChild(bk);
-    const fr=document.createElement('div'); fr.className='dot'; fr.textContent='⤒'; fr.title='bring to front (on top)';
-    fr.onpointerdown=(e)=>{ e.stopPropagation(); const i=pg.elements.indexOf(d); if(i>-1 && i<pg.elements.length-1){ pg.elements.splice(i,1); pg.elements.push(d); saveDraft(); renderAll(); reselect(d); } }; ctrl.appendChild(fr);
-  }
-  const del=document.createElement('div'); del.className='dot del'; del.textContent='×';
+  const del=document.createElement('div'); del.className='dot del'; del.textContent='×'; del.title='delete';
   del.onpointerdown=(e)=>{ e.stopPropagation(); pg.elements=pg.elements.filter(x=>x!==d); deselect(); renderAll(); }; ctrl.appendChild(del);
   el.appendChild(ctrl);
-  const rz=document.createElement('div'); rz.className='resize'; rz.textContent='⤡'; el.appendChild(rz); makeResizable(el,rz,d);
+  HANDLES.forEach(dir=>{ const h=document.createElement('div'); h.className='hnd '+dir; el.appendChild(h); makeResizable(el,h,d,dir); });
   const roth=document.createElement('div'); roth.className='roth'; roth.textContent='⟳'; roth.title='drag to tilt (hold Shift to snap to 15°)'; el.appendChild(roth); makeRotatable(el,roth,d);
-  el.addEventListener('pointerdown',(e)=>{ if(e.target===grip||e.target.classList.contains('resize')||e.target.classList.contains('roth')||e.target.classList.contains('dot')) return; if(d.type!=='text') select(el); });
-  makeDraggable(el, grip, d);
-  if(d.type==='sticker'||d.type==='washi'||d.type==='imgsticker'||d.type==='doodle') makeDraggable(el, el, d, grip);
-  if(d.type==='photo') makeDraggable(el, el.querySelector('img'), d);
+  makeDraggable(el, d);
   return el;
 }
-function nodeFor(d){ return [...page.querySelectorAll('.el')].find(n=>n.__data===d); }
+function nodeFor(d){ return [].slice.call(page.querySelectorAll('.el')).find(n=>n.__data===d); }
 function reselect(d){ const n=nodeFor(d); if(n) select(n); }
 function updateDoodle(el,d){ const html=J.doodleSVG(d.key, d.color, d.weight);
   const tmp=document.createElement('div'); tmp.innerHTML=html; const ns=tmp.firstChild; if(!ns) return;
@@ -699,31 +1091,155 @@ function makeRotatable(el, handle, d){
   const end=()=>{ if(!drag) return; drag=false; bubble.style.display='none'; saveDraft(); };
   handle.addEventListener('pointerup',end); handle.addEventListener('pointercancel',end);
 }
-function makeDraggable(el, handle, d, exclude){
-  let sx,sy,ox,oy,drag=false;
-  handle.addEventListener('pointerdown',(e)=>{ if(exclude && e.target===exclude) return;
-    if(e.target.classList && (e.target.classList.contains('resize')||e.target.classList.contains('dot'))) return;
-    drag=true; select(el); handle.setPointerCapture(e.pointerId); sx=e.clientX; sy=e.clientY; ox=parseFloat(el.style.left)||0; oy=parseFloat(el.style.top)||0; e.preventDefault(); });
-  handle.addEventListener('pointermove',(e)=>{ if(!drag) return; let nx=ox+(e.clientX-sx)/scale, ny=oy+(e.clientY-sy)/scale;
-    nx=Math.max(-20, Math.min(nx, PAGE_W-30)); ny=Math.max(-20, ny); el.style.left=nx+'px'; el.style.top=ny+'px'; });
-  const end=()=>{ if(!drag) return; drag=false; d.x=parseFloat(el.style.left); d.y=parseFloat(el.style.top); saveDraft(); };
-  handle.addEventListener('pointerup',end); handle.addEventListener('pointercancel',end);
+
+/* ---------- moving: grab the box anywhere, with alignment snapping ---------- */
+/* Items may sit this far outside the page, so a box can hang over the edge like in Word. */
+const OUT=240, SNAP=6;
+function snapTargets(skip){
+  const xs=[PAGE_W/2], ys=[];
+  page.querySelectorAll('.el').forEach(n=>{ if(n===skip) return;
+    const l=parseFloat(n.style.left)||0, t=parseFloat(n.style.top)||0, w=n.offsetWidth, h=n.offsetHeight;
+    xs.push(l, l+w/2, l+w); ys.push(t, t+h/2, t+h); });
+  return {xs:xs, ys:ys};
 }
-function makeResizable(el, handle, d){
-  let sx,ow,of,drag=false;
-  handle.addEventListener('pointerdown',(e)=>{ drag=true; select(el); handle.setPointerCapture(e.pointerId); sx=e.clientX;
-    if(d.type==='sticker') of=d.size||54; else ow=el.offsetWidth; e.preventDefault(); e.stopPropagation(); });
-  handle.addEventListener('pointermove',(e)=>{ if(!drag) return; const dx=(e.clientX-sx)/scale;
-    if(d.type==='sticker'){ const ns=Math.max(20,Math.min(of+dx,220)); el.querySelector('.s-emoji').style.fontSize=ns+'px'; d.size=ns; }
-    else { const nw=Math.max(50,Math.min(ow+dx,PAGE_W-20)); el.style.width=nw+'px'; d.w=nw; if(d.type==='washi') el.querySelector('.tape').style.width=nw+'px'; } });
+// snaps one axis against the page centre and every other item's edges and middle
+function snapAxis(v, size, list){
+  const offs=[0, size/2, size];
+  for(let i=0;i<offs.length;i++){ for(let k=0;k<list.length;k++){
+    if(Math.abs(v+offs[i]-list[k])<=SNAP) return [list[k]-offs[i], list[k]]; } }
+  return [v, null];
+}
+function showGuides(gx, gy){
+  if(guideV){ if(gx==null) guideV.style.display='none'; else { guideV.style.left=gx+'px'; guideV.style.display='block'; } }
+  if(guideH){ if(gy==null) guideH.style.display='none'; else { guideH.style.top=gy+'px'; guideH.style.display='block'; } }
+}
+function makeDraggable(el, d){
+  let sx,sy,ox,oy,targets,wasSel=false,armed=false,drag=false;
+  el.addEventListener('pointerdown',(e)=>{
+    if(e.target.closest && e.target.closest('.hnd,.roth,.dot')) return;
+    if(isEditing(el)){
+      // typing holds the box still: a click on the words just moves the caret, and a
+      // click on the empty part of the box leaves typing and moves it in one gesture
+      if(e.target.isContentEditable && overGlyphs(e.target, e.clientX, e.clientY)) return;
+      exitEdit(el);
+    }
+    wasSel=(selNode===el); select(el);
+    armed=true; drag=false;
+    sx=e.clientX; sy=e.clientY; ox=parseFloat(el.style.left)||0; oy=parseFloat(el.style.top)||0;
+    targets=snapTargets(el);
+  });
+  el.addEventListener('pointermove',(e)=>{
+    if(!armed) return;
+    if(!drag){
+      /* Capturing the pointer on pointerdown swallowed the double-click that starts
+         typing, so the move only begins once the pointer has actually travelled. */
+      if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)<3) return;
+      drag=true; el.setPointerCapture(e.pointerId);
+    }
+    let nx=ox+(e.clientX-sx)/scale, ny=oy+(e.clientY-sy)/scale, gx=null, gy=null;
+    if(!e.altKey){ // hold Alt to place freely, ignoring the guides
+      const rx=snapAxis(nx, el.offsetWidth, targets.xs); nx=rx[0]; gx=rx[1];
+      const ry=snapAxis(ny, el.offsetHeight, targets.ys); ny=ry[0]; gy=ry[1];
+    }
+    nx=Math.max(-OUT, Math.min(nx, PAGE_W+OUT)); ny=Math.max(-OUT, ny);
+    el.style.left=nx+'px'; el.style.top=ny+'px'; showGuides(gx,gy);
+  });
+  const end=(e)=>{
+    if(!armed) return;
+    armed=false;
+    if(!drag){
+      // a reliable double-tap is hard to hit on a phone, so on touch a second tap on an
+      // already-selected text box starts typing instead
+      if(e && e.pointerType==='touch' && wasSel && d.type==='text' && !isEditing(el))
+        enterEdit(el, el.querySelector('.text-body'), e.clientX, e.clientY);
+      return;
+    }
+    drag=false; showGuides(null,null);
+    d.x=Math.round(parseFloat(el.style.left)); d.y=Math.round(parseFloat(el.style.top)); saveDraft();
+  };
+  el.addEventListener('pointerup',end); el.addEventListener('pointercancel',end);
+}
+
+/* ---------- resizing: all eight walls and corners ---------- */
+const HANDLES=['nw','n','ne','e','se','s','sw','w'];
+function makeResizable(el, handle, d, dir){
+  const west=dir.indexOf('w')>-1, east=dir.indexOf('e')>-1, north=dir.indexOf('n')>-1, south=dir.indexOf('s')>-1;
+  let sx,sy,ow,oh,ox,oy,ofs,drag=false;
+  handle.addEventListener('pointerdown',(e)=>{
+    drag=true; select(el); handle.setPointerCapture(e.pointerId);
+    sx=e.clientX; sy=e.clientY; ow=el.offsetWidth; oh=el.offsetHeight;
+    ox=parseFloat(el.style.left)||0; oy=parseFloat(el.style.top)||0;
+    if(d.type==='sticker') ofs=d.size||54;
+    e.preventDefault(); e.stopPropagation();
+  });
+  handle.addEventListener('pointermove',(e)=>{
+    if(!drag) return;
+    const dx=(e.clientX-sx)/scale, dy=(e.clientY-sy)/scale;
+    if(d.type==='sticker'){
+      const grow=(east?dx:west?-dx:0)+(south?dy:north?-dy:0);
+      d.size=Math.round(Math.max(20,Math.min(ofs+grow,280)));
+      el.querySelector('.s-emoji').style.fontSize=d.size+'px';
+    } else if(d.type==='text'){
+      if(east||west){ const nw=Math.max(60, Math.min(ow+(east?dx:-dx), PAGE_W+OUT));
+        el.style.width=nw+'px'; d.w=Math.round(nw); }
+      // height is a minimum, so text can still grow past it and is never clipped
+      if(north||south){ const nh=Math.max(30, oh+(south?dy:-dy));
+        el.querySelector('.text-body').style.minHeight=nh+'px'; d.h=Math.round(nh); }
+    } else {
+      // photos, image stickers, doodles and tape keep their proportions: width drives height
+      const asp=ow/Math.max(oh,1);
+      const grow = east? dx : west? -dx : south? dy*asp : north? -dy*asp : 0;
+      const nw=Math.max(40, Math.min(ow+grow, PAGE_W+OUT));
+      el.style.width=nw+'px'; d.w=Math.round(nw);
+      const tape=el.querySelector('.tape'); if(tape) tape.style.width=nw+'px';
+    }
+    // a west or north handle holds the opposite edge still by shifting the box as it grows
+    if(west){ const nx=ox+(ow-el.offsetWidth); el.style.left=nx+'px'; d.x=Math.round(nx); }
+    if(north){ const ny=oy+(oh-el.offsetHeight); el.style.top=ny+'px'; d.y=Math.round(ny); }
+  });
   const end=()=>{ if(!drag) return; drag=false; saveDraft(); };
   handle.addEventListener('pointerup',end); handle.addEventListener('pointercancel',end);
 }
 function selectLast(){ const nodes=page.querySelectorAll('.el'); const last=nodes[nodes.length-1]; if(last) select(last); return last; }
 
+/* ---------- arrange / duplicate / delete (ribbon + keyboard) ---------- */
+function removeSelected(){ if(!selData) return; const pg=curPage();
+  pg.elements=pg.elements.filter(x=>x!==selData); deselect(); renderAll(); }
+function duplicateSelected(){ if(!selData) return;
+  const copy=lightClone(selData); copy.id=J.uid(); copy.x=(copy.x||0)+18; copy.y=(copy.y||0)+18;
+  curPage().elements.push(copy); renderAll(); reselect(copy); }
+function layerMove(toFront){ if(!selData) return; const pg=curPage(); const i=pg.elements.indexOf(selData); if(i<0) return;
+  const d=selData; pg.elements.splice(i,1);
+  if(toFront) pg.elements.push(d); else pg.elements.unshift(d);
+  saveDraft(); renderAll(); reselect(d); }
+function centreOnPage(){ if(!selNode||!selData) return;
+  const nx=Math.round((PAGE_W-selNode.offsetWidth)/2); selNode.style.left=nx+'px'; selData.x=nx; saveDraft(); }
+document.getElementById('delBtn').onclick=removeSelected;
+document.getElementById('dupBtn').onclick=duplicateSelected;
+document.getElementById('backBtn').onclick=()=>layerMove(false);
+document.getElementById('frontBtn').onclick=()=>layerMove(true);
+document.getElementById('centerXBtn').onclick=centreOnPage;
+
+/* Escape leaves typing, Delete removes, arrows nudge (Shift = 10px), Ctrl+D duplicates */
+window.addEventListener('keydown',(e)=>{
+  if(!selNode) return;
+  if(e.key==='Escape'){ if(isEditing(selNode)) exitEdit(selNode); else deselect(); e.preventDefault(); return; }
+  if(isEditing(selNode) || inEditable()) return;
+  if(e.ctrlKey||e.metaKey){ if((e.key||'').toLowerCase()==='d'){ e.preventDefault(); duplicateSelected(); } return; }
+  if(e.key==='Delete'||e.key==='Backspace'){ e.preventDefault(); removeSelected(); return; }
+  if(e.key==='Enter' && selData.type==='text'){ e.preventDefault(); enterEdit(selNode); return; }
+  const step=e.shiftKey?10:1;
+  const m={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,-step],ArrowDown:[0,step]}[e.key];
+  if(!m) return;
+  e.preventDefault();
+  selData.x=Math.max(-OUT, Math.min((selData.x||0)+m[0], PAGE_W+OUT));
+  selData.y=Math.max(-OUT, (selData.y||0)+m[1]);
+  selNode.style.left=selData.x+'px'; selNode.style.top=selData.y+'px'; saveDraft();
+});
+
 /* ---------- add elements ---------- */
 document.getElementById('addText').onclick=()=>{ curPage().elements.push({id:J.uid(),type:'text',x:120,y:280,w:260,content:'',font:'gaegu',size:20,bold:false,italic:false,underline:false,align:'left',color:'#4b4361',fill:'',rot:0}); renderAll();
-  setTimeout(()=>{ const last=selectLast(); if(last){ const b=last.querySelector('.text-body'); if(b) b.focus(); } },40); };
+  setTimeout(()=>{ const last=selectLast(); if(last) enterEdit(last, last.querySelector('.text-body')); },40); };
 const photoFile=document.getElementById('photoFile');
 document.getElementById('addPhoto').onclick=()=>photoFile.click();
 photoFile.onchange=async(e)=>{ const f=e.target.files[0]; if(!f) return; try{ const src=await J.compress(f);
@@ -1011,7 +1527,7 @@ document.getElementById('publishBtn').onclick=async()=>{
   }catch(e){ showToast(e.message, 6000); }
 };
 
-renderAll(); fitScale(); histReset();
+renderAll(); fitScale(); updateCtx(); histReset();
 if(!getToken()) setTimeout(()=>showToast('Tip: set your publishing key (⚙) before publishing', 4000), 800);
 })();
 </script>

@@ -171,7 +171,14 @@ window.JOURNAL = (function(){
     {key:"bg18", label:"Travel Lined Paper", file:"../assets/backgrounds/bg18.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAwICQsJCAwLCgsODQwOEh4UEhEREiUbHBYeLCcuLisnKyoxN0Y7MTRCNCorPVM+QkhKTk9OLztWXFVMW0ZNTkv/2wBDAQ0ODhIQEiQUFCRLMisyS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0v/wAARCACVAFQDASIAAhEBAxEB/8QAGwABAQEAAwEBAAAAAAAAAAAAAAIBAwQFBgf/xAAvEAABAwIFAwMEAgIDAAAAAAABAAIRUpEDIlOhsRJRYQQFIRMxQWIyQjSBY3HB/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAEC/8QAGxEBAQEAAgMAAAAAAAAAAAAAAAERAhIhMUH/2gAMAwEAAhEDEQA/AP1PN4TN4U5ezt0y9nWKCs3hM3hTl7OsUy9nboKzeEzeFxYzulktBmfzK6WLjer+r04YHR0H5/b8KWyLJa5/We4YfonMGMWsDv7OkC8KML3b0+K4gPZ8fkGQV0nN9biN6MXGwII/ILur/X2Xn+5e04gf9T0WHhgdLfhkhxI+/gz8JOUpeNj6PC9dg42K/CZi4Zfhx1CftPyLrmc7p/kWD4n5K+R9J7D64M/yG4T3mX4ckgx9vkfmF6jvb/Vu9OMF7SWtcD0jElrgP6kkTBWrnxJ78vczfqi4A3FIHU4A9gwn/wBRQc8OqFkh1QsphunsEhunsEFQ6oWSHVCymG6ewWw3T2CCcYH6bpg/H2heY8vxMRv0/qkNBBAH8v8Aa9WBp7BIGnsFLNalx4w9rfiYbGHCysBA63/j/oLvYHosRjWtc9oa0QAB9l24bp7BIGnsFOsO1cbfT9JBLySPC5Yd3FlkDT2CQNPYLTO62HdxZFkDT2CIEjU4SRqcJmpF0zUi6BI1OEkanCfNIunzSLoEjU4SRqcJ80i6ZqRdAkanCSNThM1IunzSLoEjU4SRqcJmpF0zUi6BP/JwifNIuiDJbU65SW1Ouqz+Ez+EEy2p10ltRuqz+Ez+EEy2o3SW1G6rP4TP4QTLajdJbU65VZ/1TP8AqgmW1OuktqddVn/VM/hBMtqN0VZ/CIJy9nWKZezrFVDqhZIdULIJy9nWKZezrFVDqhZIdULIJy9nbpl7OsVUOqFkh1QsgnL2dumXs6xVQ6oWSHVCyCcvZ1imXs6xVQ6oWSHVCyCcvZ1iiqHVCyIJgaewWwNPYJI1OEkanCBA09gkDT2CSNThJGpwgQNPYJA09gkjU4SRqcIEDT2CyBp7BbI1OEkanCBA09gkDT2CSNThJGpwgQNPYIkjU4RAl1IukupF1ktqduktqdug2XUi6S6kXWS2p26S2p26DZdSLpLqRdZLanbpLanboNl1IukupF1ktqduktqdug2XUi6S6kXWS2p26S2p26DZdSLosltTt0QVm8Jn8KYbS7dMtLt0FZ/CZ/CnLS7dMtLt0FZ/CZ/CnLS7dMtLt0FZ/CZvCnLS7dIbS7dBWfwmfwphtLt0y0u3QVn8Ipy0u3RBUOqFlkOqFkgafCQNPhAh1QskOqFkgafCQNPhAh1QskOqFkgafCQNPhAh1QskOqFkgafCQNPhBsOqFlkOqFkgafCQNPhBsOqFkWQNPhEG9JqOydJqOyIgdJqOydJqOyIgdJqOydJqOyIgdJqOydJqOyIgdJqOydJqOyIgdJqOyIiD/9k="},
     {key:"bg19", label:"Simple Bow Frame", file:"../assets/backgrounds/bg19.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAwICQsJCAwLCgsODQwOEh4UEhEREiUbHBYeLCcuLisnKyoxN0Y7MTRCNCorPVM+QkhKTk9OLztWXFVMW0ZNTkv/2wBDAQ0ODhIQEiQUFCRLMisyS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0v/wAARCACVAFQDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAIDAQQH/8QAKRABAAIBAwMEAgEFAAAAAAAAAAECAxEzcRNRwRJSU5EEIUEFIjEygf/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABcRAQEBAQAAAAAAAAAAAAAAAAABETH/2gAMAwEAAhEDEQA/APqVsnptpFbW4T1Z+O/0qN23EeVqM+rPx3+jqz8d/poA8X5ee9bU0tbHXSZnXRhH9YpOlfT+/wDE2nXR7vycdL4/VfHW80/urEx/LDHSMf4mK2kTp/tHfWf21LM4jT8f8i16zM1teNf1MQ16s/Hf6Vjx0xV9NKxWvaFM2wZ9Wfjv9HVn47/TQFcrPqrEx/InDtV4ECN23EeVojdtxHla0AEEZazfHesTpNomInsRjrFK101iumn/ABYAAAACMO1XgMO1XgKEbtuI8rRG7biPK1oAIAAAAAAIw7VeAw7VeAoRu24jytEbtuI8rWgAgAAAAAAjDtV4DDtV4ChG7biPK0Ru24jytaACAAAAAACMO1XgMO1XgKEbtuI8rRG7biPK1oAIAAAAAAIw7VeAw7VeAoRu24jytEbtuI8rWgAgAAAAAAjDtV4DDtV4ChG7biPK0Ru24jytaACAAAAAACMO1XgMO1XgKEbtuI8rZTetMtvVMRrEO9bH74XEaDPrY/fB1sfvgyrrQZ9bH74Otj98GU1oM+tj98HWx++DKNBn1sfvg62P3wZR3DtV4DDtV4EorQ0jsAGkdjSOwAaR2NI7ABpHY0jsAGkdjSOwA6AD/9k="},
     {key:"bg20", label:"Travel Planner", file:"../assets/backgrounds/bg20.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAwICQsJCAwLCgsODQwOEh4UEhEREiUbHBYeLCcuLisnKyoxN0Y7MTRCNCorPVM+QkhKTk9OLztWXFVMW0ZNTkv/2wBDAQ0ODhIQEiQUFCRLMisyS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0v/wAARCAB3AFQDASIAAhEBAxEB/8QAGwAAAwEBAQEBAAAAAAAAAAAAAAIDBAEFBgf/xAAzEAABBAAEAwYEBQUAAAAAAAABAAIDEQQSITEFE1FBQlJhcZEUIjKBBhUzodEWI2Jy4f/EABgBAAMBAQAAAAAAAAAAAAAAAAABAgME/8QAIBEAAgIDAAIDAQAAAAAAAAAAAAECERIhMUFRAxMiof/aAAwDAQACEQMRAD8A/VUJJJWR1nNXsgSNd9JtFjpnm8R4y7A4oxHCSSRgMJkadBmJG3XTTqll42OVh8RDFmw0jZHOJ+oBl3Q27Oq1uxTXsObCzEHcFiphnsLMjIHRNb3XNyhRv2XpLhhdx6Fs5hdBOHNIa6gDlJBNGj0B9lP8/wCZC6SDCvf80bWNLqLs19L6fuvW5kYO4B9FxxiYaIaDodk6fsLivB5P9SQMts0EokaTbWU6qcW9R0Tn8R4XX+1iLBcCMg2aLJ3/AOr0JJY2NzNic8f4Ns9VP4yPUCCYka1yilv2P8vwaYZDLE15Y5mYXldVj2TqEOJEljlyMoX87aT86PxfsrRm0UQhCBGXFRhzgX60bb5JAFpljL6o1SmYHDdwUNbNItJEkKnJPiajknxNRRWSIySMibme4NHUp5/1T6BJi8C6dgALbBvW1CLBTQTguGcVQcCdPKlaWjGU3lVaLoXcjvC72Rkd4XeyYziE2R3hd7LmR57h9kAbkIQkIz4uQsDdSL6KIkLmEH5muFG1bFAW2wD0tQ+wFdE4Kbe6r+ibXjojIYY/piaNb7fPz8yniDYSTGxrS7eu1CFpjH0LKXsbO7xH3WovI7FjK1O3SkgR3OT5KMvxJceVMxra0DmWR+6ohRQ06GzeawycQkjmcXREQsGv8rYuOY1/1NB9QonFtadFRkk9obDy86FklVmF1doVAA0AAAAdgQmrrYOhJYxIBZqlF8UcbS58mVo3JT4nuqWY1V6dKVW1wjV7OB2HIsYhhA8wmY2GQ5WTBxHYEga0CgxgH+oXR8pJAAJ3IA1RlIf5KjDtPfKq5oJ3pZXEnUm002sh+yTbHBKToo98UZp8rWmromtEvPw9Xz2V1zBScA+szWurQW0GkNY1rQ0MbQFAZQlbNPrRVs8DzTZ2E3VBwVQwdVloA3lbe95QukkmydUWw+s2oQhMzIYnuqNK2J7qkEyH0KRSZBQIQp5v1D9khTTfqH7KWa/F0VC4hSbnbSSyxwtDpXhjSQAXaapxuvln/h7iE72OlxEQykktMj3B++pHYdUDSvyfajUIWPg+DkwPDocNM9sj47GZt1Vkga9BohWc76WxPdUgq4nuqQTM30ZcKFwoEI9wbW5vouucXTPBrTp2JJr5ZIuxrYVIoZHl8hoB5seiwk5Z4nR8aSjZxCryX9R7rnJf5e60ovJCIT8l3Vvuu8h99iKDJGlCEKjAhie791kixEUppjrPoQji+KGGDc5AY4HSrJ8l4TfhsNx9kg54cQWljSBFmIAuuv8ACLRNNvR9GF0pdimvRMkUrQ4m91nKu7dRLhpAMx9VGTDRSyF7mnMa2eRt91VCizTh29EZj1K4sc3EY4p+VkcXZgCdgEnKujUW+HpoQhbGROWGOauYxrspsWLpYn8Fwb5Hvcwlz35yb1v13QhKkwNphYevuuchnn7oQmFByGdD7pywHdCEBw5y2o5bUISpDtncjVixPDI8RPzC9zbFEBCEnFPo4zlF2mbWNyMa2yaFWdyhCFRJ/9k="},
-    {key:"bg21", label:"Bunny Notes", file:"../assets/backgrounds/bg21.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAwICQsJCAwLCgsODQwOEh4UEhEREiUbHBYeLCcuLisnKyoxN0Y7MTRCNCorPVM+QkhKTk9OLztWXFVMW0ZNTkv/2wBDAQ0ODhIQEiQUFCRLMisyS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0v/wAARCAB3AFQDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAEEAwIH/8QAKxAAAgECBAYCAQUBAAAAAAAAAAECETEDBFJxEhMhMlGRoeFBBSJCYfCB/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAMBAgT/xAAbEQEBAQEBAQEBAAAAAAAAAAAAARExAmEhQf/aAAwDAQACEQMRAD8A+jJNvoqlSbsqlw4Sk3wOjR7WBiJ1TSfn/I6t9b+OJI8cEtLCw5q8WdOVjavn6LysbV8/Rzvv43I5cEtDHBLQzpysbV8/Q5WNq+fob7+GRzcZLq4Oh44kq9Du8LFao5Km55eWm/Hs6lv9MmuVV4Zarw6HRZWas0v+h5adOrXs3W55+uYAOknbK90tkaTNle6WyNJO9V88AAY0AAAEqUAR2ZSOzAxKyBFZAqi7ZXulsjSZsr3S2RpJ3qvngADGgAAlEygARdQ7MpHZgYVZAKyBVF2yvdLZGkzZXulsjQ2/wqk71XzxQRbFMaAAAAABHZlI7MDCrIBWBRF2yvdLZGkzZXulsjScXqvngADGgAAAAAR2ZSOzAwqyAVkCiLtle6WyNJmyvdLZGk4vVfPAAGNAAAAAAjsykdmBhVkArIFEXbK90tkaTNle6WyNJxeq+eAAMaAAAc5zcZxiouVbtfg6Hh4ceJySSk1SoHDMSni4MkklCX8q/wB+P90OH6fl5YU8SU3GLaaUE/DuduBqHB+9yo1bp4udo4MIKqVZKNKu4dT1ZMZVZAKyBR51jJx6xdKnrm4mt+kAMbtXm4mt+kObian6QAyG05uJqfpDm4mt+kAMhtTm4mt+kObia36QAyG1ebia36RObian6QAyG15oADWP/9k="}
+    {key:"bg21", label:"Bunny Notes", file:"../assets/backgrounds/bg21.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAwICQsJCAwLCgsODQwOEh4UEhEREiUbHBYeLCcuLisnKyoxN0Y7MTRCNCorPVM+QkhKTk9OLztWXFVMW0ZNTkv/2wBDAQ0ODhIQEiQUFCRLMisyS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0v/wAARCAB3AFQDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAEEAwIH/8QAKxAAAgECBAYCAQUBAAAAAAAAAAECETEDBFJxEhMhMlGRoeFBBSJCYfCB/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAMBAgT/xAAbEQEBAQEBAQEBAAAAAAAAAAAAARExAmEhQf/aAAwDAQACEQMRAD8A+jJNvoqlSbsqlw4Sk3wOjR7WBiJ1TSfn/I6t9b+OJI8cEtLCw5q8WdOVjavn6LysbV8/Rzvv43I5cEtDHBLQzpysbV8/Q5WNq+fob7+GRzcZLq4Oh44kq9Du8LFao5Km55eWm/Hs6lv9MmuVV4Zarw6HRZWas0v+h5adOrXs3W55+uYAOknbK90tkaTNle6WyNJO9V88AAY0AAAEqUAR2ZSOzAxKyBFZAqi7ZXulsjSZsr3S2RpJ3qvngADGgAAlEygARdQ7MpHZgYVZAKyBVF2yvdLZGkzZXulsjQ2/wqk71XzxQRbFMaAAAAABHZlI7MDCrIBWBRF2yvdLZGkzZXulsjScXqvngADGgAAAAAR2ZSOzAwqyAVkCiLtle6WyNJmyvdLZGk4vVfPAAGNAAAAAAjsykdmBhVkArIFEXbK90tkaTNle6WyNJxeq+eAAMaAAAc5zcZxiouVbtfg6Hh4ceJySSk1SoHDMSni4MkklCX8q/wB+P90OH6fl5YU8SU3GLaaUE/DuduBqHB+9yo1bp4udo4MIKqVZKNKu4dT1ZMZVZAKyBR51jJx6xdKnrm4mt+kAMbtXm4mt+kObian6QAyG05uJqfpDm4mt+kAMhtTm4mt+kObia36QAyG1ebia36RObian6QAyG15oADWP/9k="},
+    {key:"bg22", label:"Sports Border", file:"../assets/backgrounds/bg22.jpg", thumb:"data:image/jpeg;base64,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"},
+    {key:"bg23", label:"Runner Waves", file:"../assets/backgrounds/bg23.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA8LDA0MCg8NDA0REA8SFyYZFxUVFy8iJBwmODE7OjcxNjU9RVhLPUFUQjU2TWlOVFteY2RjPEpsdGxgc1hhY1//2wBDARARERcUFy0ZGS1fPzY/X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX1//wAARCABvAFQDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAECBAUDBv/EAC8QAAICAgAFAwQBAgcAAAAAAAECAAMEEQUSITFBE1FxBiJhgRQkMgcVFjORweH/xAAZAQEBAQEBAQAAAAAAAAAAAAAAAwEEAgX/xAAiEQACAgAGAgMAAAAAAAAAAAAAAQIRAxITITFB0fBRgaH/2gAMAwEAAhEDEQA/ANLdllwclrLCQevUkzXK2hky+J5HphDtKk9/iVsXIOPS3pUA29zYeuhCi2nna7KV779/Yp7GfRnb649+jki0uy09uXxAHlP8XF8se7CWMOjHrq/pdFT3fuTOYxcjMYPmMUr8VLL9dSVoERQqjsBOXEkksq98l4p3bEFgw6TpIEEnpIWUOWtmTCSajpH8TFuCBEhOhHvFqaCPKPMJKEAz1L5CGjCqFNB6M7DvLeNh0442o5n8se//AJLAHQDWgPAkhKSm2qROMK3YaiY8qk+0CdSPIpOyvXzqTKD0x0CB395IKB2Go4TKAgoA0BoQ1Bm5ddCdnXTxHNBVzczGwaTfl3JTXvW2Pc+w9zOiMrorodqwBB9wZ5j6+I/yvFq/j+rZZkBazz8vK2iAfzPQ4ND4mFRjWWeo1SBC586gHcwjhAGDGd+JGPcAfQRyPneuscAccUW4BKRd1rUu7Kqr1LMdACE5ZFNWTS9ORWttTjTI42D8wDwP+nsnifCm4hwvitllgvssSpm5kYq55Su+x1qeh4X9T4F+Ah4jlV4mZX9l9Vx5G5x3IHsZcbKxOHVfxuH0VqASeVBpAT3+ZjXquRktk3IjXMAC5Ub0Owl4YEpbvYlLFS2LZ+p8W13/AI1lDIrFdvYAdiEqgIBo00N+WqUmEtotdL9PGovk9ZuEXiBOpxHQSi3oyIbccAluG4ooBKJ1V0ZGG1YaIhEzqilnIVR3Jmowy8qitf6TGxSznrznx+5z/j4+EA2SRZb4QdhLT5l2QxqwlIHmwzlrHw2239Rkn96M6k5VT98HO6u0Z2Ra19vOyKvTWgIS/ZhZWW3rW8isfB8CE9qcEqJuM2zWkWjJ0Ih7zhO0gAdzpCBgBuEIQBiQtqS5OWxeYb3JDoOp3I2MVXYG4VmOq3AKqJyKoVfYThVj00HaL9x8nqZ3B2oJGpEibbMpPcCdmEgy2b+3l1+RCYLGz6VnIZgo3pRsn4ErWcXwKf8Afterrr76XH/Utp1nDimSMThOZkPtlrpdtb79O0HozuF/UGNfhVtnZVCZTFiUUEfbzEDp8Ca1V9WSG9MswGtkoQOvyJ5v/D/J9XgVlZDLZVeQ2+52ARPU7MAYGukN+0PmLcAe4GVczPxcFd5FoDeEHVj+px4bxSriPqCuqys19+bqD+xNyurNyurL0JExg6+Zhg9Qj3+IQBDQEzuPKbuB51SrzF6iuvkgTtl5lOHWGuJ2f7VA6mYGbxXIylatdVVHoVHcj8mUjhuRSGHKRbqycTg/EOKJynT2VlFXzqsA/HaQTN4vxO0HDHoVA9x2/ZPf9THVdOG0Do70fM2L+N3vUEx6ko6aJHXXx7SulXCL6WXhWbV+XTh0qcu5Q+hsAdWP4ExruLZ2fYaeG0sg8t3b/nsJn4/ovlB85nZD/cd7JnosHOwmtGLigqPACaBnlwydWeHDJ1ZSw/p5Ob1eIWG1z1KA9P2e5m4lSVViupFRB2VRoScJJyb5ISk5cnMiAGpMxTyYR6wjhAP/2Q=="},
+    {key:"bg24", label:"Gym Equipment", file:"../assets/backgrounds/bg24.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA8LDA0MCg8NDA0REA8SFyYZFxUVFy8iJBwmODE7OjcxNjU9RVhLPUFUQjU2TWlOVFteY2RjPEpsdGxgc1hhY1//2wBDARARERcUFy0ZGS1fPzY/X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX1//wAARCABvAFQDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAEDBAUGAv/EACwQAAICAgAEBgICAgMAAAAAAAECAAMEEQUSITEGEyJBUWFxwRShFZEyQlL/xAAZAQADAQEBAAAAAAAAAAAAAAAAAQMCBAX/xAAhEQACAgEEAgMAAAAAAAAAAAAAAQIRAxIhMUEEURMUMv/aAAwDAQACEQMRAD8A6jGy8bKLjHuSwqPUB3EnnM43C+M8Nr/kYN9Fljjd2LaPS34b51JqPETPlpRk4T42vTaLG6o2+mvkS+m5NROa6Vs6CIgEEEbBjjmKGR11pUvKg0IrlL16XXMCCAffR3JYoRSiqQclMVuzemtlPy+tD++stIgrQIOwHvPUIwCeLbq6UDXOEUsqbPyTof2Z7kWQheklK6rLEIetbd8vMO29RDRTuyc1Mm6pTwvVb8vryirdgeo5eneEzm8H8IzWbLy1yqci4l7K6rFKoxPUDp2hM7lKidEP1KA4RgjKOT5RNhfnO2JHN86l8fqE2m1wSaTCMQjgAQ1CEAFqEcDADzH7GKA7GIYQhCAgH6hAfqEAPQhAQjAIQi3ABxGLcIAEB2MIDsYgCEIRgZacZrsPLXi5atrvdjsi/wCzNJG5kVvkAxlVcacBh8GAAA0B0k0pa229hnoQhqGpQQRR6igBynjDI4jTZjDFe6vHKnbVbG332JH1J8ji2fw7wzi5N9fNmWEITYO3fRYfOhOkHSR30VZFLVZFS2Vt3VxsGT7ZW0oq0ZPhvi13FcW1shFWypwpZBoNsb7fM2h2Mhx8ajEqFWNUlVY68qDQkrMqVs7HSqNkn2E1HdGZ0mxwmHdx5lcirDZl+S2oS3xT9HN9jF7NwfqEhx72uQu+PfjjmKAXKFLH66n4k0kXao9CEQjjEERjnkwAJmYvCExshcpcnIe8k+aXsJWzfca9vr8TURS7BVGyZcsx0FbcigNIO9TOmNaUUpj8ZyugxUPfRf8AQ/c15TzOG1ZRNgJrt/8AQ6g/kToxVGtRxeUpTi1Awqsa+5S1VTOoOtj5hOlopWilak7KP9/cJV5n0ckfBhW73Mjh3DrcbWHnZeVn2eaMtLwSEr+js9SevT79puTlT4hzCxIrqAK6A12PzOh4flDLxqrRrVgKso/6tOTWktj1nBt7lkT0J4UFQFOvT02PeehKJ2rIyVOhzyYzFGInw9+cfxL05PN8TVcLzHx1xmvcAcx5+UD312lLI8bZLoRj4ddbH3dy39dJN8lo8HSRjsZkcC4jl8RqstvprStTyhlJ9R9+k1h2M0mmTaa5CEITRk4BxpyNdQZt+GrnF9tHdCvP+COktZfAUyMlrqrvKDnbLy76/Uv4PD6MFSKgSzf8nbuZGMGmdE8iaLcIQlTnCE8uodCp2ARrpKTfycUqxbzKlGtdjqKSfRqLiv0crxfhueeKWM1DMMi0+Wy9Qdnp19pv0eGuHJWgtR7HAHM3OQCfxJbs+1n3V6FHseu/zJKM92dUesEk62vSEYurYSyK6iXMfHqxaEooTkrXsJKOxiMhuzMfHW422cvlJ5j9CdL8zOPizWTmiRra0OnsRT8FgITjr6+KeIrP8hw/BxVxT6K2vb1uB7nXb8fUJVaO7JtSP//Z"},
+    {key:"bg25", label:"Workout Trio", file:"../assets/backgrounds/bg25.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA8LDA0MCg8NDA0REA8SFyYZFxUVFy8iJBwmODE7OjcxNjU9RVhLPUFUQjU2TWlOVFteY2RjPEpsdGxgc1hhY1//2wBDARARERcUFy0ZGS1fPzY/X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX1//wAARCABvAFQDASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAAAAECAwQGBQf/xAAxEAABBAEDAwEHAgcBAAAAAAABAAIDEQQSITEFE0EGFCJRYXGBkaGxFSMmMjSywfD/xAAZAQEBAQEBAQAAAAAAAAAAAAABAAIDBAX/xAAiEQACAgEFAAIDAAAAAAAAAAAAAQIRAwQSITFBIlFScfD/2gAMAwEAAhEDEQA/AOxTQhB6gTpFJ0oBUilKkUoCNJUp0koSKSkkohITQoQCkkFIKAE6QE1AKkUpUilARpClSSiIEJFTUSoSKE0KEYTCQUgoBqQSCYUAI2TVckMb3Nkc23svSb4UwRNIhKKMRxhrS4jc+8bO+6kVCRKiVIpFQkUIQogCkFEKQUQzqI90gH5psJI96vlS88Z8vtbGHEd7M9xY2cOujxuPAJ4XoN/tCEwaK8yd2NiSzMjMrmNtrAa1HgBZsHKzZXSx52LFC5rQ5ropC5pF1W42Knly97Gc2CXtv7rWWdrIcLA+OwKvDmi2+Tv9kNjRaOAkUxwFnyckQFjRG+WR96WMq9uTultJWwSbdItJANXulyq4ZmTwtlZelw88qaE7GqEhCFohJ2RVC9/wkEONNJKH0Rif7KIIg4kR90Pa3X51X+L3pek3hcxEzVMwEGi4Xt4tdMhI4YsjyXZlzA4ljmt1FrrG10aVcImfksc8EfbalT1PrGH07Jigy5DGZWl4eWktFGqNLJB6kwZOowYsBdKJXaTKBTWnxzzuj09O9JUdCsMrZHdRhkaB22scDZ82ttrzcxk5mb2g4jTWyXHe6ujDnsV1Zb09r2Y7mvIJ7juD4taisuBG6OE6wQS7grSlRUeESk5LcwQlaEmiOoCtxus+bOG9PyJGmyIiRX0WK36W6zy0CvPAv93KMsrZWy4xcfeBDjRAJrb7DwEJ8nleo+zm35WQ+IRvnlcwcAuNLu8Z5kxonu5cxpP4XBRRGWeOEcvcG/krv2gNAaOBsF2yVwWnt2zi/WjieqQN8CDb7uK8LF1HLg0Al3cbVc8hdN6yEkcuJM13uua5haRYsG/P1XlenWyT9YxowdMbCZHBooEAXv8AelyOj7PoZO5+qi6BzyHNnewVwACP1CLVhdpYClV6M74SK+32wBrc75uO6RVkvhY8zKZiY7ppPGwHxPwU+xjJKG6ReheFH6gboHdx3a/Ol236oQcVrMH5E3ve/wDlxtq+K8q+DDltr3EsdwSOf/fJaMTFbA2zu/8AZaVlIzj01/KfZx2KHQ9aibyWz6f1pdovId03H9r/AIgyfU7uB+jSd72Av6r1V1m06o7YY7U0c360/wATEJ47rv8AVU9IhZh+rMiCOtBiJZ8gQ0hb/VkPd6MX+YpGu/O3/VTiQ/1fkv8ADMdp/LWhYNtcnR2pybBoWXKnGNjSTlurQLr4pwTPyMeOaRgY57bLQbpRtwbqXhZlTMgxDO+9LBZpc3PNPM5vUJIRNiObpdHezR5HyN+Vs9QZEjMaOANHbkNl10dvC8mRmIYLxcqVpeQDC8H9xsps+Xq5SjLZ53/ff6MbqLiWim3sD4CFbmYsmHOYZa1VYLTsQhR8eScW0+z/2Q=="},
+    {key:"bg26", label:"Compass & Parchment", file:"../assets/backgrounds/bg26.jpg", thumb:"data:image/jpeg;base64,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"},
+    {key:"bg27", label:"Pressed Flowers", file:"../assets/backgrounds/bg27.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA8LDA0MCg8NDA0REA8SFyYZFxUVFy8iJBwmODE7OjcxNjU9RVhLPUFUQjU2TWlOVFteY2RjPEpsdGxgc1hhY1//2wBDARARERcUFy0ZGS1fPzY/X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX1//wAARCABvAFQDASIAAhEBAxEB/8QAGgAAAwEBAQEAAAAAAAAAAAAAAAEEAwIFBv/EAC0QAAEEAQMDAwIGAwAAAAAAAAEAAgMRIQQSMRMiQVFhcTKRBRRCUqHRI4Gx/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABsRAQEBAQADAQAAAAAAAAAAAAABEQISITFB/9oADAMBAAIRAxEAPwD66BxOnjIaGAtHa3gey2k04e5jy423IyodX+YMsQhEnTcBe35XqDgLDmS/W12e5WYhIJOM5K66WbsX60tAU1pkRqf8szex/ll7SScXytOmMWfsuyhGDXAiYBQH8o6baOTldoRkDNsLGgiibUk7mR7i8HaD6K42CoJd5lsUWnkehSswO2kbRQHHhCwmEu4bN9V+mkKdXistB6dk9pJx5W7foGFKCGtpook2fkqlhJjaSc0nymmE0qRfhUkzkIHCEWgwgITQTl/CijaWvd2k7jbtx4Vkn0n4U7rFkDPhKnDAoAWhNoIFBCnTSQakz6FmqEe0vy1rjg+mfRXQklougSLoLKAh2njIYGW0Ha3gey1jHefhHJ1ojF+6E1ogkUmhIBA90ITDmS9pI5ped+Ial+k03WZEH0QHWaAHqvSIsUV50s8bYHSSC4wSKLeeRSjpXP1tpJvzOlinLDH1G7tpN0hdRH/EztDe0do4HshSpzK0ucCHP219INBUQk7TfKxq6+r/AItoj2nCuTE2tOULkeyapJoSR4SBoSQgwQV587Zuudoa+I4I/aQbv4/peivOjj6eqlLGOd1HEvc4/TXAA+6XXwRhrHasyg6d0wYWg9gbX8oV7WkNAJ4QsvFrO8/CAAGAP9lbQgiMAkE+wU7X2wOA54FLeE4NraM60pK80i0eU0mUJJoAQkmDjKAZUcji0PLcu8AZyq15f4jO/Saczxxh/cNxJoAeqjpXM24qYAxtNx5Qs9LKdTpo5y0s6jd200UKFX77djIGD8Wt4x2/KldeNtZVUeWC1pE12muQU7TI0IQmRVaOE0JAnZaVFLqYBpzK7MYJwW88ivurHA5r0XnyiXqgs2vicKI/aR5+P6U9KiyINMTDtDe0do4GOELzdZJreqDpzKGFoPYAR/KFn5NJxv6v2HFnz4WkT90ZNVRpYtbsaC2gSbPyU9P1GQBs8gfIOXNFAq5brOtxSLXO8AX4Ucv4lEzUDTsaXyAgPHG0Hz7q9hLznCY4UzpyHFn6gAePGf6WU2vjgd03uJfQNAeLpLykOS1baalMzhNE0P7ZAaFZvm/stS9wxdlGwsbDlQMhEGocYoyWykue68NrxXvlUh7j5ws5HlrHuxuAsX6ot9CBoIaAfCF0yMMbQx5whQp//9k="},
+    {key:"bg28", label:"Wheat & Aged Paper", file:"../assets/backgrounds/bg28.jpg", thumb:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA8LDA0MCg8NDA0REA8SFyYZFxUVFy8iJBwmODE7OjcxNjU9RVhLPUFUQjU2TWlOVFteY2RjPEpsdGxgc1hhY1//2wBDARARERcUFy0ZGS1fPzY/X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX1//wAARCABvAFQDASIAAhEBAxEB/8QAGgAAAwEBAQEAAAAAAAAAAAAAAAECAwQFBv/EACsQAAICAQIFAwIHAAAAAAAAAAABAhEhAxIEMTJBcSJRYRORM0JDUoHB0f/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgQD/8QAGREBAQEBAQEAAAAAAAAAAAAAAAERAjEh/9oADAMBAAIRAxEAPwD6mvSzRIiXQy0c7ooodDGghUNIYyhAkMYRNClEtktgYtZAprIEa1nPoZpHkZy6GaR5AUMQ0EUFAMqEMQwAljZDKE2AmBlUPpZaM79LLRGqsaJGgi7GSBUUIVgAyJP1DF+ZFBQDADDsWuRmso0RlqqQ0SARYybBMIY7EBQEN+teGUT+ovDAeQBgUc6untWUsGkJboxl2atGq0Ywg11No59G/pzVNbZd/kl5xd1qMhMpMgoETY7AqxCsLAqyH+IvDHZL614KigJAK2fLP3eEcunHbxM4WqlHu+Vex1LHLn92crThx8XTSlFq1m2b6Yinh0wRequ/95M9yVW+ZizK3PqwJsdkVQybDcEMl9SHZLeShgS2BFbac92nFv8AxWRtX1ty/b4Ry8JrrVUo1VZydGbd+DcuxizK26lS5fGDy+I36eu1J5WU17HpQunn+Tg46LWqpe67/BO/NXj3GmjrLUXs1zNbPOhKUJJo7YT3wTqjEr0saBdEWFhFpgyLByoCgMnIBpj/2Q=="}
   ];
   const BG_MAP = {}; BACKGROUNDS.forEach(b=> BG_MAP[b.key]=b);
   const BUILTIN_PAPERS = ['grid','dot','plain'];
@@ -287,6 +294,70 @@ window.JOURNAL = (function(){
     cap.style.fontSize = d.capSize ? (d.capSize+'px') : '';
   }
 
+  /* ---- video ----
+     A video is a LINK plus its own poster image. Only the poster is embedded (a data URL,
+     exactly like a photo), so a story file stays small no matter how long the clip is and
+     the clip streams from wherever it is hosted.
+
+     The link must be a DIRECT file (an .mp4 or .webm served over https, e.g. a Cloudinary
+     upload). YouTube and Vimeo are refused on purpose: their embeds are iframes that drag
+     their own branding, channel name, like and share buttons onto the page, none of which
+     can be turned off, and an iframe cannot be rasterised into the PDF either. A direct
+     file plays in the browser's own <video>, which is clean and has native controls.
+
+     Every surface draws the same FACADE — the poster with a play badge on top — and only
+     the reader swaps in a real player, on click. That keeps the page light, lets several
+     clips share a page without all of them loading at once, and means the PDF export
+     rasterises an ordinary <img> instead of a player, which html2canvas cannot draw.
+
+     The badge is a border-radius circle plus a CSS-border triangle on purpose, NOT an
+     inline SVG: html2canvas renders borders and border-radius reliably but drops SVG, so
+     an SVG badge would vanish from the PDF without any error. */
+  function parseVideoUrl(url){
+    url=(url||'').trim(); if(!url) return null;
+    // streaming pages cannot be played in a bare <video>, and their embed players bring
+    // their own branding, channel name and share buttons onto the page
+    if(/(?:youtube\.com|youtu\.be|vimeo\.com|dailymotion\.com)/i.test(url)) return {kind:'unsupported', src:url};
+    if(/^http:\/\//i.test(url)) return {kind:'insecure', src:url};
+    if(/^https:\/\//i.test(url)) return {kind:'file', src:url};
+    return null;
+  }
+  const VIDEO_FRAME_DEFAULT='#fffdfb';
+  function applyVideoStyle(el,d){
+    ['plain','card'].forEach(x=> el.classList.remove('style-'+x));
+    const st=(d.style==='card')?'card':'plain';
+    el.classList.add('style-'+st);
+    if(d.shadow===false) el.classList.remove('has-shadow'); else el.classList.add('has-shadow');
+    if(d.noCap) el.classList.add('nocap'); else el.classList.remove('nocap');
+    el.style.background = (st==='card') ? (d.frameColor||VIDEO_FRAME_DEFAULT) : '';
+    const wrap=el.querySelector('.vwrap');
+    if(wrap) wrap.style.borderRadius=(d.radius!=null? d.radius : 8)+'px';
+  }
+  function fillVideoFace(wrap, d){
+    wrap.innerHTML='';
+    const img=document.createElement('img'); img.className='vposter'; img.alt=''; img.draggable=false;
+    if(d.poster) img.src=d.poster;
+    const play=document.createElement('div'); play.className='vplay'; play.appendChild(document.createElement('i'));
+    wrap.appendChild(img); wrap.appendChild(play);
+    return wrap;
+  }
+  function buildVideoFace(d){ const w=document.createElement('div'); w.className='vwrap'; return fillVideoFace(w,d); }
+  // reader only: replace the facade with a real player
+  function playVideo(el, d){
+    const wrap=el.querySelector('.vwrap'); if(!wrap || wrap.dataset.playing || !d) return;
+    wrap.style.height=wrap.offsetHeight+'px'; // hold the box so the page does not jump
+    wrap.dataset.playing='1'; wrap.innerHTML='';
+    const node=document.createElement('video');
+    node.src=d.src; node.controls=true; node.autoplay=true; node.setAttribute('playsinline','');
+    if(d.poster) node.poster=d.poster;
+    node.className='vplayer'; wrap.appendChild(node);
+  }
+  // put a player back to its poster — used when another clip starts, and before the PDF export
+  function stopVideo(el, d){
+    const wrap=el && el.querySelector('.vwrap'); if(!wrap || !wrap.dataset.playing) return;
+    delete wrap.dataset.playing; wrap.style.height=''; fillVideoFace(wrap, d||{});
+  }
+
   function applyPaper(pageEl, paper){
     paper = paper || 'grid';
     pageEl.classList.remove('grid','dot','plain','bg');
@@ -345,6 +416,9 @@ window.JOURNAL = (function(){
     /* paragraph / line spacing: a multiplier (1.0 – 3.0). Unset inherits the CSS
        default (1.45), so every already-published story renders exactly as before. */
     body.style.lineHeight = d.spacing ? String(d.spacing) : '';
+    /* manual box height: a MINIMUM, so longer text still grows and is never clipped.
+       Unset keeps the old auto height, so every already-published story is unchanged. */
+    body.style.minHeight = d.h ? (d.h+'px') : '';
   }
 
   /* INLINE FORMATTING
@@ -355,11 +429,27 @@ window.JOURNAL = (function(){
      inside the html.
 
      For safety we never inject arbitrary markup: setRichText whitelists only the formatting
-     tags <b> <strong> <i> <em> <u> <br> and escapes everything else. This keeps rendering
+     tags <b> <strong> <i> <em> <u> <s> <br> <ul> <ol> <li>, plus a <span> carrying only a
+     whitelisted font-family, font-size or colour, and escapes everything else. This keeps rendering
      identical between the editor and the public reader, and keeps the PDF export correct. */
+  /* A <span> may carry ONLY these three properties, and the style attribute is rebuilt
+     from scratch rather than passed through, so nothing else can ride along inside it. */
+  const SAFE_CSS={
+    'color':       /^#[0-9a-f]{3,8}$|^rgba?\([\d\s,.%]{1,40}\)$|^[a-z]{3,20}$/i,
+    'font-size':   /^\d{1,3}(\.\d+)?px$/,
+    'font-family': /^[-a-z0-9 ,'"]{1,120}$/i
+  };
+  function safeStyle(el){
+    const out=[];
+    for(const prop in SAFE_CSS){
+      const v=(el.style.getPropertyValue(prop)||'').trim();
+      if(v && SAFE_CSS[prop].test(v)) out.push(prop+':'+v);
+    }
+    return out.join(';');
+  }
   function sanitizeRich(html){
     if(html==null) return '';
-    const allowed={B:'b',STRONG:'b',I:'i',EM:'i',U:'u',BR:'br'};
+    const allowed={B:'b',STRONG:'b',I:'i',EM:'i',U:'u',S:'s',STRIKE:'s',DEL:'s',BR:'br',UL:'ul',OL:'ol',LI:'li'};
     const drop={SCRIPT:1,STYLE:1,IFRAME:1,OBJECT:1,EMBED:1}; // discard these AND their contents
     const tmp=document.createElement('div'); tmp.innerHTML=String(html);
     const out=document.createElement('div');
@@ -368,6 +458,13 @@ window.JOURNAL = (function(){
         if(n.nodeType===3){ dst.appendChild(document.createTextNode(n.nodeValue)); return; }
         if(n.nodeType!==1) return;
         if(drop[n.nodeName]) return; // skip element and everything inside it
+        if(n.nodeName==='SPAN' || n.nodeName==='FONT'){
+          // per-word font / size / colour: kept only if the style survives the whitelist
+          const st=safeStyle(n);
+          if(st){ const e=document.createElement('span'); e.setAttribute('style', st); walk(n,e); dst.appendChild(e); }
+          else walk(n, dst);
+          return;
+        }
         const tag=allowed[n.nodeName];
         if(tag){ const e=document.createElement(tag); if(tag!=='br') walk(n,e); dst.appendChild(e); }
         else { walk(n, dst); } // unknown but harmless wrapper: drop wrapper, keep its text
@@ -376,7 +473,7 @@ window.JOURNAL = (function(){
     return out.innerHTML;
   }
   // true when the html carries real formatting beyond plain text (so we know to use it)
-  function hasRich(d){ return !!(d && d.html && /<(b|strong|i|em|u|br)\b/i.test(d.html)); }
+  function hasRich(d){ return !!(d && d.html && /<(b|strong|i|em|u|s|strike|del|br|ul|ol|li|span)\b/i.test(d.html)); }
   function setTextContent(body, d){
     if(hasRich(d)){ body.innerHTML = sanitizeRich(d.html); }
     else { body.textContent = d.content||''; }
@@ -386,7 +483,7 @@ window.JOURNAL = (function(){
   function applyRot(el, d){ el.style.transform = d.rot ? ('rotate('+d.rot+'deg)') : ''; }
 
   function buildElementRO(d){
-    const el=document.createElement('div'); el.className='el el-'+d.type;
+    const el=document.createElement('div'); el.className='el el-'+d.type; el.__data=d;
     el.style.left=(d.x||40)+'px'; el.style.top=(d.y||120)+'px'; if(d.w) el.style.width=d.w+'px';
     if(d.type==='text'){
       const b=document.createElement('div'); b.className='text-body'; setTextContent(b,d); applyTextStyle(b,d); el.appendChild(b);
@@ -395,6 +492,10 @@ window.JOURNAL = (function(){
       const img=document.createElement('img'); img.src=d.src; img.draggable=false; el.appendChild(img);
       const cap=document.createElement('div'); cap.className='cap'; cap.textContent=d.caption||''; applyCaptionStyle(cap,d); el.appendChild(cap);
       applyPhotoStyle(el,d); applyRot(el,d);
+    } else if(d.type==='video'){
+      el.appendChild(buildVideoFace(d));
+      const cap=document.createElement('div'); cap.className='cap'; cap.textContent=d.caption||''; applyCaptionStyle(cap,d); el.appendChild(cap);
+      applyVideoStyle(el,d); applyRot(el,d);
     } else if(d.type==='sticker'){
       const s=document.createElement('span'); s.className='s-emoji'; s.textContent=d.emoji; if(d.size) s.style.fontSize=d.size+'px'; el.appendChild(s);
       applyRot(el,d);
@@ -431,6 +532,7 @@ window.JOURNAL = (function(){
     for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
 
   return { CONFIG, PAGE_W, FONTS, FONT_GROUPS, FONT_ALIASES, resolveFontKey, getFont, BACKGROUNDS, BG_MAP, BUILTIN_PAPERS, DOODLES, DOODLES_MAP, doodleSVG, applyPhotoStyle, applyCaptionStyle, applyPaper, normalizePaper,
+           parseVideoUrl, applyVideoStyle, buildVideoFace, fillVideoFace, playVideo, stopVideo,
            uid, today, escapeHtml, slugify, formatDate, compress, encodeCanvas, applyTextStyle, sanitizeRich, hasRich, setTextContent, applyRot,
            buildElementRO, renderPageRO, b64encode, b64decode };
 })();

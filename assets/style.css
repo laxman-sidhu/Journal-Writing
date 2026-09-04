@@ -105,6 +105,9 @@ a{color:inherit; text-decoration:none;}
 .el-text .text-body b, .el-text .text-body strong{font-weight:700;}
 .el-text .text-body i, .el-text .text-body em{font-style:italic;}
 .el-text .text-body u{text-decoration:underline;}
+.el-text .text-body s{text-decoration:line-through;}
+.el-text .text-body ul, .el-text .text-body ol{margin:0; padding-left:1.3em;}
+.el-text .text-body li{margin:0;}
 
 /* ---- photos: selectable looks (card default, plain, shadow, frame, border) ----
    SHADOW is now an independent add-on (.has-shadow), so any look can cast a shadow,
@@ -137,6 +140,32 @@ a{color:inherit; text-decoration:none;}
 /* the independent shadow toggle */
 .el-photo.has-shadow{box-shadow:0 9px 24px var(--shadow);}
 .el-photo.style-border.has-shadow{box-shadow:0 6px 16px var(--shadow);}
+
+/* ---- video: a poster with a play badge, swapped for a real player on click ----
+   The badge is a CSS circle plus a CSS-border triangle rather than an inline SVG, because
+   html2canvas (used by the PDF export) renders borders and border-radius reliably but
+   silently drops SVG. Keep it that way or the play marker will vanish from the PDF. */
+.el-video .vwrap{position:relative; overflow:hidden; border-radius:8px; background:#100c1a; line-height:0;}
+.el-video .vposter{display:block; width:100%; height:auto; pointer-events:none;}
+.el-video .vplayer{display:block; width:100%; height:100%; border:0; background:#100c1a;}
+.el-video .vplay{position:absolute; left:50%; top:50%; width:56px; height:56px; margin:-28px 0 0 -28px;
+  border-radius:50%; background:rgba(16,12,26,.5); border:2px solid rgba(255,255,255,.94);
+  box-shadow:0 4px 16px rgba(0,0,0,.28); pointer-events:none; transition:.16s;}
+.el-video .vplay i{position:absolute; left:50%; top:50%; width:0; height:0; margin:-10px 0 0 -5px;
+  border-left:17px solid #fff; border-top:10px solid transparent; border-bottom:10px solid transparent;}
+.el-video .cap{font-family:var(--hand); font-size:18px; color:var(--ink-soft); text-align:center;
+  margin-top:6px; outline:none; min-height:18px; line-height:1.25;}
+.el-video.nocap .cap{display:none;}
+/* CARD look: the same white photo-card treatment as a framed photo, so a clip and a photo
+   sitting side by side on a page match. PLAIN is just the video with nothing around it. */
+.el-video.style-card{padding:8px 8px 28px; border-radius:4px;}
+.el-video.style-card .cap{margin-top:8px;}
+.el-video.style-card.nocap{padding-bottom:8px;}
+.el-video.style-plain{padding:0; background:none !important;}
+.el-video.has-shadow{box-shadow:0 9px 24px var(--shadow);}
+/* only the reader plays: the badge lifts on hover there, and the whole tile is the button */
+.reader-stage .el-video{cursor:pointer;}
+.reader-stage .el-video:hover .vplay{background:rgba(16,12,26,.72); transform:scale(1.07);}
 
 .el-sticker .s-emoji{font-size:54px; line-height:1; display:block; filter:drop-shadow(0 3px 4px var(--shadow));}
 .el-imgsticker img{display:block; width:100%; height:auto; pointer-events:none; filter:drop-shadow(0 4px 6px var(--shadow));}
