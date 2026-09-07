@@ -113,9 +113,9 @@ a{color:inherit; text-decoration:none;}
    The outline is an SVG painted behind the words; the text region itself is carved by two
    invisible floats carrying a shape-outside polygon, so the words really follow the outline
    instead of sitting in a rectangle with a decorative border drawn around it. */
-.el-text.shaped{position:absolute;}
+.el-text.shaped{position:absolute; pointer-events:none;}
 .el-text.shaped .shape-art{position:absolute; left:0; top:0; z-index:0; pointer-events:none; overflow:visible;}
-.el-text.shaped .text-body{position:relative; z-index:1; background:transparent !important; border-radius:0;}
+.el-text.shaped .text-body{position:relative; z-index:1; background:transparent !important; border-radius:0; pointer-events:auto;}
 .shape-ex{pointer-events:none; user-select:none; -webkit-user-select:none;}
 
 /* ---- photos: selectable looks (card default, plain, shadow, frame, border) ----

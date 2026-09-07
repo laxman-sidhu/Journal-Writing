@@ -124,6 +124,13 @@
   /* ===== shaped text boxes ===== */
   /* the outline is an SVG behind the words, so the selection ring follows the box, not the shape */
   .el-text.shaped .text-body{min-width:80px;}
+  /* the shaped box itself is not a pointer target (so its hollow part is click-through),
+     which means the handles sitting outside it have to opt back in */
+  .el-text.shaped .hnd, .el-text.shaped .roth, .el-text.shaped .pthnd,
+  .el-text.shaped .ctrl, .el-text.shaped .ctrl .dot{pointer-events:auto;}
+  /* Stacking follows Arrange (document order). The only exception is while an item is being
+     dragged, when it lifts above everything so you can see what you are moving. */
+  .el.dragging{z-index:9999 !important;}
   /* custom-shape vertex handles: drag to reshape the polygon */
   .pthnd{position:absolute; width:13px; height:13px; margin:-6.5px 0 0 -6.5px; border-radius:50%;
     background:#fff; border:2px solid var(--lav-deep); box-shadow:0 1px 3px var(--shadow);
@@ -137,6 +144,21 @@
   body.painting{cursor:copy;}
   body.painting .el{cursor:copy !important;}
   #fmtPaint.on{background:var(--lav-deep); color:#fff; border-color:var(--lav-deep);}
+
+  /* ===== layers panel ===== */
+  /* Lists everything on the page top-first, so an item hidden behind something else is
+     always reachable — including on a phone, where there is no modifier key. */
+  .layerpop{position:fixed; z-index:300; display:none; width:250px; max-height:58vh; overflow:auto;
+    background:var(--paper); border:1px solid var(--paper-edge); border-radius:14px;
+    box-shadow:0 16px 40px var(--shadow); padding:7px;}
+  .layerpop.open{display:block;}
+  .layerrow{display:flex; align-items:center; gap:9px; width:100%; padding:8px 10px; border:0;
+    border-radius:9px; background:none; cursor:pointer; font:700 13px var(--body); color:var(--ink); text-align:left;}
+  .layerrow:hover{background:var(--soft);}
+  .layerrow.sel{background:var(--lav-deep); color:#fff;}
+  .layerrow .ico{width:17px; text-align:center; flex:none;}
+  .layerrow .nm{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .layerempty{padding:12px 10px; font-size:13px; color:var(--ink-soft);}
 
   /* alignment guides shown while dragging */
   .guide{position:absolute; display:none; background:var(--lav-deep); z-index:70; pointer-events:none; opacity:.75;}
@@ -166,7 +188,15 @@
   .sheet-mask.open{display:flex;}
   .sheet{background:var(--paper); width:min(540px,100%); max-height:74vh; border-radius:22px 22px 0 0; padding:18px 18px 26px; overflow:auto;}
   .sheet h3{font-family:var(--hand); font-size:26px; margin:0 0 4px;}
-  .sheet .cat{font-size:12px; font-weight:700; color:var(--lav-deep); letter-spacing:.5px; text-transform:uppercase; margin:14px 0 6px;}
+  /* Each category needs clear air above it so groups read as separate sections rather than
+     running straight on from the tiles before them. :first-of-type keeps the top tight. */
+  /* Category headings appear in both the sticker sheet and the background modal, so the rule
+     covers both containers. Clear air above each group stops one section running straight on
+     from the tiles of the one before; the first heading after the title stays tight. */
+  .sheet .cat, .modal .cat{font-size:12px; font-weight:700; color:var(--lav-deep); letter-spacing:.5px;
+    text-transform:uppercase; margin:26px 0 8px; padding-top:15px; border-top:1px solid var(--paper-edge);}
+  .sheet .cat:first-child, .modal .cat:first-child,
+  .sheet h3 + .cat, .modal h3 + .cat{margin-top:10px; padding-top:0; border-top:0;}
   .customrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
   .customrow input[type=text]{flex:1; min-width:150px; padding:9px 12px; border:1px solid var(--paper-edge); border-radius:10px; font-size:15px; outline:none;}
   .stickgrid{display:grid; grid-template-columns:repeat(8,1fr); gap:6px;}
@@ -207,7 +237,28 @@
   #cropArea{position:relative; touch-action:none; user-select:none; margin:0 auto; max-width:100%; line-height:0;}
   #cropImg{display:block; width:100%; pointer-events:none; border-radius:6px;}
   #cropBox{position:absolute; border:2px solid #fff; box-shadow:0 0 0 9999px rgba(52,64,90,.5); cursor:move; touch-action:none;}
-  #cropHandle{position:absolute; right:-10px; bottom:-10px; width:22px;height:22px;border-radius:50%;background:var(--lav-deep);border:2px solid #fff; cursor:nwse-resize; touch-action:none;}
+  /* eight handles, so the box can be pulled from any side or corner instead of one corner */
+  #cropBox .ch{position:absolute; width:14px; height:14px; background:#fff; border:2px solid var(--lav-deep);
+    border-radius:3px; touch-action:none; box-sizing:border-box;}
+  #cropBox .ch.nw{left:-8px; top:-8px; cursor:nwse-resize;}
+  #cropBox .ch.ne{right:-8px; top:-8px; cursor:nesw-resize;}
+  #cropBox .ch.sw{left:-8px; bottom:-8px; cursor:nesw-resize;}
+  #cropBox .ch.se{right:-8px; bottom:-8px; cursor:nwse-resize;}
+  #cropBox .ch.n{left:50%; top:-8px; margin-left:-7px; cursor:ns-resize;}
+  #cropBox .ch.s{left:50%; bottom:-8px; margin-left:-7px; cursor:ns-resize;}
+  #cropBox .ch.w{left:-8px; top:50%; margin-top:-7px; cursor:ew-resize;}
+  #cropBox .ch.e{right:-8px; top:50%; margin-top:-7px; cursor:ew-resize;}
+  .croptools{display:flex; flex-wrap:wrap; gap:6px; margin:2px 0 10px;}
+  .cropchip{font:700 12.5px/1 var(--body); padding:8px 12px; border-radius:999px; cursor:pointer;
+    background:var(--soft); border:1px solid var(--paper-edge); color:var(--ink); transition:.13s;}
+  .cropchip:hover{border-color:var(--lav);}
+  .cropchip.sel{background:var(--lav-deep); border-color:var(--lav-deep); color:#fff;}
+  .cropcustom{display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin:0 0 12px;
+    font-size:12.5px; font-weight:700; color:var(--ink-soft);}
+  .cropcustom input{width:58px; padding:7px 8px; border-radius:9px; border:1px solid var(--paper-edge);
+    font:inherit; color:var(--ink); text-align:center; background:#fff;}
+  .cropcustom .btn{padding:6px 12px; font-size:12.5px;}
+  .cropsize{margin-left:auto; font-weight:700; color:var(--ink-soft);}
 
   /* ===== rotate handle + degree bubble ===== */
   .roth{position:absolute; left:50%; bottom:-36px; transform:translateX(-50%); width:26px;height:26px;border-radius:50%;
@@ -333,6 +384,7 @@
       <span class="grp"><span class="lbl">Arrange</span>
         <button class="rbtn" id="backBtn" title="Send behind everything" disabled>⤓</button>
         <button class="rbtn" id="frontBtn" title="Bring to the front" disabled>⤒</button>
+        <button class="rbtn" id="layersBtn" title="List everything on this page — handy when items overlap. You can also Shift+click on the page to reach whatever is underneath.">≡</button>
       </span>
       <span class="grp"><span class="lbl">Pages</span>
         <span class="tabs" id="tabs"></span>
@@ -553,12 +605,27 @@
   </div>
 </div>
 
+<div class="layerpop" id="layerPop"></div>
+
 <div class="mask" id="cropMask">
   <div class="modal wide">
     <h3>Crop photo</h3>
-    <p>Drag the box to choose the area, drag the corner to resize, then Apply.</p>
-    <div id="cropArea"><img id="cropImg" alt=""><div id="cropBox"><div id="cropHandle"></div></div></div>
-    <div class="row"><button class="btn ghost" id="cropCancel">Cancel</button><button class="btn primary" id="cropApply">Apply</button></div>
+    <p>Drag inside the box to move it, or drag any handle to resize. Pick a ratio to lock the shape.</p>
+    <div class="croptools" id="cropRatios"></div>
+    <div class="cropcustom" id="cropCustomRow">
+      <span>Custom ratio</span>
+      <input type="number" id="cropCW" min="1" max="99" step="1" value="4" aria-label="Custom ratio width">
+      <span>:</span>
+      <input type="number" id="cropCH" min="1" max="99" step="1" value="5" aria-label="Custom ratio height">
+      <button class="btn ghost" id="cropCustomUse">Use</button>
+      <span class="cropsize" id="cropSize"></span>
+    </div>
+    <div id="cropArea"><img id="cropImg" alt=""><div id="cropBox">
+      <i class="ch nw" data-dir="nw"></i><i class="ch n" data-dir="n"></i><i class="ch ne" data-dir="ne"></i>
+      <i class="ch w" data-dir="w"></i><i class="ch e" data-dir="e"></i>
+      <i class="ch sw" data-dir="sw"></i><i class="ch s" data-dir="s"></i><i class="ch se" data-dir="se"></i>
+    </div></div>
+    <div class="row"><button class="btn ghost" id="cropReset">Reset</button><button class="btn ghost" id="cropCancel">Cancel</button><button class="btn primary" id="cropApply">Apply</button></div>
   </div>
 </div>
 
@@ -626,7 +693,7 @@ let story = loadDraft() || newStory();
 if(typeof story.current!=='number') story.current=0;
 /* origId = the filename id this session is bound to in GitHub (null until first publish) */
 if(story.origId===undefined) story.origId = (story._loaded && story.id) ? story.id : null;
-let selNode=null, selData=null, zTop=10, scale=1;
+let selNode=null, selData=null, scale=1;
 let guideV=null, guideH=null;
 
 const stage=document.getElementById('stage'), page=document.getElementById('page'), scaler=document.getElementById('scaler');
@@ -1295,7 +1362,7 @@ function select(node){
     const d=node.__data; if(!painterLocked) paintStop();
     saveDraft(); renderAll(); reselect(d); showToast('Format applied'); return;
   }
-  selNode=node; selData=node.__data; node.classList.add('selected'); zTop++; node.style.zIndex=zTop;
+  selNode=node; selData=node.__data; node.classList.add('selected');
   if(selData && selData.type==='text') showFmt(); else hideFmt();
   if(selData && selData.type==='doodle') showDoodleBar(); else hideDoodleBar();
   if(selData && selData.type==='photo') showPhotoBar(); else hidePhotoBar();
@@ -1467,7 +1534,7 @@ function makeDraggable(el, d){
       /* Capturing the pointer on pointerdown swallowed the double-click that starts
          typing, so the move only begins once the pointer has actually travelled. */
       if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)<3) return;
-      drag=true; el.setPointerCapture(e.pointerId);
+      drag=true; el.classList.add('dragging'); el.setPointerCapture(e.pointerId);
     }
     let nx=ox+(e.clientX-sx)/scale, ny=oy+(e.clientY-sy)/scale, gx=null, gy=null;
     if(!e.altKey){ // hold Alt to place freely, ignoring the guides
@@ -1479,7 +1546,7 @@ function makeDraggable(el, d){
   });
   const end=(e)=>{
     if(!armed) return;
-    armed=false;
+    armed=false; el.classList.remove('dragging');
     if(!drag){
       // a reliable double-tap is hard to hit on a phone, so on touch a second tap on an
       // already-selected text box starts typing instead
@@ -1553,6 +1620,71 @@ document.getElementById('delBtn').onclick=removeSelected;
 document.getElementById('dupBtn').onclick=duplicateSelected;
 document.getElementById('backBtn').onclick=()=>layerMove(false);
 document.getElementById('frontBtn').onclick=()=>layerMove(true);
+
+/* ---------- reaching items that sit underneath ---------- */
+/* Every item at a point, topmost first. Anything that is not a pointer target — the hollow
+   part of a shaped text box, the guides, the SVG outline — is skipped by the browser, so
+   this list only contains things the click could genuinely have landed on. */
+function elsAtPoint(x,y){
+  const out=[];
+  document.elementsFromPoint(x,y).forEach(n=>{
+    const el=n.closest && n.closest('.el');
+    if(el && page.contains(el) && out.indexOf(el)<0) out.push(el);
+  });
+  return out;
+}
+/* Shift+click steps one layer further down at that point and wraps around at the bottom.
+   Alt is already taken (it turns off snapping while dragging), and Shift+click inside a box
+   you are typing in still extends the text selection. */
+page.addEventListener('pointerdown',(e)=>{
+  if(!e.shiftKey || e.button!==0) return;
+  if(selNode && isEditing(selNode) && selNode.contains(e.target)) return;
+  const stack=elsAtPoint(e.clientX, e.clientY);
+  if(stack.length<2) return;
+  const i=stack.indexOf(selNode);
+  const next=stack[(i+1)%stack.length];
+  if(!next || next===selNode) return;
+  e.preventDefault(); e.stopPropagation();
+  select(next);
+  showToast('Selected the '+(next.__data?next.__data.type:'item')+' underneath');
+}, true);
+
+/* ---------- layers panel ---------- */
+const layerPop=document.getElementById('layerPop');
+const LAYER_ICON={text:'✎', photo:'🖼', video:'▶', doodle:'✦', washi:'▬', sticker:'★', imgsticker:'🖼'};
+function layerLabel(d){
+  if(d.type==='text'){ const t=(d.content||'').trim().replace(/\s+/g,' '); return t? t.slice(0,30) : 'Empty text box'; }
+  if(d.type==='photo') return d.caption? ('Photo — '+d.caption.slice(0,20)) : 'Photo';
+  if(d.type==='video') return d.caption? ('Video — '+d.caption.slice(0,20)) : 'Video';
+  if(d.type==='doodle') return (J.DOODLES_MAP[d.key] && J.DOODLES_MAP[d.key].label) || 'Doodle';
+  if(d.type==='washi') return 'Washi tape';
+  return 'Sticker';
+}
+function openLayers(){
+  const els=curPage().elements;
+  layerPop.innerHTML='';
+  if(!els.length) layerPop.innerHTML='<div class="layerempty">Nothing on this page yet</div>';
+  // the end of the array is painted last, so it is the top of the stack
+  els.slice().reverse().forEach(d=>{
+    const b=document.createElement('button');
+    b.className='layerrow'+(d===selData?' sel':'');
+    const ic=document.createElement('span'); ic.className='ico'; ic.textContent=LAYER_ICON[d.type]||'◆';
+    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=layerLabel(d);
+    b.appendChild(ic); b.appendChild(nm);
+    b.onclick=()=>{ const n=[].slice.call(page.querySelectorAll('.el')).find(x=>x.__data===d);
+      if(n) select(n); closeLayers(); };
+    layerPop.appendChild(b);
+  });
+  const r=document.getElementById('layersBtn').getBoundingClientRect();
+  layerPop.style.left=Math.max(8, Math.min(r.left-100, window.innerWidth-262))+'px';
+  layerPop.style.top=Math.min(r.bottom+8, window.innerHeight-120)+'px';
+  layerPop.classList.add('open');
+}
+function closeLayers(){ layerPop.classList.remove('open'); }
+document.getElementById('layersBtn').onclick=(e)=>{ e.stopPropagation();
+  layerPop.classList.contains('open') ? closeLayers() : openLayers(); };
+document.addEventListener('pointerdown',(e)=>{
+  if(!layerPop.contains(e.target) && e.target.id!=='layersBtn') closeLayers(); });
 
 /* Paste works with nothing selected too, so a box can be copied on one page and dropped on
    another. Typing keeps the browser's own copy and paste. */
@@ -1683,31 +1815,138 @@ storyTitle.addEventListener('input',()=>{ story.title=storyTitle.value; saveDraf
 storyDate.addEventListener('input',()=>{ story.date=storyDate.value; saveDraft(); });
 
 /* ---------- crop ---------- */
+/* The box can be pulled from any of its eight handles. A chosen ratio locks the shape while
+   resizing; "Free" is the default and behaves as before. Everything below works in displayed
+   image pixels and is converted to natural pixels only when Apply is pressed. */
+const CROP_RATIOS=[
+  {k:'free', label:'Free',     r:0},
+  {k:'orig', label:'Original', r:-1},
+  {k:'1:1',  label:'Square',   r:1},
+  {k:'4:3',  label:'4:3',      r:4/3},
+  {k:'3:4',  label:'3:4',      r:3/4},
+  {k:'3:2',  label:'3:2',      r:3/2},
+  {k:'2:3',  label:'2:3',      r:2/3},
+  {k:'16:9', label:'16:9',     r:16/9},
+  {k:'9:16', label:'9:16',     r:9/16}
+];
+const CROP_MIN=24;
 let cropState=null;
-function openCrop(d){ const img=document.getElementById('cropImg'), box=document.getElementById('cropBox');
-  img.onload=()=>{ const cw=img.clientWidth, ch=img.clientHeight;
-    box.style.left=(cw*0.1)+'px'; box.style.top=(ch*0.1)+'px'; box.style.width=(cw*0.8)+'px'; box.style.height=(ch*0.8)+'px'; };
-  img.src=d.src; cropState={d}; document.getElementById('cropMask').classList.add('open'); }
+
+function cropEls(){ return { img:document.getElementById('cropImg'), box:document.getElementById('cropBox') }; }
+function cropRatio(){
+  if(!cropState || !cropState.ratio) return 0;
+  const e=cropEls();
+  return cropState.ratio===-1 ? (e.img.naturalWidth/e.img.naturalHeight) : cropState.ratio;
+}
+function cropPaint(){
+  const {img,box}=cropEls(), b=cropState.box;
+  box.style.left=b.l+'px'; box.style.top=b.t+'px'; box.style.width=b.w+'px'; box.style.height=b.h+'px';
+  const sc=img.naturalWidth/Math.max(1,img.clientWidth);
+  const el=document.getElementById('cropSize');
+  if(el) el.textContent=Math.round(b.w*sc)+' × '+Math.round(b.h*sc)+' px';
+}
+/* fit a box of the locked ratio inside the image, centred on where the box is now */
+function cropFitRatio(){
+  const {img}=cropEls(), W=img.clientWidth, H=img.clientHeight, r=cropRatio(), b=cropState.box;
+  if(!r) return;
+  const cx=b.l+b.w/2, cy=b.t+b.h/2;
+  let w=Math.min(b.w, W), h=w/r;
+  if(h>H){ h=H; w=h*r; }
+  if(w>W){ w=W; h=w/r; }
+  b.w=w; b.h=h;
+  b.l=Math.max(0, Math.min(cx-w/2, W-w));
+  b.t=Math.max(0, Math.min(cy-h/2, H-h));
+  cropPaint();
+}
+function cropSetRatio(key, r){
+  if(!cropState) return;
+  cropState.ratio=r; cropState.key=key;
+  [].slice.call(document.querySelectorAll('#cropRatios .cropchip'))
+    .forEach(c=>c.classList.toggle('sel', c.dataset.k===key));
+  cropFitRatio();
+}
+function cropReset(){
+  const {img}=cropEls(), W=img.clientWidth, H=img.clientHeight;
+  cropState.box={l:W*0.1, t:H*0.1, w:W*0.8, h:H*0.8};
+  cropFitRatio(); cropPaint();
+}
+function openCrop(d){
+  const {img}=cropEls();
+  cropState={d, box:{l:0,t:0,w:0,h:0}, ratio:0, key:'free'};
+  img.onload=()=>{ cropSetRatio('free',0); cropReset(); };
+  img.src=d.src;
+  document.getElementById('cropMask').classList.add('open');
+}
 (function cropSetup(){
-  const box=document.getElementById('cropBox'), handle=document.getElementById('cropHandle'), img=document.getElementById('cropImg');
-  let mode=null,sx,sy,obl,obt,obw,obh;
-  function start(m,e,stop){ mode=m; sx=e.clientX;sy=e.clientY; obl=parseFloat(box.style.left)||0;obt=parseFloat(box.style.top)||0;obw=parseFloat(box.style.width)||0;obh=parseFloat(box.style.height)||0; (m==='resize'?handle:box).setPointerCapture(e.pointerId); e.preventDefault(); if(stop)e.stopPropagation(); }
-  box.addEventListener('pointerdown',e=>{ if(e.target===handle) return; start('move',e); });
-  handle.addEventListener('pointerdown',e=>start('resize',e,true));
-  const onMove=e=>{ if(!mode) return; const W=img.clientWidth,H=img.clientHeight, dx=e.clientX-sx, dy=e.clientY-sy;
-    if(mode==='move'){ let nl=Math.max(0,Math.min(obl+dx,W-obw)), nt=Math.max(0,Math.min(obt+dy,H-obh)); box.style.left=nl+'px'; box.style.top=nt+'px'; }
-    else { let nw=Math.max(30,Math.min(obw+dx,W-obl)), nh=Math.max(30,Math.min(obh+dy,H-obt)); box.style.width=nw+'px'; box.style.height=nh+'px'; } };
-  box.addEventListener('pointermove',onMove); handle.addEventListener('pointermove',onMove);
+  const ratios=document.getElementById('cropRatios');
+  CROP_RATIOS.forEach(o=>{ const c=document.createElement('button');
+    c.className='cropchip'+(o.k==='free'?' sel':''); c.dataset.k=o.k; c.textContent=o.label;
+    c.onclick=()=>cropSetRatio(o.k,o.r); ratios.appendChild(c); });
+  document.getElementById('cropCustomUse').onclick=()=>{
+    const w=+document.getElementById('cropCW').value, h=+document.getElementById('cropCH').value;
+    if(!(w>0&&h>0)){ showToast('Enter a ratio like 4 : 5'); return; }
+    cropSetRatio('custom', w/h); showToast('Locked to '+w+' : '+h);
+  };
+  document.getElementById('cropReset').onclick=()=>{ if(cropState) cropReset(); };
+
+  const {img,box}=cropEls();
+  let mode=null, dir='', sx=0, sy=0, o={};
+  function start(m,d,e){ if(!cropState) return;
+    mode=m; dir=d; sx=e.clientX; sy=e.clientY; o=Object.assign({},cropState.box);
+    e.target.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation(); }
+  box.addEventListener('pointerdown',e=>{ if(e.target.classList.contains('ch')) return; start('move','',e); });
+  [].slice.call(box.querySelectorAll('.ch')).forEach(h=>
+    h.addEventListener('pointerdown',e=>start('resize',h.dataset.dir,e)));
+
+  function resize(dx,dy){
+    const W=img.clientWidth, H=img.clientHeight, r=cropRatio(), b=cropState.box;
+    const west=dir.indexOf('w')>=0, east=dir.indexOf('e')>=0;
+    const north=dir.indexOf('n')>=0, south=dir.indexOf('s')>=0;
+    if(!r){
+      let L=o.l, T=o.t, R=o.l+o.w, B=o.t+o.h;
+      if(west)  L=Math.max(0, Math.min(o.l+dx, R-CROP_MIN));
+      if(east)  R=Math.min(W, Math.max(o.l+o.w+dx, L+CROP_MIN));
+      if(north) T=Math.max(0, Math.min(o.t+dy, B-CROP_MIN));
+      if(south) B=Math.min(H, Math.max(o.t+o.h+dy, T+CROP_MIN));
+      b.l=L; b.t=T; b.w=R-L; b.h=B-T; cropPaint(); return;
+    }
+    /* Ratio locked: the opposite edge or corner stays put and the size is capped by how much
+       room there is in every direction, so the box can never leave the image. */
+    const ax = west ? o.l+o.w : o.l;            // anchored x
+    const ay = north ? o.t+o.h : o.t;           // anchored y
+    let w;
+    if(west||east){ w = west ? (o.l+o.w)-(o.l+dx) : (o.l+o.w+dx)-o.l; }
+    else { const h0 = north ? (o.t+o.h)-(o.t+dy) : (o.t+o.h+dy)-o.t; w = h0*r; }
+    const maxW = west ? ax : (W-ax);
+    let maxH;
+    if(north) maxH=ay; else if(south) maxH=H-ay;
+    else { const cy=o.t+o.h/2; maxH=2*Math.min(cy, H-cy); }
+    if(!west && !east){ const cx=o.l+o.w/2; w=Math.min(w, 2*Math.min(cx, W-cx)); }
+    else w=Math.min(w, maxW);
+    w=Math.max(CROP_MIN, Math.min(w, maxH*r));
+    const h=w/r;
+    b.w=w; b.h=h;
+    b.l = west ? ax-w : (east ? ax : (o.l+o.w/2)-w/2);
+    b.t = north ? ay-h : (south ? ay : (o.t+o.h/2)-h/2);
+    b.l=Math.max(0, Math.min(b.l, W-w)); b.t=Math.max(0, Math.min(b.t, H-h));
+    cropPaint();
+  }
+  const onMove=e=>{ if(!mode||!cropState) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy, W=img.clientWidth, H=img.clientHeight, b=cropState.box;
+    if(mode==='move'){ b.l=Math.max(0,Math.min(o.l+dx, W-o.w)); b.t=Math.max(0,Math.min(o.t+dy, H-o.h)); cropPaint(); }
+    else resize(dx,dy); };
+  box.addEventListener('pointermove',onMove);
+  [].slice.call(box.querySelectorAll('.ch')).forEach(h=>h.addEventListener('pointermove',onMove));
   const onUp=()=>{ mode=null; };
-  ['pointerup','pointercancel'].forEach(ev=>{ box.addEventListener(ev,onUp); handle.addEventListener(ev,onUp); });
+  ['pointerup','pointercancel'].forEach(ev=>{ box.addEventListener(ev,onUp);
+    [].slice.call(box.querySelectorAll('.ch')).forEach(h=>h.addEventListener(ev,onUp)); });
 })();
 document.getElementById('cropApply').onclick=()=>{ if(!cropState) return; const d=cropState.d;
-  const img=document.getElementById('cropImg'), box=document.getElementById('cropBox');
+  const {img}=cropEls(), b=cropState.box;
   const ratio=img.naturalWidth/img.clientWidth;
-  const bl=parseFloat(box.style.left), bt=parseFloat(box.style.top), bw=parseFloat(box.style.width), bh=parseFloat(box.style.height);
-  const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(bw*ratio)); c.height=Math.max(1,Math.round(bh*ratio));
-  const im=new Image(); im.onload=()=>{ c.getContext('2d').drawImage(im, bl*ratio, bt*ratio, bw*ratio, bh*ratio, 0,0,c.width,c.height);
-    d.src=J.encodeCanvas(c,0.85); document.getElementById('cropMask').classList.remove('open'); cropState=null; renderAll(); showToast('Cropped'); };
+  const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(b.w*ratio)); c.height=Math.max(1,Math.round(b.h*ratio));
+  const im=new Image(); im.onload=()=>{ c.getContext('2d').drawImage(im, b.l*ratio, b.t*ratio, b.w*ratio, b.h*ratio, 0,0,c.width,c.height);
+    d.src=J.encodeCanvas(c,0.85); document.getElementById('cropMask').classList.remove('open'); cropState=null; saveDraft(); renderAll(); showToast('Cropped'); };
   im.src=d.src; };
 document.getElementById('cropCancel').onclick=()=>{ document.getElementById('cropMask').classList.remove('open'); cropState=null; };
 

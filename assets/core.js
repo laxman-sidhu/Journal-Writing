@@ -628,10 +628,17 @@ window.JOURNAL = (function(){
     if(key==='rect'){
       if(art) art.remove();
       body.querySelectorAll('.shape-ex').forEach(n=>n.remove());
+      body.style.clipPath='';
       el.classList.remove('shaped');
       return;
     }
     el.classList.add('shaped');
+    /* clip-path governs hit-testing as well as painting, so a click in the hollow part of an
+       L or C falls through to whatever sits underneath instead of being swallowed by the
+       bounding box. The fill and outline are drawn by the SVG behind, which is not clipped,
+       so this changes what is clickable without changing what is visible. */
+    body.style.clipPath='polygon('+shapePoints(d)
+      .map(p=>(p[0]*100).toFixed(2)+'% '+(p[1]*100).toFixed(2)+'%').join(',')+')';
     const cs=getComputedStyle(body);
     const padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
     const padT=parseFloat(cs.paddingTop)||0, padB=parseFloat(cs.paddingBottom)||0;
