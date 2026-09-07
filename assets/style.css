@@ -109,6 +109,15 @@ a{color:inherit; text-decoration:none;}
 .el-text .text-body ul, .el-text .text-body ol{margin:0; padding-left:1.3em;}
 .el-text .text-body li{margin:0;}
 
+/* ---- shaped text boxes (L / C / U / T / custom) ----
+   The outline is an SVG painted behind the words; the text region itself is carved by two
+   invisible floats carrying a shape-outside polygon, so the words really follow the outline
+   instead of sitting in a rectangle with a decorative border drawn around it. */
+.el-text.shaped{position:absolute;}
+.el-text.shaped .shape-art{position:absolute; left:0; top:0; z-index:0; pointer-events:none; overflow:visible;}
+.el-text.shaped .text-body{position:relative; z-index:1; background:transparent !important; border-radius:0;}
+.shape-ex{pointer-events:none; user-select:none; -webkit-user-select:none;}
+
 /* ---- photos: selectable looks (card default, plain, shadow, frame, border) ----
    SHADOW is now an independent add-on (.has-shadow), so any look can cast a shadow,
    and removing it removes the shadow entirely. Looks themselves no longer hard-code
@@ -163,6 +172,15 @@ a{color:inherit; text-decoration:none;}
 .el-video.style-card.nocap{padding-bottom:8px;}
 .el-video.style-plain{padding:0; background:none !important;}
 .el-video.has-shadow{box-shadow:0 9px 24px var(--shadow);}
+/* ---- caption position ----
+   capDX / capDY nudge the caption from its default centred spot, and the card's bottom
+   padding grows with a downward nudge so a shifted caption is never clipped. Both unset
+   leaves every existing photo and video exactly where it was. */
+.el-photo .cap, .el-video .cap{transform:translate(var(--cap-dx,0px), var(--cap-dy,0px));}
+.el-photo.style-card:not(.nocap), .el-photo.style-frame:not(.nocap),
+.el-video.style-card:not(.nocap){padding-bottom:calc(28px + var(--cap-dy,0px));}
+.el-photo.style-plain:not(.nocap), .el-video.style-plain:not(.nocap){padding-bottom:var(--cap-dy,0px);}
+
 /* only the reader plays: the badge lifts on hover there, and the whole tile is the button */
 .reader-stage .el-video{cursor:pointer;}
 .reader-stage .el-video:hover .vplay{background:rgba(16,12,26,.72); transform:scale(1.07);}

@@ -72,8 +72,6 @@
   .tab:hover{border-color:var(--lav);}
   .tab.active{background:var(--lav-deep); border-color:var(--lav-deep); color:#fff;}
   .tab.add{color:var(--lav-deep); border:1px dashed var(--lilac); background:transparent; font-size:15px; padding:4px 11px;}
-  .tab .x{margin-left:7px; opacity:.6;}
-  .tab.active .x{color:#fff;}
 
   .cover-row{display:flex; align-items:center; gap:8px;}
   .cover-prev{width:38px;height:30px;border-radius:7px;border:1px solid var(--paper-edge);background:var(--soft);
@@ -97,8 +95,11 @@
   .el-photo .cap, .el-video .cap{user-select:none;}
   .el-photo.editing .cap, .el-video.editing .cap{user-select:text; cursor:text;}
 
+  /* The page is scaled down to fit narrow screens, which would shrink every grab target with
+     it. --inv (set in fitScale) cancels that scale so handles stay a constant, tappable size. */
   .hnd{position:absolute; display:none; z-index:62; width:11px; height:11px; background:#fff;
-    border:1.5px solid var(--lav-deep); border-radius:3px; box-shadow:0 1px 3px var(--shadow); touch-action:none;}
+    border:1.5px solid var(--lav-deep); border-radius:3px; box-shadow:0 1px 3px var(--shadow); touch-action:none;
+    transform:scale(var(--inv,1));}
   .el.selected .hnd{display:block;}
   .hnd:hover{background:var(--lav-deep);}
   .hnd.nw{left:-9px; top:-9px; cursor:nwse-resize;}
@@ -113,11 +114,29 @@
   .el .ctrl{position:absolute; top:-15px; right:-15px; display:none; gap:4px; z-index:63;}
   .el.selected .ctrl{display:flex;}
   .ctrl .dot{width:25px;height:25px;border-radius:50%; background:#fff; border:1px solid var(--paper-edge);
-    display:flex;align-items:center;justify-content:center; cursor:pointer; font-size:13px; color:var(--ink); box-shadow:0 2px 6px var(--shadow);}
+    display:flex;align-items:center;justify-content:center; cursor:pointer; font-size:13px; color:var(--ink);
+    box-shadow:0 2px 6px var(--shadow); transform:scale(var(--inv,1));}
   .ctrl .dot:hover{background:var(--blush); border-color:var(--lav);}
   .ctrl .dot.del{color:#c2607f;}
   .el-text .text-body:empty:before{content:'Write here...'; color:var(--ink-soft);}
   .el-photo .cap:empty:before, .el-video .cap:empty:before{content:'caption'; color:#aeb8cf;}
+
+  /* ===== shaped text boxes ===== */
+  /* the outline is an SVG behind the words, so the selection ring follows the box, not the shape */
+  .el-text.shaped .text-body{min-width:80px;}
+  /* custom-shape vertex handles: drag to reshape the polygon */
+  .pthnd{position:absolute; width:13px; height:13px; margin:-6.5px 0 0 -6.5px; border-radius:50%;
+    background:#fff; border:2px solid var(--lav-deep); box-shadow:0 1px 3px var(--shadow);
+    z-index:64; display:none; cursor:grab; touch-action:none; transform:scale(var(--inv,1));}
+  .el.selected .pthnd{display:block;}
+  .pthnd:hover{background:var(--lav-deep);}
+  .pthnd.drag{cursor:grabbing; background:var(--lav-deep);}
+  .shapehint{font-size:11.5px; color:var(--ink-soft); font-weight:600; white-space:nowrap; max-width:230px;}
+
+  /* ===== format painter ===== */
+  body.painting{cursor:copy;}
+  body.painting .el{cursor:copy !important;}
+  #fmtPaint.on{background:var(--lav-deep); color:#fff; border-color:var(--lav-deep);}
 
   /* alignment guides shown while dragging */
   .guide{position:absolute; display:none; background:var(--lav-deep); z-index:70; pointer-events:none; opacity:.75;}
@@ -194,6 +213,7 @@
   .roth{position:absolute; left:50%; bottom:-36px; transform:translateX(-50%); width:26px;height:26px;border-radius:50%;
     background:var(--lav); color:#fff; display:none; align-items:center;justify-content:center; cursor:grab; font-size:14px;
     box-shadow:0 2px 6px var(--shadow); z-index:63; touch-action:none;}
+  .el.selected .roth{transform:translateX(-50%) scale(var(--inv,1));}
   .roth:before{content:""; position:absolute; top:-13px; left:50%; transform:translateX(-50%); width:2px;height:13px; background:var(--lav); opacity:.55;}
   .el.selected .roth{display:flex;}
   .rotbubble{position:fixed; display:none; transform:translateX(-50%); background:var(--ink); color:#fff; font-size:12px; font-weight:700;
@@ -220,20 +240,36 @@
   .menuMask.open{display:block;}
   .menuPanel{display:none;}
 
-  @media(max-width:600px){
+  @media(max-width:760px){
     /* every ribbon row stays a single sideways-scrolling strip so it never eats the canvas */
-    .rb-row{padding:6px 9px; gap:7px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;}
-    .rb-ctx{padding:6px 9px; gap:7px; min-height:50px;}
-    .grp{padding:3px 7px; gap:5px; white-space:nowrap;}
-    .grp select{max-width:128px;}
-    .story-title{max-width:38vw; font-size:21px;}
-    .rbtn.wide .lbl{display:none;}
-    .rbtn.wide{width:32px; padding:0;}
+    .rb-row{padding:6px 8px; gap:6px; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;}
+    .rb-ctx{padding:6px 8px; gap:6px; min-height:52px;}
+    /* the scrolling strips look cleaner without a bar eating 8px of the row */
+    .rb-row::-webkit-scrollbar, .rb-ctx::-webkit-scrollbar{height:0;}
+    .rb-row, .rb-ctx{scrollbar-width:none;}
+    .grp{padding:3px 8px; gap:5px; white-space:nowrap;}
+    .grp select{max-width:120px; font-size:12.5px;}
+    .grp .lbl{font-size:9px; letter-spacing:.5px;}
+    .mark{width:28px; height:28px; font-size:15px;}
+    .story-title{max-width:44vw; font-size:20px; padding:2px 6px;}
+    .sdate{max-width:112px; font-size:11.5px; padding:4px 5px;}
+    /* Only the four Insert buttons collapse to their icon. The other wide buttons
+       (Plain / Border / Frame / Caption / Shadow) are text, so they keep their width. */
+    .rbtn.wide.iconlbl{width:34px; padding:0;}
+    .rbtn.wide.iconlbl .lbl2{display:none;}
+    .rbtn.wide.iconlbl .ic{font-size:16px;}
+    .rbtn.wide:not(.iconlbl){padding:0 11px; font-size:12.5px;}
+    .rbtn{width:34px; height:34px;}
+    .grp select, .stepval{min-height:34px; display:inline-flex; align-items:center; justify-content:center;}
     .hnd{width:15px; height:15px; border-radius:4px;}
     .hnd.nw,.hnd.sw{left:-11px;} .hnd.ne,.hnd.se{right:-11px;}
     .hnd.nw,.hnd.n,.hnd.ne{top:-11px;} .hnd.sw,.hnd.s,.hnd.se{bottom:-11px;}
     .hnd.n,.hnd.s{margin-left:-7.5px;} .hnd.e,.hnd.w{margin-top:-7.5px;}
-    .stage{padding:12px 10px 80px;}
+    .pthnd{width:17px; height:17px; margin:-8.5px 0 0 -8.5px;}
+    .ctrl .dot{width:29px; height:29px; font-size:15px;}
+    .el .ctrl{top:-17px; right:-17px;}
+    .roth{width:30px; height:30px; bottom:-40px;}
+    .stage{padding:12px 8px 90px;}
     .menuBtn{display:inline-flex;}
     .menuPanel{ position:fixed; top:52px; right:10px; left:10px; z-index:250; display:none;
       flex-direction:column; align-items:stretch; gap:8px; padding:12px;
@@ -243,6 +279,15 @@
     .menuPanel .actions{ display:flex; flex-direction:column; align-items:stretch; gap:8px; }
     .menuPanel .actions .btn{ width:100%; justify-content:flex-start; font-size:15px; padding:11px 14px; }
     .menuPanel .cover-row{ display:flex; padding-top:10px; border-top:1px solid var(--paper-edge); }
+    .modal, .sheet{padding:16px;}
+    .modal h3, .sheet h3{font-size:23px;}
+    .stickgrid{grid-template-columns:repeat(6,1fr);}
+  }
+  @media(max-width:400px){
+    .story-title{max-width:38vw; font-size:18px;}
+    .sdate{max-width:96px;}
+    .grp{padding:3px 6px;}
+    .bggrid{grid-template-columns:repeat(2,1fr);}
   }
 </style>
 </head>
@@ -270,22 +315,24 @@
 
     <div class="rb-row">
       <span class="grp"><span class="lbl">Insert</span>
-        <button class="rbtn wide" id="addText" title="Add a text box (T)"><span class="ic">✎</span><span class="lbl2">Text</span></button>
-        <button class="rbtn wide" id="addPhoto" title="Add a photo"><span class="ic">🖼</span><span class="lbl2">Photo</span></button>
-        <button class="rbtn wide" id="addVideo" title="Add a video by link, with your own thumbnail"><span class="ic">▶</span><span class="lbl2">Video</span></button>
-        <button class="rbtn wide" id="addSticker" title="Doodles, washi tape and image stickers"><span class="ic">✦</span><span class="lbl2">Doodles</span></button>
+        <button class="rbtn wide iconlbl" id="addText" title="Add a text box (T)"><span class="ic">✎</span><span class="lbl2">Text</span></button>
+        <button class="rbtn wide iconlbl" id="addPhoto" title="Add a photo"><span class="ic">🖼</span><span class="lbl2">Photo</span></button>
+        <button class="rbtn wide iconlbl" id="addVideo" title="Add a video by link, with your own thumbnail"><span class="ic">▶</span><span class="lbl2">Video</span></button>
+        <button class="rbtn wide iconlbl" id="addSticker" title="Doodles, washi tape and image stickers"><span class="ic">✦</span><span class="lbl2">Doodles</span></button>
         <input type="file" id="photoFile" accept="image/*" hidden>
       </span>
       <span class="grp"><span class="lbl">Edit</span>
         <button class="rbtn" id="undoBtn" title="Undo (Ctrl+Z)" disabled>↶</button>
         <button class="rbtn" id="redoBtn" title="Redo (Ctrl+Y)" disabled>↷</button>
+        <button class="rbtn" id="copyBtn" title="Copy the whole item, formatting and all (Ctrl+C)" disabled>⎘</button>
+        <button class="rbtn" id="pasteBtn" title="Paste the copied item onto this page (Ctrl+V)" disabled>📋</button>
         <button class="rbtn" id="dupBtn" title="Duplicate (Ctrl+D)" disabled>⧉</button>
+        <button class="rbtn" id="fmtPaint" title="Format painter: pick up this item's look, then click another to apply it. Double-click to keep it on." disabled>🖌</button>
         <button class="rbtn" id="delBtn" title="Delete (Del)" disabled>🗑</button>
       </span>
       <span class="grp"><span class="lbl">Arrange</span>
         <button class="rbtn" id="backBtn" title="Send behind everything" disabled>⤓</button>
         <button class="rbtn" id="frontBtn" title="Bring to the front" disabled>⤒</button>
-        <button class="rbtn" id="centerXBtn" title="Centre on the page horizontally" disabled>⇹</button>
       </span>
       <span class="grp"><span class="lbl">Pages</span>
         <span class="tabs" id="tabs"></span>
@@ -343,9 +390,35 @@
           <span class="sw" data-fill="#d9f2e4" style="background:#d9f2e4"></span>
           <input type="color" id="fFillColor" value="#fff3c4" title="Custom fill colour">
         </span>
+        <span class="grp"><span class="lbl">Shape</span>
+          <select id="fShape" title="Text box shape — the text really flows inside it"></select>
+        </span>
+        <span class="grp"><span class="lbl">Corners</span>
+          <button class="rbtn" id="fRadMinus" title="Squarer corners">−</button><span class="stepval" id="fRadVal">6</span><button class="rbtn" id="fRadPlus" title="Rounder corners">+</button>
+        </span>
+        <span class="grp"><span class="lbl">Outline</span>
+          <button class="rbtn" id="fBwMinus" title="Thinner outline">−</button><span class="stepval" id="fBwVal">0</span><button class="rbtn" id="fBwPlus" title="Thicker outline">+</button>
+          <input type="color" id="fBColor" value="#9377d6" title="Outline colour">
+        </span>
         <span class="grp"><span class="lbl">Box</span>
+          <button class="rbtn" id="fPadMinus" title="Less inner padding">−</button><span class="stepval" id="fPadVal">10</span><button class="rbtn" id="fPadPlus" title="More inner padding">+</button>
           <button class="rbtn" id="fFit" title="Shrink the box back to fit its text">⤡</button>
         </span>
+      </div>
+
+      <div class="fmtbar" id="shapebar">
+        <span class="grp" id="shapeParams"><span class="lbl">Geometry</span></span>
+        <span class="grp"><span class="lbl">Flip</span>
+          <button class="rbtn" id="shFlipX" title="Mirror left / right">⇄</button>
+          <button class="rbtn" id="shFlipY" title="Mirror top / bottom">⇅</button>
+          <button class="rbtn" id="shReset" title="Reset this shape's geometry">⟲</button>
+        </span>
+        <span class="grp" id="customGrp"><span class="lbl">Points</span>
+          <button class="rbtn" id="shAddPt" title="Add a point on the longest edge">＋</button>
+          <button class="rbtn" id="shDelPt" title="Remove the last point">−</button>
+          <button class="rbtn wide" id="shFromShape" title="Start the custom polygon from a preset shape">Trace preset</button>
+        </span>
+        <span class="shapehint" id="shapeHint"></span>
       </div>
 
       <div class="fmtbar" id="doodlebar">
@@ -423,6 +496,14 @@
           <span class="sw" data-cc="#6c91c2" style="background:#6c91c2"></span>
           <span class="sw" data-cc="#5a9e86" style="background:#5a9e86"></span>
           <input type="color" id="capColor" value="#4b4361" title="Custom caption colour">
+        </span>
+        <span class="grp"><span class="lbl">Position</span>
+          <button class="rbtn" id="capUp" title="Move the caption up">↑</button>
+          <button class="rbtn" id="capDown" title="Move the caption down (adds room underneath)">↓</button>
+          <button class="rbtn" id="capLeft" title="Move the caption left">←</button>
+          <button class="rbtn" id="capRight" title="Move the caption right">→</button>
+          <span class="stepval" id="capPosVal">0,0</span>
+          <button class="rbtn" id="capReset" title="Back to the default centred position">⟲</button>
         </span>
       </div>
 
@@ -587,7 +668,9 @@ function showToast(msg, ms){ toast.textContent=msg; toast.classList.add('show');
 function curPage(){ return story.pages[story.current]; }
 
 function fitScale(){ const avail=stage.clientWidth-28; scale=Math.min(1, avail/PAGE_W);
-  scaler.style.transform='scale('+scale+')'; stageInner.style.width=(PAGE_W*scale)+'px'; stageInner.style.height=(page.offsetHeight*scale)+'px'; }
+  scaler.style.transform='scale('+scale+')'; stageInner.style.width=(PAGE_W*scale)+'px'; stageInner.style.height=(page.offsetHeight*scale)+'px';
+  // cancel the page scale on handles so they stay tappable, but never blow them up
+  page.style.setProperty('--inv', String(Math.min(2.2, 1/Math.max(scale,0.05)))); }
 window.addEventListener('resize', fitScale);
 
 /* ---------- format bar ---------- */
@@ -620,9 +703,16 @@ function showFmt(){ fmtbar.style.display='flex';
   setAlign(selData.align||'left'); document.getElementById('fColor').value=toHex(selData.color||'#4b4361');
   document.getElementById('lsVal').textContent=(selData.spacing||1.45);
   document.getElementById('fFit').classList.toggle('active', !!selData.h);
-  document.getElementById('fFillColor').value=toHex(selData.fill||'#fff3c4'); }
-function hideFmt(){ fmtbar.style.display='none'; }
-function applyToSel(){ if(!selNode||!selData||selData.type!=='text') return; J.applyTextStyle(selNode.querySelector('.text-body'), selData); saveDraft(); }
+  document.getElementById('fFillColor').value=toHex(selData.fill||'#fff3c4');
+  document.getElementById('fShape').value=J.textShapeKey(selData);
+  document.getElementById('fRadVal').textContent=(selData.radius!=null?selData.radius:6);
+  document.getElementById('fBwVal').textContent=(selData.bw||0);
+  document.getElementById('fBColor').value=toHex(selData.bc||'#9377d6');
+  document.getElementById('fPadVal').textContent=(selData.pad!=null?selData.pad:10);
+  showShapeBar(); }
+function hideFmt(){ fmtbar.style.display='none'; hideShapeBar(); }
+function applyToSel(){ if(!selNode||!selData||selData.type!=='text') return;
+  J.applyTextStyle(selNode.querySelector('.text-body'), selData); refreshShape(); saveDraft(); }
 
 /* Clicking a ribbon control can blur the box and lose the highlight, so the last real
    selection made inside a text body is remembered and restored just before a command runs.
@@ -686,7 +776,29 @@ function selectionFontSize(body, r){
   if(!body.contains(n)) n=body;
   return Math.round(parseFloat(getComputedStyle(n).fontSize)||(selData.size||20));
 }
-function syncRichFromBody(body,d){ d.html=J.sanitizeRich(body.innerHTML); d.content=body.innerText; if(!J.hasRich(d)) d.html=''; }
+/* The plain mirror is derived from the sanitised html rather than innerText, because a shaped
+   box carries invisible float spacers that innerText would report as leading blank lines. */
+function plainFromHtml(html){
+  const t=document.createElement('div');
+  t.innerHTML=String(html||'').replace(/<br\s*\/?>/gi,'\n').replace(/<\/(li|p|div)>/gi,'\n');
+  return (t.textContent||'').replace(/\n{3,}/g,'\n\n');
+}
+function syncRichFromBody(body,d){ d.html=J.sanitizeRich(body.innerHTML); d.content=plainFromHtml(d.html); if(!J.hasRich(d)) d.html=''; }
+
+/* A whole-box font, size or colour change has to beat any per-word span still inside the box.
+   Without this the body style only moves the line spacing while the glyphs keep their old
+   size, which reads as "changing the size changed the spacing". */
+function clearInlineProp(prop){
+  if(!selNode||!selData||selData.type!=='text') return;
+  const body=selNode.querySelector('.text-body'); if(!body) return;
+  let changed=false;
+  [].slice.call(body.querySelectorAll('span')).forEach(n=>{
+    if(!n.style || !n.style[prop]) return;
+    n.style[prop]=''; changed=true;
+    if(!n.getAttribute('style')) unwrapNode(n);
+  });
+  if(changed) syncRichFromBody(body, selData);
+}
 function inlineOrBlock(cmd){ if(!selData||selData.type!=='text') return false;
   const body=selNode && selNode.querySelector('.text-body'); if(!body) return false;
   const r=activeRangeIn(body); if(!r) return false;
@@ -698,7 +810,7 @@ document.getElementById('fFont').onchange=function(){
   this.style.fontFamily=css;
   if(!selData) return;
   if(styleSelection('fontFamily', css)) return;   // only the highlighted words
-  selData.font=this.value; applyToSel();          // otherwise the whole box
+  selData.font=this.value; clearInlineProp('fontFamily'); applyToSel();   // otherwise the whole box
 };
 function stepFontSize(delta){
   if(!selData||selData.type!=='text') return;
@@ -711,7 +823,8 @@ function stepFontSize(delta){
     }
   }
   selData.size=Math.max(12, Math.min(80,(selData.size||20)+delta));
-  document.getElementById('szVal').textContent=selData.size; applyToSel();
+  document.getElementById('szVal').textContent=selData.size;
+  clearInlineProp('fontSize'); applyToSel();
 }
 document.getElementById('szMinus').onclick=()=>stepFontSize(-2);
 document.getElementById('szPlus').onclick=()=>stepFontSize(2);
@@ -731,7 +844,7 @@ function setTextColour(c){
   if(!selData) return;
   document.getElementById('fColor').value=toHex(c);
   if(styleSelection('color', c)) return;
-  selData.color=c; applyToSel();
+  selData.color=c; clearInlineProp('color'); applyToSel();
 }
 document.querySelectorAll('.fmtbar .sw[data-c]').forEach(sw=>{ sw.onclick=()=>setTextColour(sw.dataset.c); });
 document.getElementById('fColor').oninput=function(){ setTextColour(this.value); };
@@ -771,7 +884,194 @@ document.getElementById('fClear').onclick=()=>{
 /* drop a manual height so the box shrinks back around its text */
 document.getElementById('fFit').onclick=()=>{
   if(!selNode||!selData||selData.type!=='text') return;
-  delete selData.h; selNode.querySelector('.text-body').style.minHeight=''; saveDraft(); };
+  delete selData.h; selNode.querySelector('.text-body').style.minHeight=''; refreshShape(); saveDraft(); };
+
+/* ---------- text box shape ---------- */
+/* The shape is geometry, not decoration: J.applyTextShape draws the outline behind the words
+   and carves the text region to match, so the words really sit inside the chosen shape. */
+const shapebar=document.getElementById('shapebar');
+(function(){ const s=document.getElementById('fShape');
+  J.TEXT_SHAPE_ORDER.forEach(k=>{ const o=document.createElement('option'); o.value=k;
+    o.textContent=J.TEXT_SHAPES[k].label; s.appendChild(o); }); })();
+const SHAPE_HINTS={
+  u:'A line of text is one unbroken row, so a U fills its wider arm, then the base.',
+  custom:'Drag the round handles on the box to reshape it.'
+};
+function refreshShape(){
+  if(!selNode||!selData||selData.type!=='text') return;
+  J.applyTextShape(selNode, selData); layoutPointHandles(selNode, selData); fitScale();
+}
+function shapeOpts(){ if(!selData.shapeOpts) selData.shapeOpts=J.shapeDefaults(J.textShapeKey(selData)); return selData.shapeOpts; }
+function setShape(key){
+  if(!selData||selData.type!=='text') return;
+  if(key===J.textShapeKey(selData)) return;
+  if(key==='rect'){ delete selData.shape; delete selData.shapeOpts; delete selData.points; }
+  else{
+    // a custom polygon starts as a copy of whatever shape was showing, so nothing jumps
+    if(key==='custom' && !Array.isArray(selData.points)) selData.points=J.shapePoints(selData).map(p=>[p[0],p[1]]);
+    selData.shape=key; selData.shapeOpts=J.shapeDefaults(key);
+    if(!selData.h) selData.h=Math.max(200, selNode.offsetHeight||200);   // a shape needs a real height
+    if(selData.pad==null) selData.pad=14;
+  }
+  const d=selData; renderAll(); reselect(d);
+}
+document.getElementById('fShape').onchange=function(){ setShape(this.value); };
+function buildShapeParams(){
+  const key=J.textShapeKey(selData), def=J.TEXT_SHAPES[key], o=shapeOpts();
+  const host=document.getElementById('shapeParams');
+  host.innerHTML='<span class="lbl">Geometry</span>';
+  def.params.forEach(p=>{
+    const lab=document.createElement('span'); lab.className='lbl'; lab.textContent=p.label;
+    const minus=document.createElement('button'); minus.className='rbtn'; minus.textContent='−'; minus.title='Smaller';
+    const val=document.createElement('span'); val.className='stepval';
+    const plus=document.createElement('button'); plus.className='rbtn'; plus.textContent='+'; plus.title='Bigger';
+    const cur=()=> (o[p.k]!=null? o[p.k] : (def.defaults[p.k]||0.4));
+    const show=()=> val.textContent=Math.round(cur()*100)+'%';
+    const step=(dv)=>{ o[p.k]=Math.max(0.05, Math.min(0.95, Math.round((cur()+dv)*100)/100));
+      show(); refreshShape(); saveDraft(); };
+    minus.onclick=()=>step(-0.05); plus.onclick=()=>step(0.05); show();
+    [lab,minus,val,plus].forEach(n=>host.appendChild(n));
+  });
+  host.style.display = def.params.length? 'inline-flex' : 'none';
+}
+function showShapeBar(){
+  const key=J.textShapeKey(selData);
+  if(key==='rect'){ shapebar.style.display='none'; return; }
+  shapebar.style.display='flex';
+  const o=shapeOpts();
+  buildShapeParams();
+  document.getElementById('customGrp').style.display = (key==='custom')? 'inline-flex' : 'none';
+  document.getElementById('shFlipX').classList.toggle('active', !!o.flipX);
+  document.getElementById('shFlipY').classList.toggle('active', !!o.flipY);
+  document.getElementById('shapeHint').textContent = SHAPE_HINTS[key]||'';
+}
+function hideShapeBar(){ shapebar.style.display='none'; }
+document.getElementById('shFlipX').onclick=function(){ if(!selData) return; const o=shapeOpts();
+  o.flipX=o.flipX?0:1; this.classList.toggle('active', !!o.flipX); refreshShape(); saveDraft(); };
+document.getElementById('shFlipY').onclick=function(){ if(!selData) return; const o=shapeOpts();
+  o.flipY=o.flipY?0:1; this.classList.toggle('active', !!o.flipY); refreshShape(); saveDraft(); };
+document.getElementById('shReset').onclick=()=>{ if(!selData) return;
+  const key=J.textShapeKey(selData); selData.shapeOpts=J.shapeDefaults(key);
+  if(key==='custom') selData.points=[[0,0],[1,0],[1,1],[0,1]];
+  showShapeBar(); refreshShape(); saveDraft(); };
+document.getElementById('shAddPt').onclick=()=>{ if(!selData) return;
+  const pts=J.customPoints(selData); let bi=0, bd=-1;
+  for(let i=0;i<pts.length;i++){ const a=pts[i], b=pts[(i+1)%pts.length];
+    const dd=Math.hypot(b[0]-a[0], b[1]-a[1]); if(dd>bd){ bd=dd; bi=i; } }
+  const a=pts[bi], b=pts[(bi+1)%pts.length];
+  pts.splice(bi+1, 0, [(a[0]+b[0])/2, (a[1]+b[1])/2]);
+  selData.points=pts; refreshShape(); saveDraft(); };
+document.getElementById('shDelPt').onclick=()=>{ if(!selData) return;
+  const pts=J.customPoints(selData); if(pts.length<=3){ showToast('A shape needs at least three points'); return; }
+  pts.pop(); selData.points=pts; refreshShape(); saveDraft(); };
+document.getElementById('shFromShape').onclick=()=>{ if(!selData) return;
+  const pick=prompt('Trace which preset? Type one of: l, lr, c, u, t','l');
+  if(!pick) return; const k=pick.trim().toLowerCase();
+  if(!J.TEXT_SHAPES[k] || k==='custom' || k==='rect'){ showToast('Unknown preset'); return; }
+  selData.points=J.shapePoints({shape:k, shapeOpts:J.shapeDefaults(k)}).map(p=>[p[0],p[1]]);
+  refreshShape(); saveDraft(); showToast('Traced the '+J.TEXT_SHAPES[k].label+' outline'); };
+
+/* corner rounding, outline and inner padding — all work on rectangles too */
+function setTextRadius(n){ if(!selData||selData.type!=='text') return;
+  selData.radius=Math.max(0, Math.min(80, n)); document.getElementById('fRadVal').textContent=selData.radius; applyToSel(); }
+document.getElementById('fRadMinus').onclick=()=>setTextRadius((selData&&selData.radius!=null?selData.radius:6)-2);
+document.getElementById('fRadPlus').onclick=()=>setTextRadius((selData&&selData.radius!=null?selData.radius:6)+2);
+function setTextBorder(n){ if(!selData||selData.type!=='text') return;
+  selData.bw=Math.max(0, Math.min(24, n)); document.getElementById('fBwVal').textContent=selData.bw; applyToSel(); }
+document.getElementById('fBwMinus').onclick=()=>setTextBorder((selData&&selData.bw)||0 ? selData.bw-1 : 0);
+document.getElementById('fBwPlus').onclick=()=>setTextBorder(((selData&&selData.bw)||0)+1);
+document.getElementById('fBColor').oninput=function(){ if(!selData) return; selData.bc=this.value; if(!selData.bw) setTextBorder(2); else applyToSel(); };
+function setTextPad(n){ if(!selData||selData.type!=='text') return;
+  selData.pad=Math.max(0, Math.min(60, n)); document.getElementById('fPadVal').textContent=selData.pad; applyToSel(); }
+document.getElementById('fPadMinus').onclick=()=>setTextPad((selData&&selData.pad!=null?selData.pad:10)-2);
+document.getElementById('fPadPlus').onclick=()=>setTextPad((selData&&selData.pad!=null?selData.pad:10)+2);
+
+/* custom shape: one draggable handle per polygon point */
+function layoutPointHandles(el, d){
+  [].slice.call(el.querySelectorAll('.pthnd')).forEach(n=>n.remove());
+  if(J.textShapeKey(d)!=='custom') return;
+  const W=el.offsetWidth, H=el.offsetHeight;
+  J.customPoints(d).forEach((p,i)=>{
+    const h=document.createElement('div'); h.className='pthnd'; h.title='drag to reshape';
+    h.style.left=(p[0]*W)+'px'; h.style.top=(p[1]*H)+'px';
+    el.appendChild(h); makePointDraggable(el,h,d,i);
+  });
+}
+function makePointDraggable(el, h, d, i){
+  let drag=false;
+  h.addEventListener('pointerdown',(e)=>{ drag=true; h.classList.add('drag'); h.setPointerCapture(e.pointerId);
+    select(el); e.preventDefault(); e.stopPropagation(); });
+  h.addEventListener('pointermove',(e)=>{ if(!drag) return;
+    const r=el.getBoundingClientRect();
+    const x=Math.max(0, Math.min(1, (e.clientX-r.left)/Math.max(1,r.width)));
+    const y=Math.max(0, Math.min(1, (e.clientY-r.top)/Math.max(1,r.height)));
+    const pts=J.customPoints(d); pts[i]=[Math.round(x*1000)/1000, Math.round(y*1000)/1000]; d.points=pts;
+    h.style.left=(x*el.offsetWidth)+'px'; h.style.top=(y*el.offsetHeight)+'px';
+    J.applyTextShape(el,d); });
+  const end=()=>{ if(!drag) return; drag=false; h.classList.remove('drag'); saveDraft(); layoutPointHandles(el,d); };
+  h.addEventListener('pointerup',end); h.addEventListener('pointercancel',end);
+}
+
+/* ---------- format painter ---------- */
+/* Picks up an item's look and drops it on the next item of the same kind. Geometry (position,
+   size, shape) is deliberately left out, so painting never moves or reshapes anything. */
+const PAINT_KEYS={
+  text:['font','size','bold','italic','underline','align','color','fill','spacing','radius','bw','bc','pad'],
+  photo:['style','frameColor','borderColor','borderWidth','shadow','radius','noCap','capFont','capSize','capColor','capDX','capDY'],
+  video:['style','frameColor','radius','shadow','noCap','capFont','capSize','capColor','capDX','capDY'],
+  doodle:['color','weight'],
+  washi:['color','plain'],
+  sticker:[], imgsticker:[]
+};
+let painter=null, painterLocked=false;
+function paintPick(){
+  if(!selData) return;
+  const keys=PAINT_KEYS[selData.type]||[];
+  if(!keys.length){ showToast('Nothing to copy from this item'); return; }
+  const style={}; keys.forEach(k=>{ if(selData[k]!==undefined) style[k]=lightClone(selData[k]); });
+  painter={type:selData.type, style, _src:selData};
+  document.body.classList.add('painting');
+  document.getElementById('fmtPaint').classList.add('on');
+  showToast(painterLocked? 'Format painter locked — click items to apply, Esc to stop'
+                         : 'Format copied — click another '+selData.type+' to apply it');
+}
+function paintStop(){ painter=null; painterLocked=false;
+  document.body.classList.remove('painting');
+  document.getElementById('fmtPaint').classList.remove('on'); }
+function paintApply(d){
+  if(!painter || !d || d.type!==painter.type) return false;
+  Object.keys(painter.style).forEach(k=>{ d[k]=lightClone(painter.style[k]); });
+  return true;
+}
+document.getElementById('fmtPaint').onclick=()=>{ if(painter && !painterLocked) paintStop(); else paintPick(); };
+document.getElementById('fmtPaint').ondblclick=()=>{ painterLocked=true; paintPick(); };
+
+/* ---------- clipboard: copy a whole item, formatting and all ---------- */
+/* Ctrl+C / Ctrl+V move an entire text box (or photo, video, doodle) between pages, not just
+   its words. The payload also goes to localStorage so it survives a reload. */
+const CLIP='jw-clip';
+let clipboard=null;
+function clipStore(d){
+  clipboard=lightClone(d);
+  try{ localStorage.setItem(CLIP, JSON.stringify(clipboard)); }catch(e){}
+  updateCtx();
+}
+function clipRead(){
+  if(clipboard) return clipboard;
+  try{ const r=localStorage.getItem(CLIP); if(r) clipboard=JSON.parse(r); }catch(e){}
+  return clipboard;
+}
+function copySelected(){ if(!selData) return; clipStore(selData); showToast('Copied the whole '+selData.type); }
+function cutSelected(){ if(!selData) return; clipStore(selData); removeSelected(); showToast('Cut'); }
+function pasteClip(){
+  const src=clipRead(); if(!src){ showToast('Nothing copied yet'); return; }
+  const copy=lightClone(src); copy.id=J.uid();
+  copy.x=Math.max(-OUT, Math.min((copy.x||0)+20, PAGE_W+OUT)); copy.y=(copy.y||0)+20;
+  curPage().elements.push(copy); saveDraft(); renderAll(); reselect(copy);
+  showToast('Pasted onto page '+(story.current+1));
+}
+document.getElementById('copyBtn').onclick=copySelected;
+document.getElementById('pasteBtn').onclick=pasteClip;
 
 /* ---------- doodle bar (colour + weight, after placing) ---------- */
 function showDoodleBar(){ doodlebar.style.display='flex';
@@ -826,7 +1126,8 @@ function showCapBar(){ const bar=document.getElementById('capbar');
   bar.style.display='flex';
   const cf=document.getElementById('capFont'); cf.value=selData.capFont?J.resolveFontKey(selData.capFont):''; cf.style.fontFamily=(J.FONTS[cf.value]||J.FONTS.gaegu).css;
   document.getElementById('capSzVal').textContent=(selData.capSize||18);
-  document.getElementById('capColor').value=toHex(selData.capColor||'#4b4361'); }
+  document.getElementById('capColor').value=toHex(selData.capColor||'#4b4361');
+  showCapPos(); }
 function applyCap(){ if(!selNode||!selData||(selData.type!=='photo'&&selData.type!=='video')) return;
   const cap=selNode.querySelector('.cap'); if(cap) J.applyCaptionStyle(cap, selData); saveDraft(); }
 document.getElementById('capFont').onchange=function(){ if(!selData) return; selData.capFont=this.value; this.style.fontFamily=(J.FONTS[this.value]||J.FONTS.gaegu).css; applyCap(); };
@@ -834,6 +1135,19 @@ document.getElementById('capSzMinus').onclick=()=>{ if(!selData) return; selData
 document.getElementById('capSzPlus').onclick=()=>{ if(!selData) return; selData.capSize=Math.min(40,(selData.capSize||18)+1); document.getElementById('capSzVal').textContent=selData.capSize; applyCap(); };
 document.querySelectorAll('#capbar .sw[data-cc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.capColor=sw.dataset.cc; document.getElementById('capColor').value=toHex(sw.dataset.cc); applyCap(); }; });
 document.getElementById('capColor').oninput=function(){ if(!selData) return; selData.capColor=this.value; applyCap(); };
+/* caption position: nudge it off the default centred spot, in 2px steps */
+function showCapPos(){ const v=document.getElementById('capPosVal');
+  if(v) v.textContent=((selData&&selData.capDX)||0)+','+((selData&&selData.capDY)||0); }
+function nudgeCap(dx,dy){ if(!selData) return;
+  selData.capDX=Math.max(-120, Math.min(120, (selData.capDX||0)+dx));
+  selData.capDY=Math.max(-60,  Math.min(160, (selData.capDY||0)+dy));
+  showCapPos(); applyCap(); }
+document.getElementById('capUp').onclick=()=>nudgeCap(0,-2);
+document.getElementById('capDown').onclick=()=>nudgeCap(0,2);
+document.getElementById('capLeft').onclick=()=>nudgeCap(-2,0);
+document.getElementById('capRight').onclick=()=>nudgeCap(2,0);
+document.getElementById('capReset').onclick=()=>{ if(!selData) return;
+  delete selData.capDX; delete selData.capDY; showCapPos(); applyCap(); showToast('Caption back to centre'); };
 
 /* border styling bar (colour + width) — only shown for the Border look */
 function showBorderBar(){ const bar=document.getElementById('borderbar');
@@ -941,9 +1255,21 @@ document.getElementById('addVideo').onclick=()=>openVideoModal(null);
 function renderTabs(){
   tabsEl.innerHTML='';
   story.pages.forEach((pg,i)=>{ const t=document.createElement('div'); t.className='tab'+(i===story.current?' active':'');
-    t.innerHTML=(i+1)+(story.pages.length>1?'<span class="x">×</span>':'');
-    t.title='Page '+(i+1);
-    t.onclick=(e)=>{ if(e.target.classList.contains('x')){ if(confirm('Delete this page?')){ story.pages.splice(i,1); if(story.current>=story.pages.length) story.current=story.pages.length-1; deselect(); saveDraft(); renderAll(); } return; } story.current=i; deselect(); renderAll(); };
+    t.textContent=(i+1);
+    t.title='Page '+(i+1)+(story.pages.length>1?' — right-click (or press and hold) to delete':'');
+    /* the close cross is gone: deleting a page is a deliberate right-click, so a page can
+       never be lost to a mis-tap on a small screen */
+    const del=()=>{ if(story.pages.length<2){ showToast('A story needs at least one page'); return; }
+      if(!confirm('Delete page '+(i+1)+'?')) return;
+      story.pages.splice(i,1); if(story.current>=story.pages.length) story.current=story.pages.length-1;
+      deselect(); saveDraft(); renderAll(); showToast('Page deleted'); };
+    t.oncontextmenu=(e)=>{ e.preventDefault(); del(); };
+    let hold=null;
+    t.addEventListener('pointerdown',(e)=>{ if(e.pointerType!=='touch') return;
+      hold=setTimeout(()=>{ hold=null; del(); }, 600); });
+    const clearHold=()=>{ if(hold){ clearTimeout(hold); hold=null; } };
+    ['pointerup','pointercancel','pointerleave','pointermove'].forEach(ev=>t.addEventListener(ev, clearHold));
+    t.onclick=()=>{ story.current=i; deselect(); renderAll(); };
     tabsEl.appendChild(t); });
   const add=document.createElement('div'); add.className='tab add'; add.textContent='+'; add.title='Add page';
   add.onclick=()=>{ story.pages.push(blankPage()); story.current=story.pages.length-1; deselect(); saveDraft(); renderAll(); };
@@ -953,7 +1279,7 @@ function renderAll(){
   renderTabs();
   storyTitle.value=story.title||''; storyDate.value=story.date||J.today();
   coverPrev.innerHTML = story.thumb ? '<img src="'+story.thumb+'" style="width:100%;height:100%;object-fit:cover;">' : '✿';
-  const pg=curPage(); page.className='page'; J.applyPaper(page, pg.paper);
+  const pg=curPage(); page.className='page'; J.applyPaper(page, pg.paper, pg.bgColor);
   page.innerHTML='';
   guideV=document.createElement('div'); guideV.className='guide v'; page.appendChild(guideV);
   guideH=document.createElement('div'); guideH.className='guide h'; page.appendChild(guideH);
@@ -965,6 +1291,11 @@ function deselect(){ if(selNode){ exitEdit(selNode); selNode.classList.remove('s
   selNode=null; selData=null; hideFmt(); hideDoodleBar(); hidePhotoBar(); hideVideoBar(); updateCtx(); }
 function select(node){
   if(selNode && selNode!==node){ exitEdit(selNode); selNode.classList.remove('selected'); }
+  /* a loaded format painter drops its look on whatever is clicked next */
+  if(painter && node.__data && node.__data!==painter._src && paintApply(node.__data)){
+    const d=node.__data; if(!painterLocked) paintStop();
+    saveDraft(); renderAll(); reselect(d); showToast('Format applied'); return;
+  }
   selNode=node; selData=node.__data; node.classList.add('selected'); zTop++; node.style.zIndex=zTop;
   if(selData && selData.type==='text') showFmt(); else hideFmt();
   if(selData && selData.type==='doodle') showDoodleBar(); else hideDoodleBar();
@@ -975,7 +1306,8 @@ function select(node){
 /* the contextual ribbon row always keeps its height; only its contents swap */
 function updateCtx(){
   const on=!!selData;
-  ['dupBtn','delBtn','backBtn','frontBtn','centerXBtn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=!on; });
+  ['dupBtn','delBtn','backBtn','frontBtn','copyBtn','fmtPaint'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=!on; });
+  const pb=document.getElementById('pasteBtn'); if(pb) pb.disabled=!clipRead();
   const anyBar=[].slice.call(document.querySelectorAll('.rb-ctx .fmtbar')).some(b=>b.style.display==='flex');
   const hint=document.getElementById('ctxhint'); if(hint) hint.style.display=anyBar?'none':'flex';
 }
@@ -1032,9 +1364,11 @@ function buildEl(d, pg){
     const b=document.createElement('div'); b.className='text-body'; b.contentEditable='false';
     if(J.hasRich(d)) b.innerHTML=J.sanitizeRich(d.html); else b.innerText=d.content||'';
     J.applyTextStyle(b,d);
-    b.addEventListener('input',()=>{ syncRichFromBody(b,d); saveDraft(); });
+    // the shape has to keep wrapping the words as they are typed
+    b.addEventListener('input',()=>{ syncRichFromBody(b,d); J.applyTextShape(el,d); saveDraft(); });
     el.addEventListener('dblclick',(e)=>{ if(isEditing(el)) return; enterEdit(el,b,e.clientX,e.clientY); e.stopPropagation(); });
     el.appendChild(b); applyRot(el,d);
+    if(J.textShapeKey(d)!=='rect') requestAnimationFrame(()=>{ J.applyTextShape(el,d); layoutPointHandles(el,d); });
   } else if(d.type==='photo'){
     const img=document.createElement('img'); img.src=d.src; img.draggable=false; el.appendChild(img);
     const cap=document.createElement('div'); cap.className='cap'; cap.contentEditable='false'; cap.innerText=d.caption||'';
@@ -1116,7 +1450,7 @@ function showGuides(gx, gy){
 function makeDraggable(el, d){
   let sx,sy,ox,oy,targets,wasSel=false,armed=false,drag=false;
   el.addEventListener('pointerdown',(e)=>{
-    if(e.target.closest && e.target.closest('.hnd,.roth,.dot')) return;
+    if(e.target.closest && e.target.closest('.hnd,.roth,.dot,.pthnd')) return;
     if(isEditing(el)){
       // typing holds the box still: a click on the words just moves the caret, and a
       // click on the empty part of the box leaves typing and moves it in one gesture
@@ -1185,6 +1519,8 @@ function makeResizable(el, handle, d, dir){
       // height is a minimum, so text can still grow past it and is never clipped
       if(north||south){ const nh=Math.max(30, oh+(south?dy:-dy));
         el.querySelector('.text-body').style.minHeight=nh+'px'; d.h=Math.round(nh); }
+      // arms are stored as fractions, so the geometry stays meaningful at the new size
+      if(J.textShapeKey(d)!=='rect') J.applyTextShape(el,d);
     } else {
       // photos, image stickers, doodles and tape keep their proportions: width drives height
       const asp=ow/Math.max(oh,1);
@@ -1197,7 +1533,9 @@ function makeResizable(el, handle, d, dir){
     if(west){ const nx=ox+(ow-el.offsetWidth); el.style.left=nx+'px'; d.x=Math.round(nx); }
     if(north){ const ny=oy+(oh-el.offsetHeight); el.style.top=ny+'px'; d.y=Math.round(ny); }
   });
-  const end=()=>{ if(!drag) return; drag=false; saveDraft(); };
+  const end=()=>{ if(!drag) return; drag=false;
+    if(d.type==='text' && J.textShapeKey(d)!=='rect'){ J.applyTextShape(el,d); layoutPointHandles(el,d); }
+    saveDraft(); };
   handle.addEventListener('pointerup',end); handle.addEventListener('pointercancel',end);
 }
 function selectLast(){ const nodes=page.querySelectorAll('.el'); const last=nodes[nodes.length-1]; if(last) select(last); return last; }
@@ -1212,16 +1550,27 @@ function layerMove(toFront){ if(!selData) return; const pg=curPage(); const i=pg
   const d=selData; pg.elements.splice(i,1);
   if(toFront) pg.elements.push(d); else pg.elements.unshift(d);
   saveDraft(); renderAll(); reselect(d); }
-function centreOnPage(){ if(!selNode||!selData) return;
-  const nx=Math.round((PAGE_W-selNode.offsetWidth)/2); selNode.style.left=nx+'px'; selData.x=nx; saveDraft(); }
 document.getElementById('delBtn').onclick=removeSelected;
 document.getElementById('dupBtn').onclick=duplicateSelected;
 document.getElementById('backBtn').onclick=()=>layerMove(false);
 document.getElementById('frontBtn').onclick=()=>layerMove(true);
-document.getElementById('centerXBtn').onclick=centreOnPage;
+
+/* Paste works with nothing selected too, so a box can be copied on one page and dropped on
+   another. Typing keeps the browser's own copy and paste. */
+window.addEventListener('keydown',(e)=>{
+  if(!(e.ctrlKey||e.metaKey)) return;
+  const k=(e.key||'').toLowerCase();
+  if(k!=='v' && k!=='c' && k!=='x') return;
+  if(inEditable() || (selNode && isEditing(selNode))) return;
+  if(k==='v'){ e.preventDefault(); pasteClip(); return; }
+  if(!selData) return;
+  e.preventDefault();
+  if(k==='c') copySelected(); else cutSelected();
+});
 
 /* Escape leaves typing, Delete removes, arrows nudge (Shift = 10px), Ctrl+D duplicates */
 window.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape' && painter){ paintStop(); showToast('Format painter off'); e.preventDefault(); return; }
   if(!selNode) return;
   if(e.key==='Escape'){ if(isEditing(selNode)) exitEdit(selNode); else deselect(); e.preventDefault(); return; }
   if(isEditing(selNode) || inEditable()) return;
@@ -1271,6 +1620,10 @@ document.getElementById('bgBtn').onclick=openBgSheet;
 document.getElementById('closeBg').onclick=()=>bgMask.classList.remove('open');
 bgMask.onclick=(e)=>{ if(e.target===bgMask) bgMask.classList.remove('open'); };
 function setPaper(key){ curPage().paper=J.normalizePaper(key); deselect(); saveDraft(); renderAll(); bgMask.classList.remove('open'); }
+/* paper colour: applies to the grid / dot / plain papers. Unset keeps the theme paper. */
+const PAPER_COLORS=['#fbf8ff','#ffffff','#fff6e9','#fdeef1','#eef6ff','#eefaf1','#f5f0e6','#efeaf7','#e9f0f4','#2b2740'];
+function setPaperColor(c){ const pg=curPage(); if(c) pg.bgColor=c; else delete pg.bgColor;
+  saveDraft(); J.applyPaper(page, pg.paper, pg.bgColor); }
 function makeBgItem(key,label,thumb,cur){
   const it=document.createElement('button'); it.className='bgitem'+(key===cur?' sel':'');
   const sw=document.createElement('div'); sw.className='bgsw bg-'+key;
@@ -1286,6 +1639,26 @@ function openBgSheet(){
   const g1=document.createElement('div'); g1.className='bggrid';
   [['grid','Grid'],['dot','Dots'],['plain','Plain']].forEach(b=> g1.appendChild(makeBgItem(b[0],b[1],null,cur)));
   bgBody.appendChild(g1);
+
+  /* paper colour for the plain / grid / dot papers */
+  c=document.createElement('div'); c.className='cat'; c.textContent='Paper colour'; bgBody.appendChild(c);
+  const pgd=curPage(), isBuiltin=(J.BUILTIN_PAPERS.indexOf(cur)!==-1);
+  const row=document.createElement('div'); row.className='doodlecolors';
+  PAPER_COLORS.forEach(col=>{ const s=document.createElement('button');
+    s.className='dcolor'+(pgd.bgColor===col?' sel':''); s.style.background=col; s.title=col;
+    s.onclick=()=>{ setPaperColor(col); openBgSheet(); }; row.appendChild(s); });
+  const pick=document.createElement('input'); pick.type='color'; pick.value=pgd.bgColor||'#fbf8ff';
+  pick.title='Custom paper colour'; pick.style.cssText='width:30px;height:30px;border:none;background:none;cursor:pointer;padding:0;';
+  pick.oninput=()=>setPaperColor(pick.value);
+  row.appendChild(pick);
+  const clr=document.createElement('button'); clr.className='btn ghost'; clr.textContent='Default';
+  clr.style.padding='5px 11px'; clr.onclick=()=>{ setPaperColor(''); openBgSheet(); };
+  row.appendChild(clr);
+  bgBody.appendChild(row);
+  const note=document.createElement('div'); note.style.cssText='font-size:12px;color:var(--ink-soft);margin-top:2px;';
+  note.textContent = isBuiltin ? 'Applies to this page only.' : 'Pick Grid, Dots or Plain above to use a paper colour.';
+  bgBody.appendChild(note);
+
   c=document.createElement('div'); c.className='cat'; c.textContent='Decorative'; bgBody.appendChild(c);
   const g2=document.createElement('div'); g2.className='bggrid';
   J.BACKGROUNDS.forEach(b=> g2.appendChild(makeBgItem(b.key,b.label,b.thumb,cur)));
@@ -1379,7 +1752,7 @@ document.getElementById('saveDraftBtn').onclick=()=>{
 };
 
 /* ---------- import JSON ---------- */
-const ELEMENT_TYPES=['text','photo','sticker','imgsticker','washi','doodle'];
+const ELEMENT_TYPES=['text','photo','video','sticker','imgsticker','washi','doodle'];
 function validateStoryJson(data){
   if(!data || typeof data!=='object' || Array.isArray(data)) return 'The file is not a story object.';
   if(data.title!=null && typeof data.title!=='string') return 'The story title is invalid.';

@@ -229,7 +229,38 @@ window.JOURNAL = (function(){
     {key:"banner",      label:"Banner",        ratio:2.5, w:150, svg:'<svg viewBox="0 0 140 56"><path '+S+' d="M18 14H122L108 28 122 42H18L32 28z"/></svg>'},
     {key:"flower",      label:"Flower",        ratio:1,   w:58,  svg:'<svg viewBox="0 0 60 60"><circle cx="30" cy="14" r="9" '+S+'/><circle cx="46" cy="26" r="9" '+S+'/><circle cx="40" cy="44" r="9" '+S+'/><circle cx="20" cy="44" r="9" '+S+'/><circle cx="14" cy="26" r="9" '+S+'/><circle cx="30" cy="30" r="5" fill="currentColor"/></svg>'},
     {key:"cloud",       label:"Cloud",         ratio:1.68,w:90,  svg:'<svg viewBox="0 0 84 50"><path '+S+' d="M20 42C8 42 6 28 18 26 18 13 36 11 40 22 47 13 65 16 64 27 76 27 78 42 64 42z"/></svg>'},
-    {key:"pin",         label:"Location pin",  ratio:0.71,w:40,  svg:'<svg viewBox="0 0 40 56"><path '+S+' d="M20 52C20 52 33 33 33 20 33 12 27 6 20 6 13 6 7 12 7 20 7 33 20 52 20 52z"/><circle cx="20" cy="20" r="6" '+S+'/></svg>'}
+    {key:"pin",         label:"Location pin",  ratio:0.71,w:40,  svg:'<svg viewBox="0 0 40 56"><path '+S+' d="M20 52C20 52 33 33 33 20 33 12 27 6 20 6 13 6 7 12 7 20 7 33 20 52 20 52z"/><circle cx="20" cy="20" r="6" '+S+'/></svg>'},
+    /* second batch: everyday keepsakes, weather, nature and travel motifs */
+    {key:"butterfly",   label:"Butterfly",     ratio:1.15,w:66,  svg:'<svg viewBox="0 0 92 80"><path '+S+' d="M46 22V62"/><path '+S+' d="M46 26C38 8 20 6 12 16 4 26 12 40 28 42 14 48 10 62 20 70 30 78 42 70 46 56"/><path '+S+' d="M46 26C54 8 72 6 80 16 88 26 80 40 64 42 78 48 82 62 72 70 62 78 50 70 46 56"/><path '+S+' d="M46 22 40 10M46 22 52 10"/></svg>'},
+    {key:"music",       label:"Music notes",   ratio:1,   w:52,  svg:'<svg viewBox="0 0 64 64"><path '+S+' d="M26 46V14L54 8V40"/><path '+S+' d="M26 22 54 16"/><ellipse cx="18" cy="47" rx="9" ry="7" '+S+'/><ellipse cx="46" cy="41" rx="9" ry="7" '+S+'/></svg>'},
+    {key:"coffee",      label:"Coffee cup",    ratio:1.14,w:58,  svg:'<svg viewBox="0 0 80 70"><path '+S+' d="M12 26H60V46C60 56 52 62 42 62H30C20 62 12 56 12 46z"/><path '+S+' d="M60 32H68C74 32 76 38 74 43 72 48 66 50 60 48"/><path '+S+' d="M26 16C26 12 30 11 30 7M40 16C40 12 44 11 44 7"/></svg>'},
+    {key:"camera",      label:"Camera",        ratio:1.29,w:70,  svg:'<svg viewBox="0 0 90 70"><path '+S+' d="M8 22H26L32 12H58L64 22H82V60H8z"/><circle cx="45" cy="40" r="13" '+S+'/><circle cx="72" cy="30" r="2.6" fill="currentColor"/></svg>'},
+    {key:"book",        label:"Open book",     ratio:1.4, w:80,  svg:'<svg viewBox="0 0 98 70"><path '+S+' d="M49 18C40 10 24 8 10 12V56C24 52 40 54 49 62 58 54 74 52 88 56V12C74 8 58 10 49 18z"/><path '+S+' d="M49 18V62"/></svg>'},
+    {key:"balloon",     label:"Balloon",       ratio:0.66,w:44,  svg:'<svg viewBox="0 0 52 78"><path '+S+' d="M26 54C38 54 45 43 45 31 45 17 37 6 26 6 15 6 7 17 7 31 7 43 14 54 26 54z"/><path '+S+' d="M21 55 26 62 31 55"/><path '+S+' d="M26 62C26 67 20 68 20 72 20 76 27 76 27 71"/></svg>'},
+    {key:"moon",        label:"Crescent moon", ratio:0.88,w:50,  svg:'<svg viewBox="0 0 62 70"><path '+S+' d="M46 50C30 58 12 50 10 33 8 18 18 8 30 6 20 18 22 36 34 44 39 47 43 49 46 50z"/></svg>'},
+    {key:"crown",       label:"Crown",         ratio:1.35,w:70,  svg:'<svg viewBox="0 0 88 65"><path '+S+' d="M10 52 6 14 26 30 44 8 62 30 82 14 78 52z"/><path '+S+' d="M10 52H78"/></svg>'},
+    {key:"gift",        label:"Gift box",      ratio:1.06,w:58,  svg:'<svg viewBox="0 0 74 70"><path '+S+' d="M8 26H66V62H8z"/><path '+S+' d="M4 16H70V26H4z"/><path '+S+' d="M37 16V62"/><path '+S+' d="M37 16C30 16 22 14 22 9 22 5 27 4 30 6 34 9 36 12 37 16 38 12 40 9 44 6 47 4 52 5 52 9 52 14 44 16 37 16z"/></svg>'},
+    {key:"envelope",    label:"Envelope",      ratio:1.44,w:74,  svg:'<svg viewBox="0 0 92 64"><path '+S+' d="M8 12H84V56H8z"/><path '+S+' d="M8 12 46 38 84 12"/></svg>'},
+    {key:"clock",       label:"Clock",         ratio:1,   w:56,  svg:'<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="24" '+S+'/><path '+S+' d="M32 20V34L42 40"/><path '+S+' d="M20 8 14 14M44 8 50 14"/></svg>'},
+    {key:"umbrella",    label:"Umbrella",      ratio:0.94,w:56,  svg:'<svg viewBox="0 0 68 72"><path '+S+' d="M6 34C6 18 18 8 34 8 50 8 62 18 62 34 55 29 48 29 41 34 38 29 30 29 27 34 20 29 13 29 6 34z"/><path '+S+' d="M34 34V58C34 64 28 66 25 62"/></svg>'},
+    {key:"cake",        label:"Cake",          ratio:1.1, w:62,  svg:'<svg viewBox="0 0 78 70"><path '+S+' d="M10 40C18 34 24 44 32 40 40 36 46 44 54 40 62 36 66 42 70 40V62H10z"/><path '+S+' d="M10 40V34C10 30 14 28 20 28H60C66 28 70 30 70 34V40"/><path '+S+' d="M27 28V18M40 28V16M53 28V18"/><path '+S+' d="M27 18C25 15 27 12 29 13M40 16C38 13 40 10 42 11M53 18C51 15 53 12 55 13"/></svg>'},
+    {key:"key",         label:"Key",           ratio:2.1, w:80,  svg:'<svg viewBox="0 0 96 46"><circle cx="20" cy="23" r="13" '+S+'/><path '+S+' d="M33 23H88"/><path '+S+' d="M74 23V34M84 23V32"/></svg>'},
+    {key:"feather",     label:"Feather",       ratio:0.78,w:48,  svg:'<svg viewBox="0 0 56 72"><path '+S+' d="M18 64C10 46 12 24 30 10 44 0 52 8 48 24 44 42 32 54 18 58"/><path '+S+' d="M30 12 20 62"/><path '+S+' d="M26 30 40 26M23 42 38 38"/></svg>'},
+    {key:"paw",         label:"Paw print",     ratio:1.05,w:52,  svg:'<svg viewBox="0 0 62 60"><ellipse cx="31" cy="42" rx="15" ry="12" '+S+'/><ellipse cx="12" cy="27" rx="6.5" ry="8" '+S+'/><ellipse cx="24" cy="15" rx="6.5" ry="8.5" '+S+'/><ellipse cx="39" cy="15" rx="6.5" ry="8.5" '+S+'/><ellipse cx="51" cy="27" rx="6.5" ry="8" '+S+'/></svg>'},
+    {key:"snowflake",   label:"Snowflake",     ratio:1,   w:54,  svg:'<svg viewBox="0 0 64 64"><g '+S+'><path d="M32 7V57"/><path d="M32 18 25 11M32 18 39 11M32 46 25 53M32 46 39 53"/></g><g '+S+' transform="rotate(60 32 32)"><path d="M32 7V57"/><path d="M32 18 25 11M32 18 39 11M32 46 25 53M32 46 39 53"/></g><g '+S+' transform="rotate(120 32 32)"><path d="M32 7V57"/><path d="M32 18 25 11M32 18 39 11M32 46 25 53M32 46 39 53"/></g></svg>'},
+    {key:"bolt",        label:"Lightning",     ratio:0.6, w:38,  svg:'<svg viewBox="0 0 42 70"><path '+S+' d="M26 6 10 40H22L16 64 34 28H22z"/></svg>'},
+    {key:"smiley",      label:"Smiley",        ratio:1,   w:54,  svg:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="25" '+S+'/><path '+S+' d="M22 26V30M42 26V30"/><path '+S+' d="M20 40C24 48 40 48 44 40"/></svg>'},
+    {key:"bubble",      label:"Speech bubble", ratio:1.28,w:76,  svg:'<svg viewBox="0 0 88 68"><path '+S+' d="M44 8C66 8 82 18 82 32 82 46 66 56 44 56 38 56 33 55 28 54L10 62 17 48C10 44 6 38 6 32 6 18 22 8 44 8z"/></svg>'},
+    {key:"think",       label:"Thought bubble",ratio:1.14,w:76,  svg:'<svg viewBox="0 0 84 74"><path '+S+' d="M42 6C60 6 74 15 74 27 74 39 60 47 42 47 24 47 10 39 10 27 10 15 24 6 42 6z"/><circle cx="26" cy="56" r="7" '+S+'/><circle cx="13" cy="67" r="4.5" '+S+'/></svg>'},
+    {key:"bow",         label:"Ribbon bow",    ratio:1.5, w:70,  svg:'<svg viewBox="0 0 90 60"><path '+S+' d="M45 30C36 20 20 12 12 18 4 24 8 40 20 42 30 44 40 38 45 30z"/><path '+S+' d="M45 30C54 20 70 12 78 18 86 24 82 40 70 42 60 44 50 38 45 30z"/><circle cx="45" cy="30" r="6" '+S+'/><path '+S+' d="M40 35 32 54M50 35 58 54"/></svg>'},
+    {key:"tulip",       label:"Tulip",         ratio:0.62,w:42,  svg:'<svg viewBox="0 0 46 74"><path '+S+' d="M10 16C10 30 15 38 23 40 31 38 36 30 36 16 31 22 28 22 23 16 18 22 15 22 10 16z"/><path '+S+' d="M23 40V68"/><path '+S+' d="M23 52C17 52 12 48 11 42 18 41 22 45 23 52z"/></svg>'},
+    {key:"palm",        label:"Palm frond",    ratio:0.78,w:50,  svg:'<svg viewBox="0 0 62 78"><path '+S+' d="M30 74C30 56 29 34 34 12"/><path '+S+' d="M30 64Q19 60 14 50M30 52Q19 48 15 38M31 40Q21 36 18 27M33 28Q26 25 24 18"/><path '+S+' d="M30 64Q41 60 46 50M30 52Q41 48 45 38M31 40Q41 36 44 27M33 28Q40 25 42 18"/></svg>'},
+    {key:"plane",       label:"Aeroplane",     ratio:1.2, w:66,  svg:'<svg viewBox="0 0 78 65"><path '+S+' d="M39 6C43 6 46 12 46 22V30L72 44V52L46 44V54L54 60V64L39 59 24 64V60L32 54V44L6 52V44L32 30V22C32 12 35 6 39 6z"/></svg>'},
+    {key:"anchor",      label:"Anchor",        ratio:0.85,w:52,  svg:'<svg viewBox="0 0 60 70"><circle cx="30" cy="12" r="6" '+S+'/><path '+S+' d="M30 18V62"/><path '+S+' d="M16 28H44"/><path '+S+' d="M8 42C8 54 18 62 30 62 42 62 52 54 52 42"/></svg>'},
+    {key:"diamond",     label:"Diamond",       ratio:1.08,w:52,  svg:'<svg viewBox="0 0 66 61"><path '+S+' d="M16 8H50L62 24 33 56 4 24z"/><path '+S+' d="M4 24H62M16 8 24 24 33 56M50 8 42 24 33 56"/></svg>'},
+    {key:"spiral",      label:"Spiral",        ratio:1,   w:52,  svg:'<svg viewBox="0 0 64 64"><path '+S+' d="M32 32C32 28 36 26 39 28 44 31 43 39 37 43 29 48 18 44 14 34 9 22 17 8 31 5 48 1 63 12 64 29"/></svg>'},
+    {key:"eye",         label:"Eye",           ratio:1.8, w:70,  svg:'<svg viewBox="0 0 90 50"><path '+S+' d="M6 25C18 10 32 4 45 4 58 4 72 10 84 25 72 40 58 46 45 46 32 46 18 40 6 25z"/><circle cx="45" cy="25" r="10" '+S+'/></svg>'},
+    {key:"bulb",        label:"Light bulb",    ratio:0.72,w:46,  svg:'<svg viewBox="0 0 52 72"><path '+S+' d="M26 6C36 6 44 14 44 24 44 32 38 36 36 44H16C14 36 8 32 8 24 8 14 16 6 26 6z"/><path '+S+' d="M17 52H35M19 60H33"/></svg>'}
   ];
   const DOODLES_MAP = {}; DOODLES.forEach(d=> DOODLES_MAP[d.key]=d);
   /* build a doodle's final SVG with a chosen colour + stroke weight baked in
@@ -292,6 +323,14 @@ window.JOURNAL = (function(){
     cap.style.color = d.capColor || '';
     // size: 0/undefined inherits the CSS default (18px)
     cap.style.fontSize = d.capSize ? (d.capSize+'px') : '';
+    /* POSITION: capDY nudges the caption down (or up) and capDX sideways from the default
+       centred spot. The offsets go out as CSS variables so the card's bottom padding grows
+       with the caption instead of clipping it. Both unset = the original placement. */
+    const host=cap.parentNode || (cap.closest && cap.closest('.el'));
+    if(host && host.style){
+      host.style.setProperty('--cap-dy', (d.capDY||0)+'px');
+      host.style.setProperty('--cap-dx', (d.capDX||0)+'px');
+    }
   }
 
   /* ---- video ----
@@ -358,13 +397,19 @@ window.JOURNAL = (function(){
     delete wrap.dataset.playing; wrap.style.height=''; fillVideoFace(wrap, d||{});
   }
 
-  function applyPaper(pageEl, paper){
+  /* `color` tints the plain / grid / dot papers. Unset keeps the theme paper colour, so
+     every already-published page is unchanged. Decorative image papers ignore it. */
+  function applyPaper(pageEl, paper, color){
     paper = paper || 'grid';
     pageEl.classList.remove('grid','dot','plain','bg');
     pageEl.style.backgroundImage = '';
+    pageEl.style.backgroundColor = '';
     const bg = BG_MAP[paper];
     if(bg){ pageEl.classList.add('bg'); pageEl.style.backgroundImage = 'url("'+bg.file+'")'; }
-    else { pageEl.classList.add(BUILTIN_PAPERS.indexOf(paper)!==-1 ? paper : 'grid'); }
+    else {
+      pageEl.classList.add(BUILTIN_PAPERS.indexOf(paper)!==-1 ? paper : 'grid');
+      if(color) pageEl.style.backgroundColor = color;
+    }
   }
   function normalizePaper(p){ return (BUILTIN_PAPERS.indexOf(p)!==-1 || BG_MAP[p]) ? p : 'grid'; }
 
@@ -412,13 +457,214 @@ window.JOURNAL = (function(){
     body.style.textDecoration = d.underline? 'underline':'none';
     body.style.textAlign  = d.align||'left';
     body.style.color = d.color || '';
-    body.style.background = d.fill || 'transparent';
     /* paragraph / line spacing: a multiplier (1.0 – 3.0). Unset inherits the CSS
        default (1.45), so every already-published story renders exactly as before. */
     body.style.lineHeight = d.spacing ? String(d.spacing) : '';
     /* manual box height: a MINIMUM, so longer text still grows and is never clipped.
        Unset keeps the old auto height, so every already-published story is unchanged. */
     body.style.minHeight = d.h ? (d.h+'px') : '';
+    /* internal padding: unset keeps the CSS default (8px 10px) */
+    body.style.padding = (d.pad!=null) ? (d.pad+'px') : '';
+    /* A shaped box paints its fill and border in the SVG behind the text instead, so the
+       rectangular background and border are cleared here and drawn by applyTextShape. */
+    const shaped = textShapeKey(d)!=='rect';
+    body.style.background = shaped ? 'transparent' : (d.fill || 'transparent');
+    /* corner rounding + border: unset keeps the original CSS (6px radius, no border) */
+    body.style.borderRadius = (!shaped && d.radius!=null) ? (d.radius+'px') : '';
+    if(!shaped && d.bw){ body.style.border = d.bw+'px solid '+(d.bc||'#4b4361'); }
+    else body.style.border = '';
+  }
+
+  /* ---- text-box shapes ----
+     A text box can take a non-rectangular outline (L, C, U, T or a freehand polygon) and
+     the text really flows inside it. Each shape is a small function turning a handful of
+     named parameters into a polygon in a 0..1 box, so geometry stays meaningful at any size
+     and every shape shares one renderer instead of being hard-coded separately.
+
+     Stored on an element as { shape, shapeOpts:{...}, points:[[x,y],...] }. A box with no
+     `shape` is a plain rectangle and takes the original code path untouched, so every
+     already-published story renders exactly as before. */
+  const cl01=(v,lo,hi)=> Math.max(lo==null?0.05:lo, Math.min(hi==null?0.95:hi, (v==null?0.4:v)));
+  const TEXT_SHAPES={
+    rect:{ label:'Rectangle', params:[], defaults:{},
+      points(){ return [[0,0],[1,0],[1,1],[0,1]]; } },
+    l:{ label:'L', params:[{k:'arm',label:'Arm width'},{k:'base',label:'Base height'}],
+      defaults:{arm:.45, base:.4},
+      points(o){ const a=cl01(o.arm), b=cl01(o.base); return [[0,0],[a,0],[a,1-b],[1,1-b],[1,1],[0,1]]; } },
+    c:{ label:'C', params:[{k:'arm',label:'Arm width'},{k:'top',label:'Top bar'},{k:'base',label:'Bottom bar'}],
+      defaults:{arm:.45, top:.28, base:.28},
+      points(o){ const a=cl01(o.arm), t=cl01(o.top), b=cl01(o.base);
+        const t2=Math.min(t,.9-b); return [[0,0],[1,0],[1,t2],[a,t2],[a,1-b],[1,1-b],[1,1],[0,1]]; } },
+    u:{ label:'U', params:[{k:'arm',label:'Left arm'},{k:'arm2',label:'Right arm'},{k:'base',label:'Bottom bar'}],
+      defaults:{arm:.32, arm2:.32, base:.34},
+      points(o){ const a=cl01(o.arm,.05,.6), a2=cl01(o.arm2,.05,.6), b=cl01(o.base);
+        return [[0,0],[a,0],[a,1-b],[1-a2,1-b],[1-a2,0],[1,0],[1,1],[0,1]]; } },
+    t:{ label:'T', params:[{k:'top',label:'Top bar'},{k:'stem',label:'Stem width'}],
+      defaults:{top:.34, stem:.44},
+      points(o){ const t=cl01(o.top), s=cl01(o.stem,.1), l=(1-s)/2, r=(1+s)/2;
+        return [[0,0],[1,0],[1,t],[r,t],[r,1],[l,1],[l,t],[0,t]]; } },
+    custom:{ label:'Custom', params:[], defaults:{},
+      points(){ return [[0,0],[1,0],[1,1],[0,1]]; } }
+  };
+  /* Reverse L is the same geometry pre-flipped, so there is no duplicated shape code */
+  TEXT_SHAPES.lr = Object.assign({}, TEXT_SHAPES.l, { label:'Reverse L',
+    defaults:Object.assign({}, TEXT_SHAPES.l.defaults, {flipX:1}) });
+  const TEXT_SHAPE_ORDER=['rect','l','lr','c','u','t','custom'];
+
+  function textShapeKey(d){ return (d && d.shape && TEXT_SHAPES[d.shape]) ? d.shape : 'rect'; }
+  function shapeDefaults(key){ return Object.assign({}, (TEXT_SHAPES[key]||TEXT_SHAPES.rect).defaults); }
+  function customPoints(d){
+    const p=(d && Array.isArray(d.points)) ? d.points : null;
+    if(!p || p.length<3) return [[0,0],[1,0],[1,1],[0,1]];
+    return p.map(q=>[Math.max(0,Math.min(1,+q[0]||0)), Math.max(0,Math.min(1,+q[1]||0))]);
+  }
+  /* the element's outline as a polygon in a 0..1 box, with orientation flips applied */
+  function shapePoints(d){
+    const key=textShapeKey(d), def=TEXT_SHAPES[key];
+    const o=Object.assign({}, def.defaults, d.shapeOpts||{});
+    let pts = (key==='custom') ? customPoints(d) : def.points(o);
+    if(o.flipX) pts=pts.map(p=>[1-p[0], p[1]]);
+    if(o.flipY) pts=pts.map(p=>[p[0], 1-p[1]]);
+    return pts;
+  }
+
+  /* an SVG path for a polygon, with every corner rounded by up to r px */
+  function polyPath(pts, r){
+    const n=pts.length; if(n<3) return '';
+    let out='';
+    for(let i=0;i<n;i++){
+      const p0=pts[(i-1+n)%n], p1=pts[i], p2=pts[(i+1)%n];
+      const d1=Math.hypot(p0[0]-p1[0], p0[1]-p1[1]), d2=Math.hypot(p2[0]-p1[0], p2[1]-p1[1]);
+      const rr=Math.min(r||0, d1/2, d2/2);
+      const a=[p1[0]+(p0[0]-p1[0])/(d1||1)*rr, p1[1]+(p0[1]-p1[1])/(d1||1)*rr];
+      const b=[p1[0]+(p2[0]-p1[0])/(d2||1)*rr, p1[1]+(p2[1]-p1[1])/(d2||1)*rr];
+      out += (i===0?'M':'L')+a[0].toFixed(2)+' '+a[1].toFixed(2);
+      out += (rr>0.4 ? 'Q'+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' ' : 'L')+b[0].toFixed(2)+' '+b[1].toFixed(2);
+    }
+    return out+'Z';
+  }
+
+  /* Every horizontal slice of the polygon where the interior actually is. A line of text is
+     one unbroken rectangle, so for each band we keep the WIDEST continuous run — that is what
+     the text can really use. This one routine drives every shape, including custom polygons. */
+  function spansAt(pts, y){
+    const xs=[];
+    for(let i=0;i<pts.length;i++){
+      const a=pts[i], b=pts[(i+1)%pts.length];
+      if((a[1]<=y && b[1]>y) || (b[1]<=y && a[1]>y)) xs.push(a[0]+(y-a[1])/(b[1]-a[1])*(b[0]-a[0]));
+    }
+    xs.sort((p,q)=>p-q);
+    const out=[]; for(let i=0;i+1<xs.length;i+=2) out.push([xs[i], xs[i+1]]);
+    return out;
+  }
+  function shapeBands(pts, steps){
+    const ys=[0,1]; pts.forEach(p=>ys.push(p[1]));
+    ys.sort((a,b)=>a-b);
+    const edge=[]; ys.forEach(y=>{ if(!edge.length || y-edge[edge.length-1]>0.004) edge.push(y); });
+    const bands=[];
+    for(let i=0;i+1<edge.length;i++){
+      const a=edge[i], b=edge[i+1], n=Math.max(1, Math.round((b-a)*(steps||1)));
+      for(let k=0;k<n;k++) bands.push([a+(b-a)*k/n, a+(b-a)*(k+1)/n]);
+    }
+    return bands.length?bands:[[0,1]];
+  }
+  /* per band: the widest usable run, as a fraction of the box width */
+  function shapeRuns(d){
+    const pts=shapePoints(d);
+    const bands=shapeBands(pts, textShapeKey(d)==='custom'?26:1);
+    return bands.map(bd=>{
+      const sp=spansAt(pts, (bd[0]+bd[1])/2);
+      if(!sp.length) return {y0:bd[0], y1:bd[1], lo:0, hi:0};
+      // ties favour the left-hand run, so a symmetric U reads top-left downwards
+      let best=sp[0]; sp.forEach(s=>{ if(s[1]-s[0] > best[1]-best[0]+1e-6) best=s; });
+      return {y0:bd[0], y1:bd[1], lo:best[0], hi:best[1]};
+    });
+  }
+
+  const SVGNS='http://www.w3.org/2000/svg';
+  /* The two exclusion floats must sit before any text for the wrap to apply. They are
+     re-created on every pass, so deleting one while typing cannot break the shape. */
+  function exSpacer(body, side){
+    let n=body.querySelector('.shape-ex.'+side);
+    if(!n){ n=document.createElement('div'); n.className='shape-ex '+side; n.setAttribute('contenteditable','false'); }
+    if(n.parentNode!==body) body.insertBefore(n, body.firstChild);
+    return n;
+  }
+  function orderSpacers(body){
+    const r=body.querySelector('.shape-ex.right'), l=body.querySelector('.shape-ex.left');
+    if(r && body.firstChild!==r) body.insertBefore(r, body.firstChild);
+    if(l && body.firstChild!==l) body.insertBefore(l, body.firstChild);
+  }
+  function polyCss(pts){ return 'polygon('+pts.map(p=>p[0].toFixed(1)+'px '+p[1].toFixed(1)+'px').join(',')+')'; }
+
+  /* Draw the outline behind the text and carve the text region to match it. The exclusions
+     are two full-height floats (one per side) whose `shape-outside` polygon steps in and out
+     with the shape, which is what makes the text genuinely follow the outline rather than
+     sitting in a rectangle with a decorative border drawn around it. */
+  function applyTextShape(el, d, pass){
+    const body=el.querySelector('.text-body'); if(!body) return;
+    const key=textShapeKey(d);
+    let art=el.querySelector('.shape-art');
+    if(key==='rect'){
+      if(art) art.remove();
+      body.querySelectorAll('.shape-ex').forEach(n=>n.remove());
+      el.classList.remove('shaped');
+      return;
+    }
+    el.classList.add('shaped');
+    const cs=getComputedStyle(body);
+    const padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
+    const padT=parseFloat(cs.paddingTop)||0, padB=parseFloat(cs.paddingBottom)||0;
+    const BW=body.offsetWidth, BH=body.offsetHeight;
+    if(BW<4 || BH<4) return;
+    const cw=Math.max(1, BW-padL-padR), ch=Math.max(1, BH-padT-padB);
+
+    const runs=shapeRuns(d);
+    const left=[], right=[];
+    let lMax=0, rMax=0;
+    runs.forEach(r=>{
+      const y0=Math.max(0, r.y0*BH-padT), y1=Math.min(ch, r.y1*BH-padT);
+      if(y1<=y0) return;
+      /* content-local x=0 already sits padL inside the box, so a run starting at r.lo keeps
+         a full padding gap from an interior edge without subtracting padL again */
+      const lo=Math.max(0, Math.min(cw, r.lo*BW));        // text may start here
+      const hi=Math.min(cw, r.hi*BW-padL-padR);           // and must stop here
+      left.push({y0, y1, v:lo}); right.push({y0, y1, v:hi});
+      if(lo>lMax) lMax=lo;
+      if(cw-hi>rMax) rMax=cw-hi;
+    });
+
+    const lNode=body.querySelector('.shape-ex.left'), rNode=body.querySelector('.shape-ex.right');
+    if(lMax>1){
+      const n=lNode||exSpacer(body,'left');
+      const p=[[0,0]]; left.forEach(b=>{ p.push([b.v,b.y0]); p.push([b.v,b.y1]); }); p.push([0,ch]);
+      n.style.cssText='float:left;width:'+lMax.toFixed(1)+'px;height:'+ch.toFixed(1)+'px;';
+      n.style.shapeOutside=polyCss(p);
+    } else if(lNode) lNode.remove();
+    if(rMax>1){
+      const n=rNode||exSpacer(body,'right');
+      const p=[[rMax,0]]; right.forEach(b=>{ p.push([b.v-(cw-rMax), b.y0]); p.push([b.v-(cw-rMax), b.y1]); }); p.push([rMax,ch]);
+      n.style.cssText='float:right;width:'+rMax.toFixed(1)+'px;height:'+ch.toFixed(1)+'px;';
+      n.style.shapeOutside=polyCss(p);
+    } else if(rNode) rNode.remove();
+    orderSpacers(body);
+
+    if(!art){ art=document.createElementNS(SVGNS,'svg'); art.setAttribute('class','shape-art');
+      art.appendChild(document.createElementNS(SVGNS,'path')); el.insertBefore(art, el.firstChild); }
+    const W=el.offsetWidth||BW, H=el.offsetHeight||BH;
+    const bw=d.bw||0, inset=bw/2;
+    const box=shapePoints(d).map(p=>[inset+p[0]*(W-bw), inset+p[1]*(H-bw)]);
+    art.setAttribute('viewBox','0 0 '+W+' '+H);
+    art.setAttribute('width', W); art.setAttribute('height', H);
+    const path=art.firstChild;
+    path.setAttribute('d', polyPath(box, d.radius!=null?d.radius:6));
+    path.setAttribute('fill', d.fill||'none');
+    path.setAttribute('stroke', bw? (d.bc||'#4b4361') : 'none');
+    path.setAttribute('stroke-width', bw||0);
+    path.setAttribute('stroke-linejoin','round');
+
+    /* the shape must wrap however tall the text actually grew, so measure once more */
+    if(!pass && Math.abs((body.offsetHeight||0)-BH)>1) applyTextShape(el, d, 1);
   }
 
   /* INLINE FORMATTING
@@ -488,13 +734,15 @@ window.JOURNAL = (function(){
     if(d.type==='text'){
       const b=document.createElement('div'); b.className='text-body'; setTextContent(b,d); applyTextStyle(b,d); el.appendChild(b);
       applyRot(el,d);
+      // the shape needs real measurements, so it is drawn once the box is laid out
+      if(textShapeKey(d)!=='rect') requestAnimationFrame(()=>applyTextShape(el,d));
     } else if(d.type==='photo'){
       const img=document.createElement('img'); img.src=d.src; img.draggable=false; el.appendChild(img);
-      const cap=document.createElement('div'); cap.className='cap'; cap.textContent=d.caption||''; applyCaptionStyle(cap,d); el.appendChild(cap);
+      const cap=document.createElement('div'); cap.className='cap'; cap.textContent=d.caption||''; el.appendChild(cap); applyCaptionStyle(cap,d);
       applyPhotoStyle(el,d); applyRot(el,d);
     } else if(d.type==='video'){
       el.appendChild(buildVideoFace(d));
-      const cap=document.createElement('div'); cap.className='cap'; cap.textContent=d.caption||''; applyCaptionStyle(cap,d); el.appendChild(cap);
+      const cap=document.createElement('div'); cap.className='cap'; cap.textContent=d.caption||''; el.appendChild(cap); applyCaptionStyle(cap,d);
       applyVideoStyle(el,d); applyRot(el,d);
     } else if(d.type==='sticker'){
       const s=document.createElement('span'); s.className='s-emoji'; s.textContent=d.emoji; if(d.size) s.style.fontSize=d.size+'px'; el.appendChild(s);
@@ -516,12 +764,13 @@ window.JOURNAL = (function(){
   function renderPageRO(mount, page){
     const holder=document.createElement('div'); holder.className='page-holder';
     const scaler=document.createElement('div'); scaler.className='page-scaler';
-    const pg=document.createElement('div'); pg.className='page'; applyPaper(pg, page.paper);
+    const pg=document.createElement('div'); pg.className='page'; applyPaper(pg, page.paper, page.bgColor);
     (page.elements||[]).forEach(d=> pg.appendChild(buildElementRO(d)));
     scaler.appendChild(pg); holder.appendChild(scaler); mount.appendChild(holder);
     const fit=()=>{ const cs=getComputedStyle(mount); const pad=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
       const avail=Math.min(mount.clientWidth-pad, 800); const sc=Math.min(1, avail/PAGE_W);
-      scaler.style.transform='scale('+sc+')'; holder.style.width=(PAGE_W*sc)+'px'; holder.style.height=(pg.offsetHeight*sc)+'px'; };
+      scaler.style.transform='scale('+sc+')'; holder.style.width=(PAGE_W*sc)+'px'; holder.style.height=(pg.offsetHeight*sc)+'px';
+      pg.querySelectorAll('.el-text').forEach(n=>{ if(n.__data && textShapeKey(n.__data)!=='rect') applyTextShape(n, n.__data); }); };
     requestAnimationFrame(fit); window.addEventListener('resize', fit);
     return pg;
   }
@@ -534,5 +783,6 @@ window.JOURNAL = (function(){
   return { CONFIG, PAGE_W, FONTS, FONT_GROUPS, FONT_ALIASES, resolveFontKey, getFont, BACKGROUNDS, BG_MAP, BUILTIN_PAPERS, DOODLES, DOODLES_MAP, doodleSVG, applyPhotoStyle, applyCaptionStyle, applyPaper, normalizePaper,
            parseVideoUrl, applyVideoStyle, buildVideoFace, fillVideoFace, playVideo, stopVideo,
            uid, today, escapeHtml, slugify, formatDate, compress, encodeCanvas, applyTextStyle, sanitizeRich, hasRich, setTextContent, applyRot,
+           TEXT_SHAPES, TEXT_SHAPE_ORDER, textShapeKey, shapeDefaults, shapePoints, customPoints, applyTextShape,
            buildElementRO, renderPageRO, b64encode, b64decode };
 })();
