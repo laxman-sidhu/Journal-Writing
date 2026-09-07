@@ -894,7 +894,6 @@ const shapebar=document.getElementById('shapebar');
   J.TEXT_SHAPE_ORDER.forEach(k=>{ const o=document.createElement('option'); o.value=k;
     o.textContent=J.TEXT_SHAPES[k].label; s.appendChild(o); }); })();
 const SHAPE_HINTS={
-  u:'A line of text is one unbroken row, so a U fills its wider arm, then the base.',
   custom:'Drag the round handles on the box to reshape it.'
 };
 function refreshShape(){
@@ -913,7 +912,7 @@ function setShape(key){
     if(!selData.h) selData.h=Math.max(200, selNode.offsetHeight||200);   // a shape needs a real height
     if(selData.pad==null) selData.pad=14;
   }
-  const d=selData; renderAll(); reselect(d);
+  const d=selData; saveDraft(); renderAll(); reselect(d);
 }
 document.getElementById('fShape').onchange=function(){ setShape(this.value); };
 function buildShapeParams(){
@@ -965,7 +964,7 @@ document.getElementById('shDelPt').onclick=()=>{ if(!selData) return;
   const pts=J.customPoints(selData); if(pts.length<=3){ showToast('A shape needs at least three points'); return; }
   pts.pop(); selData.points=pts; refreshShape(); saveDraft(); };
 document.getElementById('shFromShape').onclick=()=>{ if(!selData) return;
-  const pick=prompt('Trace which preset? Type one of: l, lr, c, u, t','l');
+  const pick=prompt('Trace which preset? Type one of: l, lr, c, t','l');
   if(!pick) return; const k=pick.trim().toLowerCase();
   if(!J.TEXT_SHAPES[k] || k==='custom' || k==='rect'){ showToast('Unknown preset'); return; }
   selData.points=J.shapePoints({shape:k, shapeOpts:J.shapeDefaults(k)}).map(p=>[p[0],p[1]]);
@@ -1659,10 +1658,25 @@ function openBgSheet(){
   note.textContent = isBuiltin ? 'Applies to this page only.' : 'Pick Grid, Dots or Plain above to use a paper colour.';
   bgBody.appendChild(note);
 
-  c=document.createElement('div'); c.className='cat'; c.textContent='Decorative'; bgBody.appendChild(c);
-  const g2=document.createElement('div'); g2.className='bggrid';
-  J.BACKGROUNDS.forEach(b=> g2.appendChild(makeBgItem(b.key,b.label,b.thumb,cur)));
-  bgBody.appendChild(g2);
+  /* Decorative papers, grouped so similar ones sit together — the same idea as the grouped
+     font menu. Anything missing from J.BG_GROUPS lands in a trailing "More" group, so a
+     background can never go missing just because it was left out of the grouping. */
+  const used={};
+  (J.BG_GROUPS||[]).forEach(g=>{
+    const keys=g.keys.filter(k=>J.BG_MAP[k]);
+    if(!keys.length) return;
+    const h=document.createElement('div'); h.className='cat'; h.textContent=g.label; bgBody.appendChild(h);
+    const grid=document.createElement('div'); grid.className='bggrid';
+    keys.forEach(k=>{ used[k]=1; const b=J.BG_MAP[k]; grid.appendChild(makeBgItem(b.key,b.label,b.thumb,cur)); });
+    bgBody.appendChild(grid);
+  });
+  const rest=J.BACKGROUNDS.filter(b=>!used[b.key]);
+  if(rest.length){
+    const h=document.createElement('div'); h.className='cat'; h.textContent='More'; bgBody.appendChild(h);
+    const grid=document.createElement('div'); grid.className='bggrid';
+    rest.forEach(b=> grid.appendChild(makeBgItem(b.key,b.label,b.thumb,cur)));
+    bgBody.appendChild(grid);
+  }
   bgMask.classList.add('open');
 }
 storyTitle.addEventListener('input',()=>{ story.title=storyTitle.value; saveDraft(); });
