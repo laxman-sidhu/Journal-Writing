@@ -20,7 +20,12 @@
     <div class="rule"></div>
   </div>
   <div id="stage" class="reader-stage">
-    <div class="loading" id="loading">turning the page...</div>
+    <div class="jw-loader" id="loading">
+      <div class="jw-book" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="jw-load-text" id="loadText">turning the page<span class="jw-dots" aria-hidden="true"><b></b><b></b><b></b></span></div>
+      <div class="jw-load-bar" aria-hidden="true"><i></i></div>
+      <div class="jw-load-note">stories carry their photos with them, so this can take a moment</div>
+    </div>
   </div>
 
 <script>
@@ -37,9 +42,19 @@
 (async function(){
   const J=window.JOURNAL;
   const stage=document.getElementById('stage'), loading=document.getElementById('loading');
-  const pdfBtn=document.getElementById('pdfBtn');
+  const loadText=document.getElementById('loadText'), pdfBtn=document.getElementById('pdfBtn');
+
+  /* The loader cycles its line so a slow story reads as "working", never as "stuck". */
+  const LOAD_LINES=['turning the page','unpacking the photos','smoothing the creases','almost there'];
+  let lineAt=0;
+  const loadTimer=setInterval(()=>{ lineAt=(lineAt+1)%LOAD_LINES.length; loadText.style.opacity='0';
+    setTimeout(()=>{ loadText.firstChild.nodeValue=LOAD_LINES[lineAt]; loadText.style.opacity='1'; }, 280); }, 2400);
+  function endLoader(msg){ clearInterval(loadTimer);
+    if(msg===undefined){ loading.remove(); return; }
+    loading.className='loading'; loading.textContent=msg; }
+
   const id=new URLSearchParams(location.search).get('id');
-  if(!id){ loading.textContent='No story selected.'; return; }
+  if(!id){ endLoader('No story selected.'); return; }
   let postTitle='Story';
   try{
     const res=await fetch('data/posts/'+encodeURIComponent(id)+'.json?t='+Date.now(), {cache:'no-store'});
@@ -50,11 +65,11 @@
     document.getElementById('hlTitle').textContent = postTitle;
     document.getElementById('hlDate').textContent = J.formatDate(post.date);
     document.getElementById('headline').style.display='block';
-    loading.remove();
     (post.pages||[]).forEach(pg=> J.renderPageRO(stage, pg));
+    endLoader();
     if(!post.pages || post.pages.length===0){ stage.innerHTML='<div class="loading">This story has no pages yet.</div>'; }
     else { pdfBtn.style.display='inline-flex'; }
-  }catch(e){ loading.textContent='Story not found.'; return; }
+  }catch(e){ endLoader('Story not found.'); return; }
 
   /* Videos load nothing until asked: each tile shows its poster, and a click swaps in the
      real player. Starting one returns every other clip to its poster, so several videos can
@@ -73,31 +88,47 @@
   async function ensureLibs(){ if(libsLoaded) return;
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'); libsLoaded=true; }
+  const PDF_BG=(getComputedStyle(document.documentElement).getPropertyValue('--pdf-bg')||'#ffffff').trim();
   pdfBtn.onclick=async()=>{
     const orig=pdfBtn.textContent; pdfBtn.disabled=true; pdfBtn.textContent='Preparing...';
+    const pages=[...stage.querySelectorAll('.page')];
+    const holders=[...stage.querySelectorAll('.page-holder')];
+    const scalers=[...stage.querySelectorAll('.page-scaler')];
+    const saved=holders.map((h,i)=>({w:h.style.width,ht:h.style.height,ov:h.style.overflow,t:scalers[i].style.transform}));
+    const savedStageOv=stage.style.overflow, savedBodyOv=document.body.style.overflowX;
+    const restore=()=>{
+      holders.forEach((h,i)=>{ h.style.width=saved[i].w; h.style.height=saved[i].ht; h.style.overflow=saved[i].ov; scalers[i].style.transform=saved[i].t; });
+      stage.style.overflow=savedStageOv; document.body.style.overflowX=savedBodyOv;
+      window.dispatchEvent(new Event('resize'));
+    };
     try{
       await ensureLibs();
       /* html2canvas cannot rasterise an <iframe> or a playing <video>, so put every clip
          back to its poster first; the PDF then gets the poster and its play badge. */
       stopAllVideos();
       if(document.fonts && document.fonts.ready) await document.fonts.ready;
-      const pages=[...stage.querySelectorAll('.page')];
-      const holders=[...stage.querySelectorAll('.page-holder')];
-      const scalers=[...stage.querySelectorAll('.page-scaler')];
-      const saved=holders.map((h,i)=>({w:h.style.width,ht:h.style.height,ov:h.style.overflow,t:scalers[i].style.transform}));
-      holders.forEach((h,i)=>{ h.style.overflow='visible'; h.style.width='auto'; h.style.height='auto'; scalers[i].style.transform='none'; });
+      /* Rasterise each page unscaled with nothing clipping it. The holder has to keep the
+         page's real footprint: at width:auto it collapses (its scaler is absolute), which
+         slid the page under the stage's overflow-x clip and left a band of background
+         colour down the sides of every exported page. */
+      stage.style.overflow='visible'; document.body.style.overflowX='visible';
+      holders.forEach((h,i)=>{ scalers[i].style.transform='none'; h.style.overflow='visible';
+        h.style.width=J.PAGE_W+'px'; h.style.height=pages[i].offsetHeight+'px'; });
+      /* lay the clone out wide enough for a full-width page, so a narrow phone viewport
+         cannot shift or crop it either */
+      const winW=Math.max(document.documentElement.clientWidth, J.PAGE_W+80);
       const { jsPDF }=window.jspdf; let pdf=null;
       for(let i=0;i<pages.length;i++){
         pdfBtn.textContent='Page '+(i+1)+'/'+pages.length;
-        const canvas=await html2canvas(pages[i], {scale:2, backgroundColor:'#fff8f1', useCORS:true, logging:false});
+        const canvas=await html2canvas(pages[i], {scale:2, backgroundColor:PDF_BG, useCORS:true, logging:false,
+          width:J.PAGE_W, height:pages[i].offsetHeight, windowWidth:winW});
         const w=canvas.width, h=canvas.height; const img=canvas.toDataURL('image/jpeg',0.92); const orient=w>h?'l':'p';
         if(!pdf) pdf=new jsPDF({orientation:orient, unit:'px', format:[w,h]}); else pdf.addPage([w,h], orient);
         pdf.addImage(img,'JPEG',0,0,w,h);
       }
-      holders.forEach((h,i)=>{ h.style.width=saved[i].w; h.style.height=saved[i].ht; h.style.overflow=saved[i].ov; scalers[i].style.transform=saved[i].t; });
-      window.dispatchEvent(new Event('resize'));
+      restore();
       pdf.save((postTitle||'journal').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.pdf');
-    }catch(err){ alert('Sorry, the PDF could not be generated. '+(err.message||'')); }
+    }catch(err){ restore(); alert('Sorry, the PDF could not be generated. '+(err.message||'')); }
     pdfBtn.disabled=false; pdfBtn.textContent=orig;
   };
 })();

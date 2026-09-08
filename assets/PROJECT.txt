@@ -8,7 +8,7 @@ A complete description of what this project is, how it is built, and the reasoni
 
 Journal Writing is an aesthetic, scrapbook-style journaling system where each client privately writes illustrated journal "stories" and everyone else can read them, hosted entirely on free static hosting (GitHub Pages) with no server and no database.
 
-It hosts three independent journals from one repo: Dhanashri's Journal (pastel lavender theme), Pratiksha's Journal (pastel blue theme), and Siddhesh's Journal (pastel red / coral theme). Each has a public side (a homepage of story cards plus a reader with PDF export) and a private editor (admin.html) for creating, publishing, editing and deleting stories.
+It hosts three independent journals from one repo: Dhanashri's Journal (pastel lavender theme), Pratiksha's Journal (pastel blue theme), and Siddhesh's Journal (rose pink theme). Each has a public side (a homepage of story cards plus a reader with PDF export) and a private editor (admin.html) for creating, publishing, editing and deleting stories.
 
 
 2. WHY MERGE THE CLIENTS
@@ -24,7 +24,7 @@ Journal-Writing/ is one GitHub repo served by GitHub Pages.
 
 assets/ is the shared brain (edit once, all three clients update): core.js holds the client-agnostic engine (fonts, backgrounds, renderer, styling, GitHub helpers); style.css holds the structure plus all three colour themes (switched per client); backgrounds/ holds bg01.jpg to bg28.jpg (shared decorative page art); PROJECT.txt is this document; Setup.txt is the step-by-step setup and hosting guide.
 
-Dhanashri-Journal/ is client A (pastel lavender): index.html, story.html, admin.html, and data/ (index.json plus posts/<id>.json). Pratiksha-Journal/ is client B (pastel blue) with the same three pages and its own data/. Siddhesh-Journal/ is client C (pastel red) with the same three pages and its own data/.
+Dhanashri-Journal/ is client A (pastel lavender): index.html, story.html, admin.html, and data/ (index.json plus posts/<id>.json). Pratiksha-Journal/ is client B (pastel blue) with the same three pages and its own data/. Siddhesh-Journal/ is client C (rose pink) with the same three pages and its own data/.
 
 Folder names have no spaces, so the live URLs contain no %20: https://laxman-sidhu.github.io/Journal-Writing/Dhanashri-Journal/ , .../Pratiksha-Journal/ , and .../Siddhesh-Journal/ .
 
@@ -111,6 +111,14 @@ The PDF export constrains how a video may be drawn. The export rasterises the pa
 Backwards compatible: older stories with no html, h, shadow, spacing, radius or caption-style fields render exactly as before; the new fields are optional and default to the previous look. The rich-text sanitizer now also passes strikethrough and list markup (<s>, <ul>, <ol>, <li>) through to the reader and the PDF export, on the same whitelist-only basis as the original tags.
 
 Homepage identity: all three indexes share the same signature font — Daun Penh (falling back to Cormorant Garamond) for the big heading and the status texts ("opening the journal...", "Could not load stories yet", "No stories yet"), with Playfair Display on the story-card titles. The old kicker strapline above the heading was removed from Dhanashri's and Siddhesh's homepages along with its CSS.
+
+Three further bugs were fixed in the revision after that.
+
+First, the editor could not open or back up a large story. Every read went through the GitHub contents API, which only inlines a file up to 1MB; past that it answers with an empty content field and encoding "none" rather than an error. A story with photos embedded in it is routinely several megabytes, so the editor was decoding an empty string: opening threw and reported "Could not open story", and the JSON backup saved a 0-byte file. ghGet now falls back to the git blobs API, which serves blobs up to 100MB, whenever the contents API returns no inline content. Nothing about the folder routing changed: every read is still built from this client's own DATA_DIR, so each editor still backs up and opens only its own stories.
+
+Second, the PDF export drew a band of background colour down the sides of every page. Before rasterising, the export set each page holder to width:auto — but a holder's only child is absolutely positioned, so it collapsed to zero width, and the page (centred as a flex item) started at the middle of the reader and ran off under the stage's overflow-x:hidden. html2canvas paints from the cloned element tree, so the clipped-away strip was never drawn and came out as flat backgroundColor. The holder now keeps the page's true 760px footprint, the stage and body clips are lifted for the duration of the export, and an explicit width, height and windowWidth are passed so a narrow phone viewport cannot shift or crop the page either. The fill colour now comes from the --pdf-bg token, which had been defined for exactly this and never used.
+
+Third, both slow paths now show a loader instead of appearing frozen. The reader shows a flipping-book animation whose line cycles while a story downloads, and the editor covers importing, opening, downloading, deleting and publishing with the same animation as a full-screen overlay. The overlay call is awaited: these jobs block the main thread, so without giving the browser a frame to paint first the loader would only appear once the work it covers had already finished.
 
 Two bugs were fixed in this revision. First, the decorative page backgrounds now load — their paths are ../assets/backgrounds/..., correct for pages that live one folder deep; previously the relative assets/... resolved inside the client folder and returned a 404. Second, transparent uploads no longer get a black background — the image compressor and the crop now auto-encode to PNG when the image has alpha, and JPEG otherwise.
 

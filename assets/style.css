@@ -4,7 +4,7 @@
 
      <html data-client="dhanashri">   → pastel lavender        (the default :root below)
      <html data-client="pratiksha">   → pastel blue            (override block)
-     <html data-client="siddhesh">    → pastel red / coral     (override block)
+     <html data-client="siddhesh">    → rose pink              (override block)
 
    All palettes are intentionally gentle, low-saturation pastels — soft, not bright.
    To tune a client's colour, edit only its token block; nothing structural changes. */
@@ -44,19 +44,19 @@ html[data-client="pratiksha"]{
   --pdf-bg:#f8fbff;
 }
 
-/* -------- SIDDHESH THEME (pastel red) --------
-   Shifted off pink toward a soft coral-red: warm red-tinted paper, red-brown ink,
-   muted terracotta-red accent. Still gentle and pastel, never loud. */
+/* -------- SIDDHESH THEME (rose pink) --------
+   A garden-rose palette: blush-pink paper, deep rose-plum ink, rose accent, with a soft
+   leaf-green as the one cool note. Still gentle and pastel, never loud. */
 html[data-client="siddhesh"]{
-  --paper:#fff6f4; --paper-edge:#f5dcd5; --ink:#6e453e; --ink-soft:#bd988f;
-  --grid:#f8e3dc;
-  --lav:#e8a294; --lav-deep:#cc6553; --lilac:#f4d7cd;
-  --blush:#fbdfd6; --mint:#e7ece2; --peri:#f2ddd4; --soft:#fdeee9;
-  --shadow:rgba(130,72,60,.16);
-  --tape:rgba(232,162,148,.72);
-  --primary-hover:#ba5442;
-  --glow1:#fbe1d9; --glow2:#f7ded6; --glow3:#fde9e1; --glow4:#f1e5df; --glow-base:#fdf1ec;
-  --pdf-bg:#fff6f4;
+  --paper:#fff7fa; --paper-edge:#f6dbe6; --ink:#6b4356; --ink-soft:#bd93a6;
+  --grid:#fae0ea;
+  --lav:#f0a6c2; --lav-deep:#cf5b86; --lilac:#f7d3e0;
+  --blush:#fce0ea; --mint:#dde9dc; --peri:#f4dae6; --soft:#fdeef4;
+  --shadow:rgba(122,60,86,.16);
+  --tape:rgba(240,166,194,.75);
+  --primary-hover:#b94a73;
+  --glow1:#fde0ec; --glow2:#fadbe8; --glow3:#ffe8f1; --glow4:#f5e3ec; --glow-base:#fdf2f7;
+  --pdf-bg:#fff7fa;
 }
 
 
@@ -228,6 +228,47 @@ a{color:inherit; text-decoration:none;}
 .story-headline .rule{width:60px; height:2px; border-radius:3px; background:var(--lav); margin:16px auto 0; opacity:.8;}
 .reader-stage{padding:18px 10px 90px; display:flex; flex-direction:column; align-items:center; gap:26px; overflow-x:hidden;}
 .loading{text-align:center; color:var(--ink-soft); padding:80px 20px; font-family:'DaunPenh','Daun Penh','Cormorant Garamond',serif; font-size:34px;}
+
+/* ===== loader (shared by the reader and the editor) =====
+   A flipping-book animation so a slow story load reads as "working" rather than "stuck". */
+.jw-loader{display:flex; flex-direction:column; align-items:center; gap:16px; padding:64px 20px; text-align:center;}
+.jw-book{position:relative; width:96px; height:64px; perspective:420px;}
+.jw-book:before,.jw-book:after{content:""; position:absolute; top:0; width:47px; height:64px;
+  background:#fff; border:1px solid var(--paper-edge); box-shadow:0 8px 20px var(--shadow);}
+.jw-book:before{left:0; border-radius:7px 2px 2px 7px;}
+.jw-book:after{right:0; border-radius:2px 7px 7px 2px;}
+.jw-book i{position:absolute; left:48px; top:2px; width:46px; height:60px; background:#fff;
+  border:1px solid var(--paper-edge); border-radius:2px 7px 7px 2px;
+  transform-origin:left center; animation:jw-flip 1.9s ease-in-out infinite;}
+.jw-book i:nth-child(2){animation-delay:.32s;}
+.jw-book i:nth-child(3){animation-delay:.64s;}
+@keyframes jw-flip{0%{transform:rotateY(0deg);} 55%,100%{transform:rotateY(-172deg);}}
+
+.jw-load-text{font-family:'DaunPenh','Daun Penh','Cormorant Garamond',serif; font-size:30px;
+  color:var(--ink-soft); line-height:1.2; transition:opacity .3s;}
+.jw-dots{display:inline-flex; gap:3px; margin-left:4px;}
+.jw-dots b{width:4px; height:4px; border-radius:50%; background:var(--lav-deep); opacity:.25;
+  align-self:flex-end; margin-bottom:8px; animation:jw-dot 1.2s ease-in-out infinite;}
+.jw-dots b:nth-child(2){animation-delay:.18s;}
+.jw-dots b:nth-child(3){animation-delay:.36s;}
+@keyframes jw-dot{0%,70%,100%{opacity:.25; transform:translateY(0);} 35%{opacity:.95; transform:translateY(-3px);}}
+
+.jw-load-bar{width:168px; height:4px; border-radius:999px; background:var(--soft); overflow:hidden;}
+.jw-load-bar i{display:block; width:38%; height:100%; border-radius:999px; background:var(--lav-deep);
+  opacity:.8; animation:jw-slide 1.35s ease-in-out infinite;}
+@keyframes jw-slide{0%{transform:translateX(-115%);} 100%{transform:translateX(285%);}}
+.jw-load-note{font-family:var(--body); font-size:13px; color:var(--ink-soft); opacity:.85; max-width:280px;}
+
+/* full-screen busy overlay for the editor's slow jobs (import, open, publish) */
+.jw-busy{position:fixed; inset:0; z-index:500; display:none; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.84); backdrop-filter:blur(2px);}
+.jw-busy.open{display:flex;}
+.jw-busy .jw-loader{padding:0;}
+.jw-busy .jw-load-text{font-size:26px; color:var(--ink);}
+
+@media(prefers-reduced-motion:reduce){
+  .jw-book i, .jw-dots b, .jw-load-bar i{animation:none;}
+}
 
 /* ===== mobile ===== */
 @media(max-width:600px){

@@ -1,7 +1,7 @@
 JOURNAL WRITING
 
 
-Three aesthetic, scrapbook-style journals — Dhanashri's (soft lavender), Pratiksha's (warm cream) and Siddhesh's (soft rose) — hosted from one repository on GitHub Pages, sharing one engine while keeping their stories, themes and identities separate.
+Three aesthetic, scrapbook-style journals — Dhanashri's (soft lavender), Pratiksha's (warm cream) and Siddhesh's (rose pink) — hosted from one repository on GitHub Pages, sharing one engine while keeping their stories, themes and identities separate.
 
 No server, no database: each story is a small JSON file committed to this repo, and the private editor publishes straight to GitHub from the browser. Public pages only ever read.
 
@@ -18,7 +18,7 @@ STRUCTURE
 assets/              shared engine (edit once, all three clients update): core.js, style.css, backgrounds/ (bg01-bg28), PROJECT.txt, Setup.txt
 Dhanashri-Journal/   client A (lavender): index.html, story.html, admin.html, data/
 Pratiksha-Journal/   client B (cream):    index.html, story.html, admin.html, data/
-Siddhesh-Journal/    client C (rose):     index.html, story.html, admin.html, data/
+Siddhesh-Journal/    client C (rose pink):index.html, story.html, admin.html, data/
 
 The only client-specific code is a small window.JOURNAL_CLIENT block at the top of each client's pages (its title, theme and own data folder) plus a data-client attribute that selects its colour theme. Every publish is routed through that client's own data folder, so one editor can never write into another's stories.
 

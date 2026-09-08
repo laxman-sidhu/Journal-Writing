@@ -64,7 +64,7 @@ Siddhesh  : jw-siddhesh-token  / jw-siddhesh-draft
 
 THEMES
 
-Dhanashri is soft lavender pastel, Pratiksha is warm cream pastel, and Siddhesh is soft rose / blush. A client's palette is chosen by the data-client attribute on its pages (data-client="dhanashri", "pratiksha" or "siddhesh"), which selects the matching block in assets/style.css. To retune a colour, edit only that client's block; the others are unaffected.
+Dhanashri is soft lavender pastel, Pratiksha is warm cream pastel, and Siddhesh is rose pink. A client's palette is chosen by the data-client attribute on its pages (data-client="dhanashri", "pratiksha" or "siddhesh"), which selects the matching block in assets/style.css. To retune a colour, edit only that client's block; the others are unaffected.
 
 
 FEATURES (SAME FOR ALL THREE CLIENTS)
