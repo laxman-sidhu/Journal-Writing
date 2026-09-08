@@ -27,6 +27,14 @@
       <div class="jw-load-note">stories carry their photos with them, so this can take a moment</div>
     </div>
   </div>
+  <div class="jw-busy" id="busy">
+    <div class="jw-loader">
+      <div class="jw-book" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="jw-load-text">building your PDF<span class="jw-dots" aria-hidden="true"><b></b><b></b><b></b></span></div>
+      <div class="jw-load-bar" aria-hidden="true"><i></i></div>
+      <div class="jw-load-note" id="busyNote">rendering the pages one by one</div>
+    </div>
+  </div>
 
 <script>
   /* Only client-specific code. DATA_DIR fixes which folder this editor writes to. */
@@ -89,39 +97,45 @@
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'); libsLoaded=true; }
   const PDF_BG=(getComputedStyle(document.documentElement).getPropertyValue('--pdf-bg')||'#ffffff').trim();
+  const busy=document.getElementById('busy'), busyNote=document.getElementById('busyNote');
   pdfBtn.onclick=async()=>{
-    const orig=pdfBtn.textContent; pdfBtn.disabled=true; pdfBtn.textContent='Preparing...';
     const pages=[...stage.querySelectorAll('.page')];
-    const holders=[...stage.querySelectorAll('.page-holder')];
-    const scalers=[...stage.querySelectorAll('.page-scaler')];
-    const saved=holders.map((h,i)=>({w:h.style.width,ht:h.style.height,ov:h.style.overflow,t:scalers[i].style.transform}));
-    const savedStageOv=stage.style.overflow, savedBodyOv=document.body.style.overflowX;
-    const restore=()=>{
-      holders.forEach((h,i)=>{ h.style.width=saved[i].w; h.style.height=saved[i].ht; h.style.overflow=saved[i].ov; scalers[i].style.transform=saved[i].t; });
-      stage.style.overflow=savedStageOv; document.body.style.overflowX=savedBodyOv;
-      window.dispatchEvent(new Event('resize'));
-    };
+    if(!pages.length) return;
+    const orig=pdfBtn.textContent; pdfBtn.disabled=true; pdfBtn.textContent='Preparing...';
+    const spots=pages.map(p=>p.parentNode);            // each page's own .page-scaler
+    const savedBodyOv=document.body.style.overflowX;
+    /* html2canvas masks a shadow fill against a rectangle the size of the output canvas,
+       but lays that rectangle out in DOCUMENT coordinates, so any part of the element
+       sitting past it is left with a winding number of -1 and gets filled instead of
+       skipped. Every page below the first starts lower down the document than that
+       rectangle reaches, which is what flooded them with the page's inset box-shadow
+       colour and buried the artwork. Rasterising each page from the document origin keeps
+       the whole page inside the rectangle, so the mask lands where it should. */
+    const host=document.createElement('div');
+    host.style.cssText='position:absolute; left:0; top:0; margin:0; padding:0; width:'+J.PAGE_W+'px;';
+    const restore=()=>{ pages.forEach((p,i)=> spots[i].appendChild(p)); host.remove();
+      document.body.style.overflowX=savedBodyOv; busy.classList.remove('open');
+      window.dispatchEvent(new Event('resize')); };
     try{
       await ensureLibs();
       /* html2canvas cannot rasterise an <iframe> or a playing <video>, so put every clip
          back to its poster first; the PDF then gets the poster and its play badge. */
       stopAllVideos();
       if(document.fonts && document.fonts.ready) await document.fonts.ready;
-      /* Rasterise each page unscaled with nothing clipping it. The holder has to keep the
-         page's real footprint: at width:auto it collapses (its scaler is absolute), which
-         slid the page under the stage's overflow-x clip and left a band of background
-         colour down the sides of every exported page. */
-      stage.style.overflow='visible'; document.body.style.overflowX='visible';
-      holders.forEach((h,i)=>{ scalers[i].style.transform='none'; h.style.overflow='visible';
-        h.style.width=J.PAGE_W+'px'; h.style.height=pages[i].offsetHeight+'px'; });
+      busy.classList.add('open');
+      document.body.style.overflowX='visible';
+      document.body.insertBefore(host, document.body.firstChild);
       /* lay the clone out wide enough for a full-width page, so a narrow phone viewport
-         cannot shift or crop it either */
+         cannot clip the host either */
       const winW=Math.max(document.documentElement.clientWidth, J.PAGE_W+80);
       const { jsPDF }=window.jspdf; let pdf=null;
       for(let i=0;i<pages.length;i++){
         pdfBtn.textContent='Page '+(i+1)+'/'+pages.length;
+        busyNote.textContent='page '+(i+1)+' of '+pages.length;
+        host.appendChild(pages[i]);
         const canvas=await html2canvas(pages[i], {scale:2, backgroundColor:PDF_BG, useCORS:true, logging:false,
-          width:J.PAGE_W, height:pages[i].offsetHeight, windowWidth:winW});
+          width:J.PAGE_W, height:pages[i].offsetHeight, windowWidth:winW, scrollX:0, scrollY:0});
+        spots[i].appendChild(pages[i]);
         const w=canvas.width, h=canvas.height; const img=canvas.toDataURL('image/jpeg',0.92); const orient=w>h?'l':'p';
         if(!pdf) pdf=new jsPDF({orientation:orient, unit:'px', format:[w,h]}); else pdf.addPage([w,h], orient);
         pdf.addImage(img,'JPEG',0,0,w,h);
