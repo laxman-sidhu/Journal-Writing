@@ -113,7 +113,13 @@
        the whole page inside the rectangle, so the mask lands where it should. */
     const host=document.createElement('div');
     host.style.cssText='position:absolute; left:0; top:0; margin:0; padding:0; width:'+J.PAGE_W+'px;';
-    const restore=()=>{ pages.forEach((p,i)=> spots[i].appendChild(p)); host.remove();
+    /* On screen the page carries a 1px inset hairline and rounded corners. Both sit INSIDE
+       the page box, so they print as a ring of --paper-edge and four tinted corners around
+       otherwise full-bleed artwork. A sheet of paper has neither, so they come off for the
+       capture and go back straight after. */
+    const bare=p=>{ p.style.boxShadow='none'; p.style.borderRadius='0'; };
+    const dressed=p=>{ p.style.boxShadow=''; p.style.borderRadius=''; };
+    const restore=()=>{ pages.forEach((p,i)=>{ dressed(p); spots[i].appendChild(p); }); host.remove();
       document.body.style.overflowX=savedBodyOv; busy.classList.remove('open');
       window.dispatchEvent(new Event('resize')); };
     try{
@@ -132,10 +138,10 @@
       for(let i=0;i<pages.length;i++){
         pdfBtn.textContent='Page '+(i+1)+'/'+pages.length;
         busyNote.textContent='page '+(i+1)+' of '+pages.length;
-        host.appendChild(pages[i]);
+        host.appendChild(pages[i]); bare(pages[i]);
         const canvas=await html2canvas(pages[i], {scale:2, backgroundColor:PDF_BG, useCORS:true, logging:false,
           width:J.PAGE_W, height:pages[i].offsetHeight, windowWidth:winW, scrollX:0, scrollY:0});
-        spots[i].appendChild(pages[i]);
+        dressed(pages[i]); spots[i].appendChild(pages[i]);
         const w=canvas.width, h=canvas.height; const img=canvas.toDataURL('image/jpeg',0.92); const orient=w>h?'l':'p';
         if(!pdf) pdf=new jsPDF({orientation:orient, unit:'px', format:[w,h]}); else pdf.addPage([w,h], orient);
         pdf.addImage(img,'JPEG',0,0,w,h);
