@@ -239,16 +239,43 @@ a{color:inherit; text-decoration:none;}
 /* ===== book view =====
    The same pages, stacked instead of scrolled. Holders are absolutely positioned and
    centred with auto margins rather than a translate, which leaves `transform` free for
-   the page turn. Hidden pages keep their box (opacity, not display:none) so the PDF
+   the page turn. Hidden pages are hidden with opacity, not display:none, so the PDF
    export can still measure every one of them. */
 body.book-mode .reader-stage{display:block; position:relative; overflow:hidden;
-  perspective:2400px; padding-bottom:120px;}
+  perspective:2000px; perspective-origin:50% 42%; padding:0 16px;}
+/* The vignette is fixed to the viewport, not the stage. Scoped to the stage it ended
+   wherever the page ended and left a visible seam of untinted background below the book. */
+body.book-mode::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(125% 78% at 50% 42%, transparent 40%, var(--shadow) 128%); opacity:.55;}
+/* the title moves to the navbar in book view, so the page gets the height instead */
+body.book-mode .story-headline{display:none;}
+
 body.book-mode .page-holder{position:absolute; left:0; right:0; top:0; margin:0 auto;
-  opacity:0; pointer-events:none; transition:opacity .2s linear;}
+  opacity:0; pointer-events:none; transition:opacity .18s linear; border-radius:3px 10px 10px 3px;}
 body.book-mode .page-holder.is-current{opacity:1; pointer-events:auto; z-index:2;}
 body.book-mode .page-holder.is-peer{opacity:1; z-index:1;}
-body.book-mode .page-holder.turning{z-index:4; transform-origin:left center;
-  backface-visibility:hidden; box-shadow:0 22px 60px var(--shadow); transition:none;}
+/* the unturned pages showing along the outer edge, plus the book's own ambient shadow */
+body.book-mode .page-holder.is-current, body.book-mode .page-holder.is-peer{
+  box-shadow:3px 3px 0 -1px #fff, 3px 4px 0 var(--paper-edge),
+             7px 7px 0 -1px #fff, 7px 8px 0 var(--paper-edge),
+             0 28px 60px var(--shadow);}
+/* the bound edge: a soft gutter shadow down the spine side of every page */
+body.book-mode .page-holder::after{content:""; position:absolute; left:0; top:0; bottom:0; width:44px;
+  background:linear-gradient(90deg, rgba(60,30,45,.20), rgba(60,30,45,.05) 55%, transparent);
+  pointer-events:none; z-index:6;}
+body.book-mode .page-holder.turning{z-index:5; transform-origin:left center; transition:none;
+  box-shadow:0 34px 70px rgba(60,30,45,.32);}
+
+/* The reverse of a turning leaf. Without it the page would show a mirror image of its own
+   face past upright; a real sheet shows blank paper, with its gutter on the other side. */
+.leaf-back{position:absolute; inset:0; z-index:7; opacity:0; pointer-events:none;
+  background:var(--paper);
+  background-image:linear-gradient(270deg, rgba(60,30,45,.17), rgba(60,30,45,.03) 42%, transparent 72%);}
+/* light falling off the leaf as it swings up, and the shadow it sweeps over the page below */
+.leaf-shade{position:absolute; inset:0; z-index:8; opacity:0; pointer-events:none;
+  background:linear-gradient(90deg, rgba(40,20,35,.55), rgba(40,20,35,.14) 55%, transparent);}
+.leaf-cast{position:absolute; inset:0; z-index:9; opacity:0; pointer-events:none;
+  background:linear-gradient(90deg, rgba(40,20,35,.45), rgba(40,20,35,.10) 48%, transparent 78%);}
 
 .book-nav{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:70;
   display:none; align-items:center; gap:6px; padding:6px; border-radius:999px;
@@ -262,7 +289,7 @@ body.book-mode .page-holder.turning{z-index:4; transform-origin:left center;
 .bk-arrow:disabled{opacity:.32; cursor:default;}
 .bk-count{min-width:70px; text-align:center; font-family:var(--body); font-size:13px;
   font-weight:700; color:var(--ink-soft); letter-spacing:.4px;}
-@media(prefers-reduced-motion:reduce){ body.book-mode .page-holder.turning{transition:opacity .2s;} }
+@media(prefers-reduced-motion:reduce){ body.book-mode .page-holder{transition:opacity .2s;} }
 
 .story-headline{text-align:center; padding:14px 22px 2px;}
 .story-headline .kicker{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--lav-deep); font-weight:700;}

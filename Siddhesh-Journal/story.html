@@ -92,10 +92,6 @@
     else { pdfBtn.style.display='inline-flex'; viewBtn.style.display='inline-flex'; }
   }catch(e){ endLoader('Story not found.'); return; }
 
-  /* the navbar title fades in only once the headline has scrolled away */
-  const nav=document.getElementById('readerNav');
-  const onScroll=()=> nav.classList.toggle('scrolled', window.scrollY>140);
-  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
   /* Videos load nothing until asked: each tile shows its poster, and a click swaps in the
      real player. Starting one returns every other clip to its poster, so several videos can
@@ -113,40 +109,78 @@
      changes how they are presented, so nothing about the data, the editor or the PDF
      export has to know it exists. */
   const book={on:false, i:0, busy:false};
+  /* The navbar title fades in once the headline has scrolled away, and stays up for the
+     whole of book view, where the headline is hidden to give the page its height. */
+  const nav=document.getElementById('readerNav');
+  const onScroll=()=> nav.classList.toggle('scrolled', book.on || window.scrollY>140);
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
   const holders=()=> [...stage.querySelectorAll('.page-holder')];
   const reduced=()=> matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function paint(){
     const hs=holders();
     hs.forEach((h,k)=>{ h.classList.toggle('is-current', k===book.i);
-      h.classList.remove('is-peer','turning'); h.style.transform=''; });
+      h.classList.remove('is-peer','turning'); h.style.transform='';
+      h.querySelectorAll('.leaf-back,.leaf-shade,.leaf-cast').forEach(n=> n.remove()); });
     bkPrev.disabled = book.i<=0; bkNext.disabled = book.i>=hs.length-1;
     bkCount.textContent = (book.i+1)+' / '+hs.length;
     sizeStage();
   }
-  /* holders are absolute in book view, so the stage has no height of its own */
-  function sizeStage(){ if(!book.on) return; const h=holders()[book.i];
-    if(h) stage.style.height = h.offsetHeight+'px'; }
+  /* Holders are absolute in book view, so the stage carries no height of its own and the
+     pages have to be placed by hand. Pages keep the same width-based size they have in the
+     scroll reader — capping them to the viewport height instead shrank a page to well under
+     half its width on a laptop, since a portrait page cannot fill a landscape screen. So the
+     book is centred when there is room for it and sits near the top when there is not. */
+  const bookRoom=()=> Math.max(320, window.innerHeight - stage.offsetTop - 104);
+  function sizeStage(){
+    if(!book.on){ stage.style.height=''; return; }
+    const hs=holders(); if(!hs.length) return;
+    const tall=Math.max.apply(null, hs.map(h=> h.offsetHeight));
+    const room=Math.max(bookRoom(), tall+28);
+    stage.style.height=room+'px';
+    const top=Math.max(14, Math.round((room-tall)/2));
+    hs.forEach(h=> h.style.top=top+'px');
+  }
+
+  const overlay=(host,cls)=>{ const n=document.createElement('div'); n.className=cls; host.appendChild(n); return n; };
 
   function turn(dir){
     const hs=holders(), cur=hs[book.i], nxt=hs[book.i+dir];
     if(book.busy || !cur || !nxt) return;
     book.busy=true; stopAllVideos();
     cur.classList.add('is-current'); nxt.classList.add('is-peer');
-    stage.style.height = Math.max(cur.offsetHeight, nxt.offsetHeight)+'px';
-    /* Going forward the current page lifts away; going back the incoming page swings in
-       over it. Either way one leaf rotates about its spine while the other sits still. */
-    const leaf = dir>0 ? cur : nxt;
+    /* Going forward the current page lifts away about its spine; going back the incoming
+       page swings in over it. Either way one leaf turns and the other lies still beneath. */
+    const leaf = dir>0 ? cur : nxt, under = dir>0 ? nxt : cur;
     leaf.classList.add('turning');
-    const spin = dir>0 ? [{transform:'rotateY(0deg)'},{transform:'rotateY(-158deg)'}]
-                       : [{transform:'rotateY(-158deg)'},{transform:'rotateY(0deg)'}];
-    const fade = dir>0 ? [{opacity:1},{opacity:0}] : [{opacity:0},{opacity:1}];
-    const anim = reduced()
-      ? leaf.animate(fade, {duration:220, fill:'forwards'})
-      : leaf.animate(spin, {duration:620, easing:'cubic-bezier(.4,.02,.3,1)', fill:'forwards'});
-    const done=()=>{ book.i+=dir; paint(); book.busy=false; };
-    anim.onfinish=done;
-    setTimeout(()=>{ if(book.busy) done(); }, 900);   // never strand the reader
+
+    const back=overlay(leaf,'leaf-back'), shade=overlay(leaf,'leaf-shade'), cast=overlay(under,'leaf-cast');
+    const soft=reduced(), DUR = soft ? 240 : 820;
+    const opts={duration:DUR, easing:soft?'ease':'cubic-bezier(.33,.66,.27,1)', fill:'forwards'};
+    const anims=[];
+    if(soft){
+      anims.push(leaf.animate(dir>0?[{opacity:1},{opacity:0}]:[{opacity:0},{opacity:1}], opts));
+    } else {
+      const spin=[{transform:'rotateY(0deg)'},{transform:'rotateY(-174deg)'}];
+      anims.push(leaf.animate(dir>0? spin : spin.slice().reverse(), opts));
+      /* the paper reverse takes over exactly as the leaf crosses upright */
+      anims.push(back.animate(dir>0
+        ? [{opacity:0,offset:0},{opacity:0,offset:.47},{opacity:1,offset:.55},{opacity:1,offset:1}]
+        : [{opacity:1,offset:0},{opacity:1,offset:.45},{opacity:0,offset:.53},{opacity:0,offset:1}], opts));
+      anims.push(shade.animate(dir>0
+        ? [{opacity:0},{opacity:.62,offset:.55},{opacity:.12}]
+        : [{opacity:.12},{opacity:.62,offset:.45},{opacity:0}], opts));
+      anims.push(cast.animate([{opacity:0},{opacity:.55,offset:.42},{opacity:0}], opts));
+    }
+    /* fill:'forwards' keeps the last frame applied, so the animations have to be cancelled
+       or the leaf would stay face-down however the inline transform is cleared */
+    let ended=false;
+    const finish=()=>{ if(ended) return; ended=true;
+      anims.forEach(a=>{ try{ a.cancel(); }catch(e){} });
+      [back,shade,cast].forEach(n=> n.remove());
+      book.i+=dir; paint(); book.busy=false; };
+    anims[0].onfinish=finish;
+    setTimeout(finish, DUR+300);   // never strand the reader if a frame is dropped
   }
 
   function setBook(on){
@@ -154,10 +188,15 @@
     document.body.classList.toggle('book-mode', on);
     bookNav.classList.toggle('open', on);
     viewBtn.textContent = on ? '☰ Scroll view' : '📖 Book view';
-    if(on){ stopAllVideos(); book.i=Math.min(book.i, holders().length-1); paint();
+    /* the navbar carries the title in book view, since the headline is hidden to free height */
+    nav.classList.toggle('scrolled', on || window.scrollY>140);
+    if(on){ stopAllVideos(); book.i=Math.min(book.i, holders().length-1);
+      paint(); requestAnimationFrame(sizeStage);
       window.scrollTo({top:0, behavior:'smooth'}); }
     else { stage.style.height='';
-      holders().forEach(h=>{ h.classList.remove('is-current','is-peer','turning'); h.style.transform=''; }); }
+      holders().forEach(h=>{ h.classList.remove('is-current','is-peer','turning');
+        h.style.transform=''; h.style.top='';
+        h.querySelectorAll('.leaf-back,.leaf-shade,.leaf-cast').forEach(n=> n.remove()); }); }
   }
   viewBtn.onclick=()=> setBook(!book.on);
   bkPrev.onclick=()=> turn(-1);
@@ -176,7 +215,7 @@
     sx=null;
     if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.5) turn(dx<0 ? 1 : -1);
   }, {passive:true});
-  /* core.js refits the pages on resize; re-measure the stage just after it does */
+  /* core.js refits the pages on resize; re-centre once it has */
   window.addEventListener('resize',()=> setTimeout(sizeStage, 0));
 
   // ----- PDF (libraries load only on click, keeping the page fast) -----
