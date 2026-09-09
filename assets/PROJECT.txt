@@ -22,7 +22,7 @@ Merging fixes that. The entire engine — fonts, backgrounds, the photo/text/cap
 
 Journal-Writing/ is one GitHub repo served by GitHub Pages.
 
-assets/ is the shared brain (edit once, all three clients update): core.js holds the client-agnostic engine (fonts, backgrounds, renderer, styling, GitHub helpers); style.css holds the structure plus all three colour themes (switched per client); backgrounds/ holds bg01.jpg to bg28.jpg (shared decorative page art); PROJECT.txt is this document; Setup.txt is the step-by-step setup and hosting guide.
+assets/ is the shared brain (edit once, all three clients update): core.js holds the client-agnostic engine (fonts, backgrounds, renderer, styling, GitHub helpers); style.css holds the structure plus all three colour themes (switched per client); backgrounds/ holds bg01.jpg to bg148.jpg (shared decorative page art); bg-thumbs.js holds those backgrounds' picker thumbnails and is loaded by the editor alone, so a reader never downloads previews it cannot use; PROJECT.txt is this document; Setup.txt is the step-by-step setup and hosting guide.
 
 Dhanashri-Journal/ is client A (pastel lavender): index.html, story.html, admin.html, and data/ (index.json plus posts/<id>.json). Pratiksha-Journal/ is client B (pastel blue) with the same three pages and its own data/. Siddhesh-Journal/ is client C (rose pink) with the same three pages and its own data/.
 
@@ -95,7 +95,7 @@ Every surface draws the same FACADE: the thumbnail with a play badge over it. Th
 
 The badge is a border-radius circle with a CSS-border triangle inside it, not an inline SVG. That is a deliberate constraint of the PDF path, described in section 8.
 
-Stickers: an emoji library, paste-any-emoji, and upload-your-own image with PNG transparency kept. Washi tape: a grid of pastel tapes, striped or plain. Doodles: stars, arrows, lines, hearts and more, each recolourable with adjustable weight. Layering: send an item behind or bring it in front of others. Plus multiple pages per story, per-page backgrounds (grid, dots or plain plus 28 decorative images), a cover photo picker, autosave, Save draft and Import JSON, and Publish, Open and Delete.
+Stickers: an emoji library, paste-any-emoji, and upload-your-own image with PNG transparency kept. Washi tape: a grid of pastel tapes, striped or plain. Doodles: stars, arrows, lines, hearts and more, each recolourable with adjustable weight. Layering: send an item behind or bring it in front of others. Plus multiple pages per story, per-page backgrounds (grid, dots or plain plus 148 decorative images, grouped by mood in the picker), a cover photo picker, autosave, Save draft and Import JSON, and Publish, Open and Delete.
 
 
 8. THE DATA MODEL
@@ -111,6 +111,8 @@ The PDF export constrains how a video may be drawn. The export rasterises the pa
 Backwards compatible: older stories with no html, h, shadow, spacing, radius or caption-style fields render exactly as before; the new fields are optional and default to the previous look. The rich-text sanitizer now also passes strikethrough and list markup (<s>, <ul>, <ol>, <li>) through to the reader and the PDF export, on the same whitelist-only basis as the original tags.
 
 Homepage identity: all three indexes share the same signature font — Daun Penh (falling back to Cormorant Garamond) for the big heading and the status texts ("opening the journal...", "Could not load stories yet", "No stories yet"), with Playfair Display on the story-card titles. The old kicker strapline above the heading was removed from Dhanashri's and Siddhesh's homepages along with its CSS.
+
+The background library was then expanded from 38 papers to 148. The new art was perceptually hashed against the existing set and against itself, which found three duplicates inside the pack and none already in the library; the three were dropped. Everything kept was resampled to 1100px wide and re-encoded as progressive JPEG to match the existing files rather than shipping 2048px phone wallpapers. The picker groups all 148 by mood across fifteen headings, and anything left out of BG_GROUPS still appears under a trailing More heading, so a background can never go missing just because it was not classified. The picker modal itself widened to 1000px and its grid became repeat(auto-fill,minmax(108px,1fr)), which fits eight per row on a desktop and three on a phone without needing a column count per breakpoint. Because 148 inline preview images would have added roughly 200KB to every reader page, the thumbnails moved out of core.js into assets/bg-thumbs.js, which only admin.html loads; core.js came down from 123KB to 70KB in the process.
 
 Three further bugs were fixed in the revision after that.
 

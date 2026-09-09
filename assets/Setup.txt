@@ -19,7 +19,8 @@ Journal-Writing/
   assets/
     core.js          shared engine (client-agnostic)
     style.css        structure plus all three colour themes
-    backgrounds/     bg01.jpg ... bg28.jpg (shared page-background images)
+    backgrounds/     bg01.jpg ... bg148.jpg (shared page-background images)
+    bg-thumbs.js     picker thumbnails for those backgrounds (editor only)
     PROJECT.txt      full project explainer
     Setup.txt        this file
   Dhanashri-Journal/   index.html  story.html  admin.html   data/index.json   data/posts/

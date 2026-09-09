@@ -15,7 +15,7 @@ Siddhesh  : https://laxman-sidhu.github.io/Journal-Writing/Siddhesh-Journal/
 
 STRUCTURE
 
-assets/              shared engine (edit once, all three clients update): core.js, style.css, backgrounds/ (bg01-bg28), PROJECT.txt, Setup.txt
+assets/              shared engine (edit once, all three clients update): core.js, style.css, bg-thumbs.js, backgrounds/ (bg01-bg148), PROJECT.txt, Setup.txt
 Dhanashri-Journal/   client A (lavender): index.html, story.html, admin.html, data/
 Pratiksha-Journal/   client B (cream):    index.html, story.html, admin.html, data/
 Siddhesh-Journal/    client C (rose pink):index.html, story.html, admin.html, data/
@@ -37,4 +37,4 @@ Freeform canvas with text boxes that behave like Word's — click once to select
 
 Videos by direct link — a Cloudinary upload, or any .mp4 or .webm served over https. They play in the browser's own player, so a page stays clean with no branding, channel name or share buttons; YouTube and Vimeo links are refused for exactly that reason. Only a thumbnail you choose is saved into the story, so the file stays small however long the clip is. The page shows that thumbnail with a play badge and swaps in the player on click, with full controls. Several clips can share a page, and starting one stops the others. Videos take the same Plain or Card look as photos, with a caption. The PDF export keeps the thumbnail and its play badge, so a printed page still reads as a video rather than a photo.
 
-Photos (move, resize, rotate, crop, caption; looks: plain with transparency preserved, frame, border; an independent shadow toggle; adjustable corner rounding; and caption font/size/colour), stickers, upload-your-own image stickers, washi tape, doodles, layering, multi-page stories, 28 per-page backgrounds, cover picker, autosave, drafts, and PDF export.
+Photos (move, resize, rotate, crop, caption; looks: plain with transparency preserved, frame, border; an independent shadow toggle; adjustable corner rounding; and caption font/size/colour), stickers, upload-your-own image stickers, washi tape, doodles, layering, multi-page stories, 148 per-page backgrounds, cover picker, autosave, drafts, and PDF export.

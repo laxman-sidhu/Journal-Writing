@@ -170,6 +170,9 @@
   .mask.open{display:flex;}
   .modal{background:var(--paper); width:min(460px,100%); max-height:84vh; overflow:auto; border-radius:18px; padding:22px; box-shadow:0 20px 50px var(--shadow);}
   .modal.wide{width:min(560px,100%);}
+  /* the paper picker carries 148 backgrounds, so it gets a far wider canvas than the
+     other modals and lets .bggrid decide how many fit per row */
+  .modal.papers{width:min(1000px,100%);}
   .modal h3{font-family:var(--hand); font-size:28px; margin:0 0 6px;}
   .modal p{font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0 0 14px;}
   .modal input[type=password],.modal input[type=text]{width:100%; padding:11px 13px; border:1px solid var(--paper-edge); border-radius:10px; font-family:var(--body); font-size:14px; outline:none;}
@@ -221,17 +224,21 @@
   .el-video .vwrap{cursor:move;}
 
   /* ===== background picker ===== */
-  .bggrid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:4px;}
+  /* 98px is chosen against the 1000px picker: eight swatches plus gaps need 868px and the
+     content box is 956px (939px once a scrollbar takes its width), so eight always fit,
+     while nine would need 978px and never can. At 108px the scrollbar was tipping it to seven. */
+  .bggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(98px,1fr)); gap:12px; margin-top:4px;}
   .bgitem{border:none; background:transparent; cursor:pointer; padding:0; display:flex; flex-direction:column; align-items:center; gap:5px;}
   .bgsw{width:100%; aspect-ratio:3/4; border-radius:11px; background-size:cover; background-position:center top;
     background-color:var(--paper); border:1px solid var(--paper-edge); box-shadow:0 2px 8px rgba(52,64,90,.1);}
   .bgitem.sel .bgsw{outline:3px solid var(--lav-deep); outline-offset:2px;}
   .bgitem:hover .bgsw{transform:translateY(-2px); box-shadow:0 6px 16px var(--shadow);}
-  .bglbl{font-size:11px; font-weight:700; color:var(--ink); text-align:center; line-height:1.12;}
+  .bglbl{font-size:11px; font-weight:700; color:var(--ink); text-align:center; line-height:1.12;
+    width:100%; overflow-wrap:break-word;}
   .bgsw.bg-grid{background-image:linear-gradient(#e8e1f6 1px,transparent 1px),linear-gradient(90deg,#e8e1f6 1px,transparent 1px); background-size:10px 10px;}
   .bgsw.bg-dot{background-image:radial-gradient(#cfc6ea 1.5px,transparent 1.5px); background-size:10px 10px;}
   .bgsw.bg-plain{background-image:none;}
-  @media(max-width:600px){ .bggrid{grid-template-columns:repeat(3,1fr); gap:10px;} }
+  @media(max-width:600px){ .bggrid{grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:10px;} }
 
   /* ===== crop ===== */
   #cropArea{position:relative; touch-action:none; user-select:none; margin:0 auto; max-width:100%; line-height:0;}
@@ -338,7 +345,6 @@
     .story-title{max-width:38vw; font-size:18px;}
     .sdate{max-width:96px;}
     .grp{padding:3px 6px;}
-    .bggrid{grid-template-columns:repeat(2,1fr);}
   }
 </style>
 </head>
@@ -646,7 +652,7 @@
 </div>
 
 <div class="mask" id="bgMask">
-  <div class="modal wide">
+  <div class="modal wide papers">
     <div id="bgBody"></div>
     <div class="row"><button class="btn ghost" id="closeBg">Close</button></div>
   </div>
@@ -673,6 +679,7 @@
     TITLE    : "Dhanashri's Journal"
   };
 </script>
+<script src="../assets/bg-thumbs.js"></script>
 <script src="../assets/core.js"></script>
 <script>
 (function(){
