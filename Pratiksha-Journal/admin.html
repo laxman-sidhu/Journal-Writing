@@ -172,7 +172,7 @@
   .modal.wide{width:min(560px,100%);}
   /* the paper picker carries 148 backgrounds, so it gets a far wider canvas than the
      other modals and lets .bggrid decide how many fit per row */
-  .modal.papers{width:min(1000px,100%);}
+  .modal.papers{width:min(1120px,100%);}
   .modal h3{font-family:var(--hand); font-size:28px; margin:0 0 6px;}
   .modal p{font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0 0 14px;}
   .modal input[type=password],.modal input[type=text]{width:100%; padding:11px 13px; border:1px solid var(--paper-edge); border-radius:10px; font-family:var(--body); font-size:14px; outline:none;}
@@ -224,10 +224,10 @@
   .el-video .vwrap{cursor:move;}
 
   /* ===== background picker ===== */
-  /* 98px is chosen against the 1000px picker: eight swatches plus gaps need 868px and the
-     content box is 956px (939px once a scrollbar takes its width), so eight always fit,
-     while nine would need 978px and never can. At 108px the scrollbar was tipping it to seven. */
-  .bggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(98px,1fr)); gap:12px; margin-top:4px;}
+  /* 100px is chosen against the 1120px picker: nine swatches plus gaps need 996px and the
+     content box is 1076px (1059px once a scrollbar takes its width), so nine always fit,
+     while ten would need 1108px and never can. */
+  .bggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:12px; margin-top:4px;}
   .bgitem{border:none; background:transparent; cursor:pointer; padding:0; display:flex; flex-direction:column; align-items:center; gap:5px;}
   .bgsw{width:100%; aspect-ratio:3/4; border-radius:11px; background-size:cover; background-position:center top;
     background-color:var(--paper); border:1px solid var(--paper-edge); box-shadow:0 2px 8px rgba(52,64,90,.1);}
@@ -566,7 +566,7 @@
       </div>
 
       <div class="fmtbar" id="borderbar">
-        <span class="grp"><span class="lbl">Border</span>
+        <span class="grp" id="matGrp"><span class="lbl">Mat</span>
           <span class="sw" data-bc="#ffffff" style="background:#ffffff"></span>
           <span class="sw" data-bc="#544b6b" style="background:#544b6b"></span>
           <span class="sw" data-bc="#c8697d" style="background:#c8697d"></span>
@@ -575,8 +575,27 @@
           <span class="sw" data-bc="#d59a55" style="background:#d59a55"></span>
           <input type="color" id="bColor" value="#ffffff" title="Custom border colour">
         </span>
-        <span class="grp"><span class="lbl">Width</span>
+        <span class="grp" id="matWGrp"><span class="lbl">Width</span>
           <button class="rbtn" id="bwMinus" title="Thinner">−</button><span class="stepval" id="bwVal">6</span><button class="rbtn" id="bwPlus" title="Thicker">+</button>
+        </span>
+        <span class="grp"><span class="lbl">Outline</span>
+          <button class="rbtn wide" data-line="none" title="No outline">None</button>
+          <button class="rbtn wide" data-line="solid" title="Solid outline">Solid</button>
+          <button class="rbtn wide" data-line="dashed" title="Dashed outline">Dashed</button>
+          <button class="rbtn wide" data-line="dotted" title="Dotted outline">Dotted</button>
+          <button class="rbtn wide" data-line="double" title="Double outline">Double</button>
+        </span>
+        <span class="grp"><span class="lbl">Outline colour</span>
+          <span class="sw" data-lc="#544b6b" style="background:#544b6b"></span>
+          <span class="sw" data-lc="#ffffff" style="background:#ffffff"></span>
+          <span class="sw" data-lc="#c8697d" style="background:#c8697d"></span>
+          <span class="sw" data-lc="#6c91c2" style="background:#6c91c2"></span>
+          <span class="sw" data-lc="#5a9e86" style="background:#5a9e86"></span>
+          <span class="sw" data-lc="#d59a55" style="background:#d59a55"></span>
+          <input type="color" id="lColor" value="#544b6b" title="Custom outline colour">
+        </span>
+        <span class="grp"><span class="lbl">Thickness</span>
+          <button class="rbtn" id="lwMinus" title="Thinner">−</button><span class="stepval" id="lwVal">2</span><button class="rbtn" id="lwPlus" title="Thicker">+</button>
         </span>
       </div>
     </div>
@@ -1111,7 +1130,7 @@ function makePointDraggable(el, h, d, i){
    size, shape) is deliberately left out, so painting never moves or reshapes anything. */
 const PAINT_KEYS={
   text:['font','size','bold','italic','underline','align','color','fill','spacing','radius','bw','bc','pad'],
-  photo:['style','frameColor','borderColor','borderWidth','shadow','radius','noCap','capFont','capSize','capColor','capDX','capDY'],
+  photo:['style','frameColor','borderColor','borderWidth','line','lineColor','lineWidth','shadow','radius','noCap','capFont','capSize','capColor','capDX','capDY'],
   video:['style','frameColor','radius','shadow','noCap','capFont','capSize','capColor','capDX','capDY'],
   doodle:['color','weight'],
   washi:['color','plain'],
@@ -1244,16 +1263,37 @@ document.getElementById('capReset').onclick=()=>{ if(!selData) return;
   delete selData.capDX; delete selData.capDY; showCapPos(); applyCap(); showToast('Caption back to centre'); };
 
 /* border styling bar (colour + width) — only shown for the Border look */
+/* The bar carries two different things: the Border look's mat (its colour and how wide a
+   band it leaves), which only means anything for that look, and the outline, which draws on
+   any look. So the bar shows for every photo and the mat groups hide themselves. */
 function showBorderBar(){ const bar=document.getElementById('borderbar');
-  if(!(selData && selData.style==='border')){ bar.style.display='none'; return; }
+  if(!(selData && selData.type==='photo')){ bar.style.display='none'; return; }
   bar.style.display='flex';
+  const isMat = selData.style==='border';
+  document.getElementById('matGrp').style.display = isMat?'':'none';
+  document.getElementById('matWGrp').style.display = isMat?'':'none';
   document.getElementById('bColor').value=toHex(selData.borderColor||'#ffffff');
-  document.getElementById('bwVal').textContent=(selData.borderWidth!=null?selData.borderWidth:6); }
+  document.getElementById('bwVal').textContent=(selData.borderWidth!=null?selData.borderWidth:6);
+  const line=selData.line||'none';
+  bar.querySelectorAll('[data-line]').forEach(b=> b.classList.toggle('on', b.dataset.line===line));
+  document.getElementById('lColor').value=toHex(selData.lineColor||'#544b6b');
+  document.getElementById('lwVal').textContent=(selData.lineWidth!=null?selData.lineWidth:2); }
 function applyBorder(){ if(!selNode||!selData||selData.type!=='photo') return; J.applyPhotoStyle(selNode, selData); saveDraft(); }
 document.querySelectorAll('#borderbar .sw[data-bc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return; selData.borderColor=sw.dataset.bc; document.getElementById('bColor').value=toHex(sw.dataset.bc); applyBorder(); }; });
 document.getElementById('bColor').oninput=function(){ if(!selData) return; selData.borderColor=this.value; applyBorder(); };
 document.getElementById('bwMinus').onclick=()=>{ if(!selData) return; selData.borderWidth=Math.max(0,(selData.borderWidth!=null?selData.borderWidth:6)-1); document.getElementById('bwVal').textContent=selData.borderWidth; applyBorder(); };
 document.getElementById('bwPlus').onclick=()=>{ if(!selData) return; selData.borderWidth=Math.min(40,(selData.borderWidth!=null?selData.borderWidth:6)+1); document.getElementById('bwVal').textContent=selData.borderWidth; applyBorder(); };
+document.querySelectorAll('#borderbar [data-line]').forEach(b=>{ b.onclick=()=>{ if(!selData) return;
+  selData.line=b.dataset.line; showBorderBar(); applyBorder(); }; });
+document.querySelectorAll('#borderbar .sw[data-lc]').forEach(sw=>{ sw.onclick=()=>{ if(!selData) return;
+  selData.lineColor=sw.dataset.lc; if(!selData.line||selData.line==='none') selData.line='solid';
+  showBorderBar(); applyBorder(); }; });
+document.getElementById('lColor').oninput=function(){ if(!selData) return; selData.lineColor=this.value;
+  if(!selData.line||selData.line==='none') selData.line='solid'; showBorderBar(); applyBorder(); };
+document.getElementById('lwMinus').onclick=()=>{ if(!selData) return;
+  selData.lineWidth=Math.max(1,(selData.lineWidth!=null?selData.lineWidth:2)-1); showBorderBar(); applyBorder(); };
+document.getElementById('lwPlus').onclick=()=>{ if(!selData) return;
+  selData.lineWidth=Math.min(16,(selData.lineWidth!=null?selData.lineWidth:2)+1); showBorderBar(); applyBorder(); };
 
 /* ---------- video bar (link, thumbnail, corners, caption, shadow) ---------- */
 const videobar=document.getElementById('videobar');

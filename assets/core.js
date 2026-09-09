@@ -427,6 +427,7 @@ window.JOURNAL = (function(){
           (.style-plain has no background/padding); here we just make sure no inline background is
           left over from a previous "frame" look. */
   const PHOTO_FRAME_DEFAULT='#e3e8f8';
+  const PHOTO_LINE_DEFAULT='#544b6b';
   function applyPhotoStyle(el,d){
     ['card','plain','shadow','frame','border'].forEach(s=>el.classList.remove('style-'+s));
     const st=d.style||'card'; el.classList.add('style-'+st);
@@ -435,6 +436,7 @@ window.JOURNAL = (function(){
     if(d.shadow) el.classList.add('has-shadow'); else el.classList.remove('has-shadow');
     // reset any inline overrides each call so switching looks stays clean (CSS governs unless set below)
     el.style.background=''; el.style.padding=''; el.style.borderColor=''; el.style.borderWidth='';
+    el.style.borderStyle='';
     el.style.borderRadius='';
     const im=el.querySelector('img'); if(im) im.style.borderRadius='';
     /* CORNER ROUNDING: d.radius (px) controls how rounded the photo's corners are —
@@ -454,6 +456,19 @@ window.JOURNAL = (function(){
     if(st==='border'){
       if(d.borderColor){ el.style.background=d.borderColor; el.style.borderColor=d.borderColor; }
       if(d.borderWidth!=null){ el.style.padding=d.borderWidth+'px'; }
+    }
+    /* OUTLINE: an optional drawn edge — solid, dashed, dotted or double. It is deliberately
+       independent of the look, so a plain cut-out and a framed photo can both carry one.
+       Left unset nothing here runs, and every existing photo keeps the edge its CSS gave it.
+       Only border properties are touched: box-shadow is left alone so the separate shadow
+       toggle still works, and html2canvas draws borders reliably, so an outline survives the
+       PDF export. Elements are border-box, so the outline never changes the photo's size. */
+    const line=d.line||'none';
+    if(line!=='none'){
+      el.style.borderStyle=line;
+      el.style.borderWidth=(line==='double'? Math.max(3,(d.lineWidth!=null?d.lineWidth:2)*1.5)
+                                           : (d.lineWidth!=null?d.lineWidth:2))+'px';
+      el.style.borderColor=d.lineColor||PHOTO_LINE_DEFAULT;
     }
   }
 

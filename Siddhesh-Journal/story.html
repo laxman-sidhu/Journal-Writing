@@ -10,10 +10,14 @@
 <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-  <div class="reader-top">
+  <nav class="reader-nav" id="readerNav">
     <a class="btn ghost" href="index.html">← all stories</a>
-    <button class="btn primary" id="pdfBtn" style="display:none;">⬇ Download PDF</button>
-  </div>
+    <div class="nav-title" id="navTitle"></div>
+    <div class="nav-right">
+      <button class="btn ghost" id="viewBtn" style="display:none;">📖 Book view</button>
+      <button class="btn primary" id="pdfBtn" style="display:none;">⬇ Download PDF</button>
+    </div>
+  </nav>
   <div class="story-headline" id="headline" style="display:none;">
     <div class="kicker" id="hlDate"></div>
     <h1 id="hlTitle"></h1>
@@ -26,6 +30,11 @@
       <div class="jw-load-bar" aria-hidden="true"><i></i></div>
       <div class="jw-load-note">stories carry their photos with them, so this can take a moment</div>
     </div>
+  </div>
+  <div class="book-nav" id="bookNav">
+    <button class="bk-arrow" id="bkPrev" aria-label="Previous page">‹</button>
+    <div class="bk-count" id="bkCount">1 / 1</div>
+    <button class="bk-arrow" id="bkNext" aria-label="Next page">›</button>
   </div>
   <div class="jw-busy" id="busy">
     <div class="jw-loader">
@@ -51,6 +60,9 @@
   const J=window.JOURNAL;
   const stage=document.getElementById('stage'), loading=document.getElementById('loading');
   const loadText=document.getElementById('loadText'), pdfBtn=document.getElementById('pdfBtn');
+  const viewBtn=document.getElementById('viewBtn'), bookNav=document.getElementById('bookNav');
+  const bkPrev=document.getElementById('bkPrev'), bkNext=document.getElementById('bkNext'),
+        bkCount=document.getElementById('bkCount');
 
   /* The loader cycles its line so a slow story reads as "working", never as "stuck". */
   const LOAD_LINES=['turning the page','unpacking the photos','smoothing the creases','almost there'];
@@ -73,11 +85,17 @@
     document.getElementById('hlTitle').textContent = postTitle;
     document.getElementById('hlDate').textContent = J.formatDate(post.date);
     document.getElementById('headline').style.display='block';
+    document.getElementById('navTitle').textContent = postTitle;
     (post.pages||[]).forEach(pg=> J.renderPageRO(stage, pg));
     endLoader();
     if(!post.pages || post.pages.length===0){ stage.innerHTML='<div class="loading">This story has no pages yet.</div>'; }
-    else { pdfBtn.style.display='inline-flex'; }
+    else { pdfBtn.style.display='inline-flex'; viewBtn.style.display='inline-flex'; }
   }catch(e){ endLoader('Story not found.'); return; }
+
+  /* the navbar title fades in only once the headline has scrolled away */
+  const nav=document.getElementById('readerNav');
+  const onScroll=()=> nav.classList.toggle('scrolled', window.scrollY>140);
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
   /* Videos load nothing until asked: each tile shows its poster, and a click swaps in the
      real player. Starting one returns every other clip to its poster, so several videos can
@@ -89,6 +107,77 @@
     J.playVideo(el, el.__data);
   });
   function stopAllVideos(){ stage.querySelectorAll('.el-video').forEach(o=> J.stopVideo(o, o.__data)); }
+
+  /* ---------- book view ----------
+     Scroll view stays the default. Book view keeps exactly the same page nodes and only
+     changes how they are presented, so nothing about the data, the editor or the PDF
+     export has to know it exists. */
+  const book={on:false, i:0, busy:false};
+  const holders=()=> [...stage.querySelectorAll('.page-holder')];
+  const reduced=()=> matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function paint(){
+    const hs=holders();
+    hs.forEach((h,k)=>{ h.classList.toggle('is-current', k===book.i);
+      h.classList.remove('is-peer','turning'); h.style.transform=''; });
+    bkPrev.disabled = book.i<=0; bkNext.disabled = book.i>=hs.length-1;
+    bkCount.textContent = (book.i+1)+' / '+hs.length;
+    sizeStage();
+  }
+  /* holders are absolute in book view, so the stage has no height of its own */
+  function sizeStage(){ if(!book.on) return; const h=holders()[book.i];
+    if(h) stage.style.height = h.offsetHeight+'px'; }
+
+  function turn(dir){
+    const hs=holders(), cur=hs[book.i], nxt=hs[book.i+dir];
+    if(book.busy || !cur || !nxt) return;
+    book.busy=true; stopAllVideos();
+    cur.classList.add('is-current'); nxt.classList.add('is-peer');
+    stage.style.height = Math.max(cur.offsetHeight, nxt.offsetHeight)+'px';
+    /* Going forward the current page lifts away; going back the incoming page swings in
+       over it. Either way one leaf rotates about its spine while the other sits still. */
+    const leaf = dir>0 ? cur : nxt;
+    leaf.classList.add('turning');
+    const spin = dir>0 ? [{transform:'rotateY(0deg)'},{transform:'rotateY(-158deg)'}]
+                       : [{transform:'rotateY(-158deg)'},{transform:'rotateY(0deg)'}];
+    const fade = dir>0 ? [{opacity:1},{opacity:0}] : [{opacity:0},{opacity:1}];
+    const anim = reduced()
+      ? leaf.animate(fade, {duration:220, fill:'forwards'})
+      : leaf.animate(spin, {duration:620, easing:'cubic-bezier(.4,.02,.3,1)', fill:'forwards'});
+    const done=()=>{ book.i+=dir; paint(); book.busy=false; };
+    anim.onfinish=done;
+    setTimeout(()=>{ if(book.busy) done(); }, 900);   // never strand the reader
+  }
+
+  function setBook(on){
+    book.on=on;
+    document.body.classList.toggle('book-mode', on);
+    bookNav.classList.toggle('open', on);
+    viewBtn.textContent = on ? '☰ Scroll view' : '📖 Book view';
+    if(on){ stopAllVideos(); book.i=Math.min(book.i, holders().length-1); paint();
+      window.scrollTo({top:0, behavior:'smooth'}); }
+    else { stage.style.height='';
+      holders().forEach(h=>{ h.classList.remove('is-current','is-peer','turning'); h.style.transform=''; }); }
+  }
+  viewBtn.onclick=()=> setBook(!book.on);
+  bkPrev.onclick=()=> turn(-1);
+  bkNext.onclick=()=> turn(1);
+  window.addEventListener('keydown',(e)=>{
+    if(!book.on || e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.key==='ArrowRight'){ e.preventDefault(); turn(1); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); turn(-1); }
+  });
+  let sx=null, sy=null;
+  stage.addEventListener('touchstart',(e)=>{ if(!book.on||e.touches.length!==1) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+  stage.addEventListener('touchend',(e)=>{
+    if(!book.on || sx==null) return;
+    const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    sx=null;
+    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.5) turn(dx<0 ? 1 : -1);
+  }, {passive:true});
+  /* core.js refits the pages on resize; re-measure the stage just after it does */
+  window.addEventListener('resize',()=> setTimeout(sizeStage, 0));
 
   // ----- PDF (libraries load only on click, keeping the page fast) -----
   function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>rej(new Error('load '+src)); document.head.appendChild(s); }); }
