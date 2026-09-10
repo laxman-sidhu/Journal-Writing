@@ -131,15 +131,16 @@
      scroll reader — capping them to the viewport height instead shrank a page to well under
      half its width on a laptop, since a portrait page cannot fill a landscape screen. So the
      book is centred when there is room for it and sits near the top when there is not. */
-  const bookRoom=()=> Math.max(320, window.innerHeight - stage.offsetTop - 104);
+  const BOOK_FOOT=104;                 // the strip kept clear under the book, where the page nav sits
+  const bookRoom=()=> Math.max(320, window.innerHeight - stage.offsetTop - BOOK_FOOT);
   function sizeStage(){
     if(!book.on){ stage.style.height=''; return; }
     const hs=holders(); if(!hs.length) return;
     const tall=Math.max.apply(null, hs.map(h=> h.offsetHeight));
-    const room=Math.max(bookRoom(), tall+28);
-    stage.style.height=room+'px';
-    const top=Math.max(14, Math.round((room-tall)/2));
-    hs.forEach(h=> h.style.top=top+'px');
+    const room=bookRoom(), band=Math.max(room, tall+28);
+    // a page taller than the window keeps the same foot, so the book never ends flush with the page
+    stage.style.height=(band + (band>room ? BOOK_FOOT : 0))+'px';
+    hs.forEach(h=> h.style.top=Math.max(14, Math.round((band-tall)/2))+'px');
   }
 
   const overlay=(host,cls)=>{ const n=document.createElement('div'); n.className=cls; host.appendChild(n); return n; };

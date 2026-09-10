@@ -16,6 +16,7 @@ If the repo is created under a different GitHub account, change USERNAME in the 
 FILE LAYOUT YOU ARE UPLOADING
 
 Journal-Writing/
+  index.html       main home page linking to all three journals
   assets/
     core.js          shared engine (client-agnostic)
     style.css        structure plus all three colour themes

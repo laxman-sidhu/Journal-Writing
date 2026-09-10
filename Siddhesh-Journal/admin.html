@@ -742,6 +742,13 @@ const photobar=document.getElementById('photobar');
 function loadDraft(){ try{ const r=localStorage.getItem(DRAFT); if(r) return JSON.parse(r);}catch(e){} return null; }
 function saveDraft(){ try{ localStorage.setItem(DRAFT, JSON.stringify(story)); }catch(e){} markDirty(); }
 
+/* A story opened from the site stays bound to its own file, so the same button saves the
+   changes back into it instead of publishing a second copy. */
+function isLive(){ return !!(story._loaded && (story.origId || story.id)); }
+function updatePublishBtn(){ const b=document.getElementById('publishBtn'), live=isLive();
+  b.textContent = live ? '✓ Save changes' : '▲ Publish';
+  b.title = live ? 'Save these changes into the published story' : 'Publish this as a new story on the site'; }
+
 /* ---------- undo / redo (lightweight: structure-only snapshots, image strings shared by reference) ---------- */
 let history=[], histIndex=-1, restoring=false, dirtyTimer=null;
 function lightClone(v){ if(Array.isArray(v)) return v.map(lightClone); if(v && typeof v==='object'){ const o={}; for(const k in v) o[k]=lightClone(v[k]); return o; } return v; }
@@ -1419,7 +1426,7 @@ function renderAll(){
   guideH=document.createElement('div'); guideH.className='guide h'; page.appendChild(guideH);
   pg.elements.forEach(d=> page.appendChild(buildEl(d, pg)));
   page.onpointerdown=(e)=>{ if(e.target===page) deselect(); };
-  requestAnimationFrame(fitScale); saveDraft();
+  updatePublishBtn(); requestAnimationFrame(fitScale); saveDraft();
 }
 function deselect(){ if(selNode){ exitEdit(selNode); selNode.classList.remove('selected'); }
   selNode=null; selData=null; hideFmt(); hideDoodleBar(); hidePhotoBar(); hideVideoBar(); updateCtx(); }
@@ -2055,7 +2062,7 @@ function openSheet(){
 }
 
 /* ---------- new / settings ---------- */
-document.getElementById('newBtn').onclick=()=>{ if(confirm('Start a new blank story? Unpublished changes here will be cleared.')){ story=newStory(); deselect(); renderAll(); histReset(); } };
+document.getElementById('newBtn').onclick=()=>{ if(confirm('Start a new blank story? Any unsaved changes here will be lost.')){ story=newStory(); deselect(); renderAll(); histReset(); } };
 
 /* ---------- save draft (download JSON; re-open later with Import JSON) ---------- */
 document.getElementById('saveDraftBtn').onclick=()=>{
@@ -2116,7 +2123,7 @@ importFile.onchange=async(e)=>{
         const dup=list.find(x=> norm(x.title)===norm(title));
         if(dup){
           hideBusy();
-          alert('A story named "'+title.trim()+'" already exists on the site.\n\nImport only adds new stories. To change this one, close this, use Open to load "'+(dup.title||title.trim())+'", edit it, then Publish.');
+          alert('A story named "'+title.trim()+'" already exists on the site.\n\nImport only adds new stories. To change this one, close this, use Open to load "'+(dup.title||title.trim())+'", edit it, then Save changes.');
           return;
         }
       }catch(err){ /* offline or no access: publish will still enforce uniqueness */ }
@@ -2175,7 +2182,7 @@ async function loadStories(){
           if(!pr) throw new Error('Its file is missing from '+DATA_DIR+'/posts.');
           const post=JSON.parse(pr.text);
           story={id:post.id, origId:post.id, title:post.title||'', date:post.date||J.today(), thumb:(typeof post.thumb==='string'&&post.thumb)?post.thumb:(p.thumb||''), pages:(post.pages&&post.pages.length)?post.pages:[blankPage()], current:0, _loaded:true};
-          deselect(); openMask.classList.remove('open'); renderAll(); histReset(); showToast('Loaded — edit and Publish to update');
+          deselect(); openMask.classList.remove('open'); renderAll(); histReset(); showToast('Loaded — edit, then Save changes to update it');
         }catch(err){ showToast('Could not open story. '+(err.message||''), 5000); }
         hideBusy(); };
       const dl=document.createElement('button'); dl.className='dl'; dl.textContent='⇩'; dl.title='Download JSON backup';
@@ -2208,10 +2215,11 @@ document.getElementById('openBtn').onclick=()=>{ if(!getToken()){ showToast('Add
 document.getElementById('publishBtn').onclick=async()=>{
   if(!getToken()){ showToast('Add your publishing key first (⚙)'); document.getElementById('settingsBtn').click(); return; }
   if(!story.title.trim()){ showToast('Give the story a title first'); storyTitle.focus(); return; }
-  if(!story.thumb && !confirm('No cover photo set — the homepage card will show a placeholder. Publish anyway?')) return;
+  const live=isLive();
+  if(!story.thumb && !confirm('No cover photo set — the homepage card will show a placeholder. '+(live?'Save anyway?':'Publish anyway?'))) return;
   /* origId = the file this session is bound to in GitHub; null for a brand-new story */
   const origId = story._loaded ? (story.origId!=null ? story.origId : story.id) : null;
-  await showBusy('Publishing your story', 'committing the pages and photos to the site');
+  await showBusy(live?'Saving your changes':'Publishing your story', 'committing the pages and photos to the site');
   try{
     const idxExisting=await ghGet(ghPath('index.json')); let list= idxExisting? (JSON.parse(idxExisting.text)||[]) : [];
     const norm=t=>(t||'').trim().toLowerCase();
@@ -2238,9 +2246,9 @@ document.getElementById('publishBtn').onclick=async()=>{
     list.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
     await ghPut(ghPath('index.json'), JSON.stringify(list), 'Update index: '+story.title, idxExisting?idxExisting.sha:null);
     /* 6. This session is now bound to the new file */
-    story.id=newId; story.origId=newId; story._loaded=true; saveDraft();
+    story.id=newId; story.origId=newId; story._loaded=true; saveDraft(); updatePublishBtn();
     hideBusy();
-    showToast('Published! Live on the site in about a minute.',4000);
+    showToast((live?'Changes saved.':'Published!')+' Live on the site in about a minute.',4000);
   }catch(e){ hideBusy(); showToast(e.message, 6000); }
 };
 

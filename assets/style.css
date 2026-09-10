@@ -231,9 +231,9 @@ a{color:inherit; text-decoration:none;}
 .reader-nav.scrolled .nav-title{opacity:1;}
 .reader-nav .nav-right{display:flex; align-items:center; gap:8px; margin-left:auto;}
 @media(max-width:600px){
-  .reader-nav{padding:8px 12px; gap:8px;}
+  .reader-nav{padding:7px 10px; gap:6px;}
   .reader-nav .nav-title{display:none;}
-  .reader-nav .btn{padding:8px 12px; font-size:13px;}
+  .reader-nav .btn{padding:6px 10px; font-size:11.5px; line-height:1.4; gap:4px;}
 }
 
 /* ===== book view =====
