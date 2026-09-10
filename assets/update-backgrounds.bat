@@ -1,0 +1,116 @@
+<# :
+@echo off
+set "BAT_PATH=%~f0"
+powershell -NoProfile -Command "Invoke-Expression ([System.IO.File]::ReadAllText($env:BAT_PATH))"
+pause
+exit /b
+#>
+# Rebuilds js/bg-list.js and js/bg-thumbs.js from the images inside backgrounds/
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+
+$assets    = Split-Path -Parent $env:BAT_PATH
+$bgDir     = Join-Path $assets 'backgrounds'
+$listFile  = Join-Path $assets 'js/bg-list.js'
+$thumbFile = Join-Path $assets 'js/bg-thumbs.js'
+$thumbW = 168; $thumbH = 224; $quality = 80
+$pageRatio = 760 / 1000
+
+$jpeg = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
+$encoder = [System.Drawing.Imaging.EncoderParameters]::new(1)
+$encoder.Param[0] = [System.Drawing.Imaging.EncoderParameter]::new([System.Drawing.Imaging.Encoder]::Quality, [long]$quality)
+
+function Quote([string]$s) { '"' + ($s -replace '\\', '\\' -replace '"', '\"') + '"' }
+
+function New-Thumb([string]$path) {
+    $img = [System.Drawing.Image]::FromStream([System.IO.MemoryStream]::new([System.IO.File]::ReadAllBytes($path)))
+    # turn phone photos upright, the way the browser shows them
+    if ($img.PropertyIdList -contains 274) {
+        switch ([int]$img.GetPropertyItem(274).Value[0]) {
+            3 { $img.RotateFlip([System.Drawing.RotateFlipType]::Rotate180FlipNone) }
+            6 { $img.RotateFlip([System.Drawing.RotateFlipType]::Rotate90FlipNone) }
+            8 { $img.RotateFlip([System.Drawing.RotateFlipType]::Rotate270FlipNone) }
+        }
+    }
+    $bmp = [System.Drawing.Bitmap]::new($thumbW, $thumbH)
+    $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.Clear([System.Drawing.Color]::White)
+    $g.InterpolationMode = 'HighQualityBicubic'; $g.PixelOffsetMode = 'HighQuality'; $g.CompositingQuality = 'HighQuality'
+    $edges = [System.Drawing.Imaging.ImageAttributes]::new()
+    $edges.SetWrapMode([System.Drawing.Drawing2D.WrapMode]::TileFlipXY)
+    # stretched to the page shape, exactly as the page draws it
+    $g.DrawImage($img, [System.Drawing.Rectangle]::new(0, 0, $thumbW, $thumbH), 0, 0, $img.Width, $img.Height, [System.Drawing.GraphicsUnit]::Pixel, $edges)
+    $ms = [System.IO.MemoryStream]::new()
+    $bmp.Save($ms, $jpeg, $encoder)
+    $ratio = $img.Width / $img.Height
+    $g.Dispose(); $bmp.Dispose(); $img.Dispose()
+    return @{ Data = 'data:image/jpeg;base64,' + [Convert]::ToBase64String($ms.ToArray()); Ratio = $ratio }
+}
+
+Write-Host ''
+Write-Host '  Updating backgrounds...' -ForegroundColor Cyan
+
+$previous = @()
+if (Test-Path -LiteralPath $listFile) {
+    $previous = @([regex]::Matches([System.IO.File]::ReadAllText($listFile), 'name:"([^"]*)"') | ForEach-Object { $_.Groups[1].Value })
+}
+
+$items = @(); $problems = @(); $warnings = @()
+$taken = @{ grid = 'a built-in paper'; dot = 'a built-in paper'; plain = 'a built-in paper' }
+$folders = @(Get-Item -LiteralPath $bgDir) + @(Get-ChildItem -LiteralPath $bgDir -Directory | Sort-Object Name)
+foreach ($dir in $folders) {
+    $inRoot = $dir.FullName -eq $folders[0].FullName
+    # "01 Soft & Watercolour" shows as "Soft & Watercolour"; loose images go under More
+    $group = if ($inRoot) { '' } else { $dir.Name -replace '^\d{1,2}[\s._-]+', '' }
+    foreach ($f in Get-ChildItem -LiteralPath $dir.FullName -File | Sort-Object Name) {
+        $ext = $f.Extension.ToLower()
+        if ('.jpg', '.jpeg', '.png' -notcontains $ext) {
+            if ('.webp', '.gif', '.bmp', '.heic', '.avif', '.tif', '.tiff' -contains $ext) { $warnings += "Skipped $($f.Name) - save it as JPG or PNG" }
+            continue
+        }
+        $rel = if ($inRoot) { $f.Name } else { $dir.Name + '/' + $f.Name }
+        if ($taken.ContainsKey($f.BaseName)) { $problems += "The name `"$($f.BaseName)`" is used twice: $rel and $($taken[$f.BaseName])"; continue }
+        $taken[$f.BaseName] = $rel
+        $items += @{ Group = $group; Name = $f.BaseName; File = $rel; Path = $f.FullName; Size = $f.Length }
+    }
+}
+
+if ($problems) {
+    $problems | ForEach-Object { Write-Host "  ERROR: $_" -ForegroundColor Red }
+    Write-Host '  Nothing was changed. Rename one of them and run this again.' -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "  Making previews for $($items.Count) images..."
+$done = @()
+foreach ($it in $items) {
+    try { $t = New-Thumb $it.Path } catch { $warnings += "Skipped $($it.File) - it could not be opened as an image"; continue }
+    $it.Thumb = $t.Data
+    if ($previous -cnotcontains $it.Name) {
+        if ([math]::Abs($t.Ratio / $pageRatio - 1) -gt 0.1) { $warnings += "$($it.Name) is not page-shaped, so it will look stretched (best size 1100 x 1447)" }
+        if ($it.Size -gt 500KB) { $warnings += "$($it.Name) is $([math]::Round($it.Size / 1MB, 1)) MB - readers download it in full, 1100px wide is plenty" }
+    }
+    $done += $it
+}
+
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+$header = '/* Generated by update-backgrounds.bat - do not edit by hand. */'
+$list = $done | ForEach-Object { '  {group:' + (Quote $_.Group) + ', name:' + (Quote $_.Name) + ', file:' + (Quote $_.File) + '}' }
+$thumbs = $done | ForEach-Object { '  ' + (Quote $_.Name) + ':"' + $_.Thumb + '"' }
+[System.IO.File]::WriteAllText($listFile, "$header`nwindow.JOURNAL_BACKGROUNDS = [`n" + ($list -join ",`n") + "`n];`n", $utf8)
+[System.IO.File]::WriteAllText($thumbFile, "$header`nwindow.JOURNAL_BG_THUMBS = {`n" + ($thumbs -join ",`n") + "`n};`n", $utf8)
+
+$names = @($done | ForEach-Object { $_.Name })
+$added = @($names | Where-Object { $previous -cnotcontains $_ })
+$removed = @($previous | Where-Object { $names -cnotcontains $_ })
+$groups = @($done | Where-Object { $_.Group } | ForEach-Object { $_.Group } | Select-Object -Unique).Count
+Write-Host "  $($done.Count) backgrounds in $groups groups" -ForegroundColor Green
+if ($added) { Write-Host "  New: $($added -join ', ')" -ForegroundColor Green }
+if ($removed) {
+    Write-Host "  Removed: $($removed -join ', ')" -ForegroundColor Yellow
+    Write-Host '  Story pages that used these now show grid paper.' -ForegroundColor Yellow
+}
+$warnings | ForEach-Object { Write-Host "  Note: $_" -ForegroundColor Yellow }
+Write-Host ''
+Write-Host '  Done. Upload the backgrounds and js folders to GitHub.' -ForegroundColor Cyan
+Write-Host ''

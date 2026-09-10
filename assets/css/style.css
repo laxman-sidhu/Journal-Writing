@@ -198,6 +198,9 @@ a{color:inherit; text-decoration:none;}
 .site-head h1{font-family:'DaunPenh','Daun Penh','Cormorant Garamond',serif; font-size:84px; margin:0 0 2px; color:var(--ink); font-weight:400; line-height:1;}
 .site-head .rule{width:60px; height:2px; border-radius:3px; background:var(--lav); margin:12px auto 0; opacity:.8;}
 .site-head p{color:var(--ink-soft); margin:14px 0 0; font-size:17px; font-family:var(--serif); font-style:italic; font-weight:500;}
+/* back link from a journal's homepage to the main page */
+.home-back{position:absolute; top:14px; left:14px; padding:6px 12px;}
+.home-back:hover{background:rgba(255,255,255,.6);}
 
 /* homepage identity fonts are the SAME for all three clients: Daun Penh (falling back to
    Cormorant Garamond where not installed) on the heading and the status texts, with
@@ -342,7 +345,7 @@ body.book-mode .page-holder.turning{z-index:5; transform-origin:left center; tra
 
 /* ===== mobile ===== */
 @media(max-width:600px){
-  .site-head{padding:34px 16px 6px;}
+  .site-head{padding:56px 16px 6px;}
   .site-head h1{font-size:56px;}
   .site-head p{font-size:14px;}
   .cards{gap:18px 12px; padding:26px 14px 80px;}

@@ -22,7 +22,7 @@ Merging fixes that. The entire engine — fonts, backgrounds, the photo/text/cap
 
 Journal-Writing/ is one GitHub repo served by GitHub Pages.
 
-assets/ is the shared brain (edit once, all three clients update): core.js holds the client-agnostic engine (fonts, backgrounds, renderer, styling, GitHub helpers); style.css holds the structure plus all three colour themes (switched per client); backgrounds/ holds bg01.jpg to bg148.jpg (shared decorative page art); bg-thumbs.js holds those backgrounds' picker thumbnails and is loaded by the editor alone, so a reader never downloads previews it cannot use; PROJECT.txt is this document; Setup.txt is the step-by-step setup and hosting guide.
+assets/ is the shared brain (edit once, all three clients update): js/core.js holds the client-agnostic engine (fonts, backgrounds, renderer, styling, GitHub helpers); css/style.css holds the structure plus all three colour themes (switched per client); backgrounds/ holds the shared decorative page art, one folder per picker group, each image named exactly as it appears in the picker; js/bg-list.js and js/bg-thumbs.js are generated from that folder by update-backgrounds.bat, the list read by every page that draws a story and the thumbnails by the editor alone, so a reader never downloads previews it cannot use; PROJECT.txt is this document; Setup.txt is the step-by-step setup and hosting guide.
 
 Dhanashri-Journal/ is client A (pastel lavender): index.html, story.html, admin.html, and data/ (index.json plus posts/<id>.json). Pratiksha-Journal/ is client B (pastel blue) with the same three pages and its own data/. Siddhesh-Journal/ is client C (rose pink) with the same three pages and its own data/.
 
@@ -31,7 +31,7 @@ Folder names have no spaces, so the live URLs contain no %20: https://laxman-sid
 
 4. HOW A CLIENT KNOWS WHO IT IS (THE ONLY CLIENT-SPECIFIC CODE)
 
-The shared core.js contains no client identity. Each client's three HTML pages declare who they are in a tiny block placed immediately before core.js loads — for example, window.JOURNAL_CLIENT = { USERNAME: "laxman-sidhu", REPO: "Journal-Writing", DATA_DIR: "Pratiksha-Journal/data", TITLE: "Pratiksha's Journal" } — followed by the shared script tag for ../assets/core.js.
+The shared core.js contains no client identity. Each client's three HTML pages declare who they are in a tiny block placed immediately before core.js loads — for example, window.JOURNAL_CLIENT = { USERNAME: "laxman-sidhu", REPO: "Journal-Writing", DATA_DIR: "Pratiksha-Journal/data", TITLE: "Pratiksha's Journal" } — followed by the shared script tag for ../assets/js/core.js.
 
 The data-client attribute on each page (for example data-client="pratiksha") selects that client's colour palette from the shared stylesheet. That, plus the block above, is the entire difference between the clients.
 
@@ -106,7 +106,7 @@ Every element has a position in a fixed 760-pixel design space plus type-specifi
 
 Photos and stickers are embedded as data URLs so each story file is self-contained. A video is the deliberate second exception alongside backgrounds: only its thumbnail is embedded, and the clip itself streams from wherever it is hosted, so adding a ten-minute video costs a story file no more than adding a photo.
 
-The PDF export constrains how a video may be drawn. The export rasterises the page with html2canvas, which cannot draw an <iframe> or a playing <video> at all, and which silently drops inline SVG. Two things follow, and both are load-bearing. First, every clip is returned to its thumbnail before the export runs, so the PDF captures an ordinary <img>. Second, the play badge is built from a border-radius circle and a CSS-border triangle rather than an SVG, because html2canvas renders borders and border-radius reliably. Rebuilding that badge as an SVG would make it vanish from the PDF with no error at all, leaving a printed page that looks like a plain photo. Decorative page backgrounds are the deliberate exception — shared files referenced by a short key such as bg04.
+The PDF export constrains how a video may be drawn. The export rasterises the page with html2canvas, which cannot draw an <iframe> or a playing <video> at all, and which silently drops inline SVG. Two things follow, and both are load-bearing. First, every clip is returned to its thumbnail before the export runs, so the PDF captures an ordinary <img>. Second, the play badge is built from a border-radius circle and a CSS-border triangle rather than an SVG, because html2canvas renders borders and border-radius reliably. Rebuilding that badge as an SVG would make it vanish from the PDF with no error at all, leaving a printed page that looks like a plain photo. Decorative page backgrounds are the deliberate exception — shared files referenced by name, such as "Sky & Sunflowers".
 
 Backwards compatible: older stories with no html, h, shadow, spacing, radius or caption-style fields render exactly as before; the new fields are optional and default to the previous look. The rich-text sanitizer now also passes strikethrough and list markup (<s>, <ul>, <ol>, <li>) through to the reader and the PDF export, on the same whitelist-only basis as the original tags.
 
@@ -130,10 +130,12 @@ Third, both slow paths now show a loader instead of appearing frozen. The reader
 
 Two bugs were fixed in this revision. First, the decorative page backgrounds now load — their paths are ../assets/backgrounds/..., correct for pages that live one folder deep; previously the relative assets/... resolved inside the client folder and returned a 404. Second, transparent uploads no longer get a black background — the image compressor and the crop now auto-encode to PNG when the image has alpha, and JPEG otherwise.
 
+The background library was then made to maintain itself. Every image lives in a folder named after its picker group, numbered so the folders sort in picker order ("01 Soft & Watercolour" shows as "Soft & Watercolour"), and is named exactly as it appears in the picker. The file name is the background's identity: a page stores that name, such as "Sky & Sunflowers", instead of a numbered key like bg04. The hard-coded BACKGROUNDS and BG_GROUPS lists are gone from core.js, which now builds the same structures from js/bg-list.js, so the picker code did not change. assets/update-backgrounds.bat rebuilds js/bg-list.js and js/bg-thumbs.js by scanning the folders. It is a single file: a short batch header hands the rest of the same file to Windows PowerShell, which ships with Windows, so nothing has to be installed. It writes nothing if two images share a name, skips formats it cannot read with a note, warns about new images that are not page-shaped or are heavy, and lists backgrounds that disappeared since the last run, because pages using them fall back to grid paper. A run with nothing changed produces byte-identical files. The picker thumbnails doubled to 168x224 at JPEG quality 80, because at 84x112 they were upscaled more than twofold on high-density screens and looked soft, and each is now the whole image stretched to the page shape exactly as the page draws it. Stories published before this change still store the old bgNN keys, which no longer exist, so those pages show grid paper until their backgrounds are picked again.
+
 
 9. ADDING A FEATURE LATER (THE PAYOFF)
 
-Edit the relevant function in assets/core.js (and, if it has an editor control, the matching handler, which is identical in all three admin.html files). Because the engine is shared, the change applies to all clients at once. The only rule: a bug in the shared core affects every journal, so test before publishing.
+Edit the relevant function in assets/js/core.js (and, if it has an editor control, the matching handler, which is identical in all three admin.html files). Because the engine is shared, the change applies to all clients at once. The only rule: a bug in the shared core affects every journal, so test before publishing.
 
 
 10. KNOWN LIMITATIONS

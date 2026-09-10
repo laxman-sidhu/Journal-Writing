@@ -15,8 +15,8 @@ Siddhesh  : https://laxman-sidhu.github.io/Journal-Writing/Siddhesh-Journal/
 
 STRUCTURE
 
-index.html           main home page: a hero and three cards, one per journal (reads each journal's own data/index.json for its cover and story count)
-assets/              shared engine (edit once, all three clients update): core.js, style.css, bg-thumbs.js, backgrounds/ (bg01-bg148), PROJECT.txt, Setup.txt
+index.html           main home page: a hero and three cards, one per journal (each card shows that journal's cover.jpg; its story count comes from the journal's data/index.json)
+assets/              shared engine (edit once, all three clients update): css/style.css, js/core.js, backgrounds/ (one folder per picker group, each image named as it appears in the picker), update-backgrounds.bat, PROJECT.txt, Setup.txt
 Dhanashri-Journal/   client A (lavender): index.html, story.html, admin.html, data/
 Pratiksha-Journal/   client B (cream):    index.html, story.html, admin.html, data/
 Siddhesh-Journal/    client C (rose pink):index.html, story.html, admin.html, data/

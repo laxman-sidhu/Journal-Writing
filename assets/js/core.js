@@ -11,7 +11,7 @@
          TITLE    : "Dhanashri's Journal"
        };
      </script>
-     <script src="../assets/core.js"></script>
+     <script src="../assets/js/core.js"></script>
 
    DATA_DIR is the only thing that decides where this client's stories are read from and
    written to. Because each client's pages hard-code their own DATA_DIR, one client's editor
@@ -145,187 +145,18 @@ window.JOURNAL = (function(){
     { label:"Monospace", keys:[ "couriernew" ]}
   ];
 
-  /* ---- page backgrounds ----
-     Built-in styles (grid / dot / plain) plus image backgrounds stored as small files
-     under assets/backgrounds/. A page only stores its background KEY (e.g. "bg04"), so
-     story files stay tiny; the image itself is fetched once and cached by the browser,
-     and only when a page actually uses it. `thumb` is a tiny inline preview for the picker. */
-  const BACKGROUNDS = [
-    {key:"bg01", label:"Cinnamoroll Paris", file:"../assets/backgrounds/bg01.jpg"},
-    {key:"bg02", label:"Floral Border", file:"../assets/backgrounds/bg02.jpg"},
-    {key:"bg03", label:"Rainy Day Clouds", file:"../assets/backgrounds/bg03.jpg"},
-    {key:"bg04", label:"Sky & Sunflowers", file:"../assets/backgrounds/bg04.jpg"},
-    {key:"bg05", label:"Spiral Notepad", file:"../assets/backgrounds/bg05.jpg"},
-    {key:"bg06", label:"Pink Hearts Lined", file:"../assets/backgrounds/bg06.jpg"},
-    {key:"bg07", label:"Blue Ribbon Frame", file:"../assets/backgrounds/bg07.jpg"},
-    {key:"bg08", label:"Stars & Clouds", file:"../assets/backgrounds/bg08.jpg"},
-    {key:"bg09", label:"Lakeside View", file:"../assets/backgrounds/bg09.jpg"},
-    {key:"bg10", label:"Vintage Scroll", file:"../assets/backgrounds/bg10.jpg"},
-    {key:"bg11", label:"Floral Collage", file:"../assets/backgrounds/bg11.jpg"},
-    {key:"bg12", label:"Beach Waves", file:"../assets/backgrounds/bg12.jpg"},
-    {key:"bg13", label:"Mountain Scrapbook", file:"../assets/backgrounds/bg13.jpg"},
-    {key:"bg14", label:"Vintage Travel", file:"../assets/backgrounds/bg14.jpg"},
-    {key:"bg15", label:"Adventure Map", file:"../assets/backgrounds/bg15.jpg"},
-    {key:"bg16", label:"Blue Gingham Bow", file:"../assets/backgrounds/bg16.jpg"},
-    {key:"bg17", label:"Pink Boho Card", file:"../assets/backgrounds/bg17.jpg"},
-    {key:"bg18", label:"Travel Lined Paper", file:"../assets/backgrounds/bg18.jpg"},
-    {key:"bg19", label:"Simple Bow Frame", file:"../assets/backgrounds/bg19.jpg"},
-    {key:"bg20", label:"Travel Planner", file:"../assets/backgrounds/bg20.jpg"},
-    {key:"bg21", label:"Bunny Notes", file:"../assets/backgrounds/bg21.jpg"},
-    {key:"bg22", label:"Sports Border", file:"../assets/backgrounds/bg22.jpg"},
-    {key:"bg23", label:"Runner Waves", file:"../assets/backgrounds/bg23.jpg"},
-    {key:"bg24", label:"Gym Equipment", file:"../assets/backgrounds/bg24.jpg"},
-    {key:"bg25", label:"Workout Trio", file:"../assets/backgrounds/bg25.jpg"},
-    {key:"bg26", label:"Compass & Parchment", file:"../assets/backgrounds/bg26.jpg"},
-    {key:"bg27", label:"Pressed Flowers", file:"../assets/backgrounds/bg27.jpg"},
-    {key:"bg28", label:"Wheat & Aged Paper", file:"../assets/backgrounds/bg28.jpg"},
-    {key:"bg29", label:"Blush Abstract Branches", file:"../assets/backgrounds/bg29.jpg"},
-    {key:"bg30", label:"Rose Stem Wash", file:"../assets/backgrounds/bg30.jpg"},
-    {key:"bg31", label:"Lilac Sprig", file:"../assets/backgrounds/bg31.jpg"},
-    {key:"bg32", label:"Sage & Sand Ferns", file:"../assets/backgrounds/bg32.jpg"},
-    {key:"bg33", label:"Pink Collage & Bow", file:"../assets/backgrounds/bg33.jpg"},
-    {key:"bg34", label:"Pink Petal Shapes", file:"../assets/backgrounds/bg34.jpg"},
-    {key:"bg35", label:"Coral Watercolour", file:"../assets/backgrounds/bg35.jpg"},
-    {key:"bg36", label:"Butterflies & Tulips", file:"../assets/backgrounds/bg36.jpg"},
-    {key:"bg37", label:"Pink Bow Paper", file:"../assets/backgrounds/bg37.jpg"},
-    {key:"bg38", label:"Blue Sky Tree", file:"../assets/backgrounds/bg38.jpg"},
-    {key:"bg39", label:"Sea & Sand Fade", file:"../assets/backgrounds/bg39.jpg"},
-    {key:"bg40", label:"Gingham Heart Note", file:"../assets/backgrounds/bg40.jpg"},
-    {key:"bg41", label:"Maroon Ribbon Frame", file:"../assets/backgrounds/bg41.jpg"},
-    {key:"bg42", label:"Blossom Vine Paper", file:"../assets/backgrounds/bg42.jpg"},
-    {key:"bg43", label:"Mint Sky Confetti", file:"../assets/backgrounds/bg43.jpg"},
-    {key:"bg44", label:"Pink & Lilac Doodles", file:"../assets/backgrounds/bg44.jpg"},
-    {key:"bg45", label:"Rose Pink Fade", file:"../assets/backgrounds/bg45.jpg"},
-    {key:"bg46", label:"Pastel Heart Check", file:"../assets/backgrounds/bg46.jpg"},
-    {key:"bg47", label:"Blue Gingham", file:"../assets/backgrounds/bg47.jpg"},
-    {key:"bg48", label:"Little Frogs", file:"../assets/backgrounds/bg48.jpg"},
-    {key:"bg49", label:"Sage Dino", file:"../assets/backgrounds/bg49.jpg"},
-    {key:"bg50", label:"Green Checker Sparkle", file:"../assets/backgrounds/bg50.jpg"},
-    {key:"bg51", label:"Doorway to the Sky", file:"../assets/backgrounds/bg51.jpg"},
-    {key:"bg52", label:"Pink Camera Flatlay", file:"../assets/backgrounds/bg52.jpg"},
-    {key:"bg53", label:"Hello Rainbow", file:"../assets/backgrounds/bg53.jpg"},
-    {key:"bg54", label:"Painted Street", file:"../assets/backgrounds/bg54.jpg"},
-    {key:"bg55", label:"Sage Bear", file:"../assets/backgrounds/bg55.jpg"},
-    {key:"bg56", label:"Tulip Card", file:"../assets/backgrounds/bg56.jpg"},
-    {key:"bg57", label:"Lilac Bear Screen", file:"../assets/backgrounds/bg57.jpg"},
-    {key:"bg58", label:"Boba Bear", file:"../assets/backgrounds/bg58.jpg"},
-    {key:"bg59", label:"Daisies on Blue", file:"../assets/backgrounds/bg59.jpg"},
-    {key:"bg60", label:"Curtain Cat", file:"../assets/backgrounds/bg60.jpg"},
-    {key:"bg61", label:"Bunny Check Collage", file:"../assets/backgrounds/bg61.jpg"},
-    {key:"bg62", label:"String Lights at Night", file:"../assets/backgrounds/bg62.jpg"},
-    {key:"bg63", label:"Sunset Sand", file:"../assets/backgrounds/bg63.jpg"},
-    {key:"bg64", label:"Purple Night Fade", file:"../assets/backgrounds/bg64.jpg"},
-    {key:"bg65", label:"Palm Boardwalk", file:"../assets/backgrounds/bg65.jpg"},
-    {key:"bg66", label:"Frogs on a Fence", file:"../assets/backgrounds/bg66.jpg"},
-    {key:"bg67", label:"Bunny Plush Hearts", file:"../assets/backgrounds/bg67.jpg"},
-    {key:"bg68", label:"Pressed Petal Paper", file:"../assets/backgrounds/bg68.jpg"},
-    {key:"bg69", label:"Turquoise Shore", file:"../assets/backgrounds/bg69.jpg"},
-    {key:"bg70", label:"Window Seat Morning", file:"../assets/backgrounds/bg70.jpg"},
-    {key:"bg71", label:"Soft Pink Glow", file:"../assets/backgrounds/bg71.jpg"},
-    {key:"bg72", label:"Everything Will Be Alright", file:"../assets/backgrounds/bg72.jpg"},
-    {key:"bg73", label:"Warm Taupe", file:"../assets/backgrounds/bg73.jpg"},
-    {key:"bg74", label:"Cloud Bunnies", file:"../assets/backgrounds/bg74.jpg"},
-    {key:"bg75", label:"Daisy Field Green", file:"../assets/backgrounds/bg75.jpg"},
-    {key:"bg76", label:"Tiny Bear", file:"../assets/backgrounds/bg76.jpg"},
-    {key:"bg77", label:"Palm Road", file:"../assets/backgrounds/bg77.jpg"},
-    {key:"bg78", label:"Blossom Cafe", file:"../assets/backgrounds/bg78.jpg"},
-    {key:"bg79", label:"Field & Clouds", file:"../assets/backgrounds/bg79.jpg"},
-    {key:"bg80", label:"Sage Daisies", file:"../assets/backgrounds/bg80.jpg"},
-    {key:"bg81", label:"Clouds on Pink", file:"../assets/backgrounds/bg81.jpg"},
-    {key:"bg82", label:"Moonlit Clouds", file:"../assets/backgrounds/bg82.jpg"},
-    {key:"bg83", label:"Palm Cove", file:"../assets/backgrounds/bg83.jpg"},
-    {key:"bg84", label:"Green Frame Bear", file:"../assets/backgrounds/bg84.jpg"},
-    {key:"bg85", label:"Pink Vanity Doodle", file:"../assets/backgrounds/bg85.jpg"},
-    {key:"bg86", label:"Starry Sunset Beach", file:"../assets/backgrounds/bg86.jpg"},
-    {key:"bg87", label:"Botanical Clipping Frame", file:"../assets/backgrounds/bg87.jpg"},
-    {key:"bg88", label:"Torn Paper & Stems", file:"../assets/backgrounds/bg88.jpg"},
-    {key:"bg89", label:"Peeking Pink Bear", file:"../assets/backgrounds/bg89.jpg"},
-    {key:"bg90", label:"Yellow Blossom Sky", file:"../assets/backgrounds/bg90.jpg"},
-    {key:"bg91", label:"Sheep Stripe Card", file:"../assets/backgrounds/bg91.jpg"},
-    {key:"bg92", label:"Sunflower on the Sand", file:"../assets/backgrounds/bg92.jpg"},
-    {key:"bg93", label:"Mint Hearts", file:"../assets/backgrounds/bg93.jpg"},
-    {key:"bg94", label:"Cosmos in the Grass", file:"../assets/backgrounds/bg94.jpg"},
-    {key:"bg95", label:"Cloud Friend", file:"../assets/backgrounds/bg95.jpg"},
-    {key:"bg96", label:"Pastel Street Corner", file:"../assets/backgrounds/bg96.jpg"},
-    {key:"bg97", label:"Bokeh Stars", file:"../assets/backgrounds/bg97.jpg"},
-    {key:"bg98", label:"White Church Sky", file:"../assets/backgrounds/bg98.jpg"},
-    {key:"bg99", label:"Green Field Blue Sky", file:"../assets/backgrounds/bg99.jpg"},
-    {key:"bg100", label:"Tiny Emoji Row", file:"../assets/backgrounds/bg100.jpg"},
-    {key:"bg101", label:"Cloud & Star Pink", file:"../assets/backgrounds/bg101.jpg"},
-    {key:"bg102", label:"Books & Coffee Blur", file:"../assets/backgrounds/bg102.jpg"},
-    {key:"bg103", label:"Yellow House & Scooter", file:"../assets/backgrounds/bg103.jpg"},
-    {key:"bg104", label:"Sage Cloud Note", file:"../assets/backgrounds/bg104.jpg"},
-    {key:"bg105", label:"Violet Sea Sunset", file:"../assets/backgrounds/bg105.jpg"},
-    {key:"bg106", label:"Bear Face Gingham", file:"../assets/backgrounds/bg106.jpg"},
-    {key:"bg107", label:"Little Bear Blush", file:"../assets/backgrounds/bg107.jpg"},
-    {key:"bg108", label:"Path to the Sea", file:"../assets/backgrounds/bg108.jpg"},
-    {key:"bg109", label:"Butterfly Glow", file:"../assets/backgrounds/bg109.jpg"},
-    {key:"bg110", label:"Lilac Doodle Fade", file:"../assets/backgrounds/bg110.jpg"},
-    {key:"bg111", label:"Red Lighthouse", file:"../assets/backgrounds/bg111.jpg"},
-    {key:"bg112", label:"Bunny in the Clouds", file:"../assets/backgrounds/bg112.jpg"},
-    {key:"bg113", label:"Bunny Plush Pink", file:"../assets/backgrounds/bg113.jpg"},
-    {key:"bg114", label:"Vanity Corner", file:"../assets/backgrounds/bg114.jpg"},
-    {key:"bg115", label:"Olive Clipboard", file:"../assets/backgrounds/bg115.jpg"},
-    {key:"bg116", label:"Lilac Checkerboard", file:"../assets/backgrounds/bg116.jpg"},
-    {key:"bg117", label:"Grid Paper Doodles", file:"../assets/backgrounds/bg117.jpg"},
-    {key:"bg118", label:"Peach Stripe Flowers", file:"../assets/backgrounds/bg118.jpg"},
-    {key:"bg119", label:"Bunny on a Bicycle", file:"../assets/backgrounds/bg119.jpg"},
-    {key:"bg120", label:"Pale Blue Notes", file:"../assets/backgrounds/bg120.jpg"},
-    {key:"bg121", label:"Seaside Lawn", file:"../assets/backgrounds/bg121.jpg"},
-    {key:"bg122", label:"Bunny Frame Card", file:"../assets/backgrounds/bg122.jpg"},
-    {key:"bg123", label:"Bunnies in the Meadow", file:"../assets/backgrounds/bg123.jpg"},
-    {key:"bg124", label:"Fairy Lights Warm", file:"../assets/backgrounds/bg124.jpg"},
-    {key:"bg125", label:"Green Scrapbook Page", file:"../assets/backgrounds/bg125.jpg"},
-    {key:"bg126", label:"Believe in Yourself", file:"../assets/backgrounds/bg126.jpg"},
-    {key:"bg127", label:"Lawn, Sea & Sky", file:"../assets/backgrounds/bg127.jpg"},
-    {key:"bg128", label:"Pink to Blue Fade", file:"../assets/backgrounds/bg128.jpg"},
-    {key:"bg129", label:"Balcony Sunset", file:"../assets/backgrounds/bg129.jpg"},
-    {key:"bg130", label:"Blush & Sky Fade", file:"../assets/backgrounds/bg130.jpg"},
-    {key:"bg131", label:"Quiet Bedroom", file:"../assets/backgrounds/bg131.jpg"},
-    {key:"bg132", label:"Blue Paint Cards", file:"../assets/backgrounds/bg132.jpg"},
-    {key:"bg133", label:"Gingham Corners", file:"../assets/backgrounds/bg133.jpg"},
-    {key:"bg134", label:"Record Player Shelf", file:"../assets/backgrounds/bg134.jpg"},
-    {key:"bg135", label:"Twinkling Curtain", file:"../assets/backgrounds/bg135.jpg"},
-    {key:"bg136", label:"Pink to Purple Fade", file:"../assets/backgrounds/bg136.jpg"},
-    {key:"bg137", label:"Little Shopfronts", file:"../assets/backgrounds/bg137.jpg"},
-    {key:"bg138", label:"Blue Icon Check", file:"../assets/backgrounds/bg138.jpg"},
-    {key:"bg139", label:"Beige Fairy Lights", file:"../assets/backgrounds/bg139.jpg"},
-    {key:"bg140", label:"Window to Spring", file:"../assets/backgrounds/bg140.jpg"},
-    {key:"bg141", label:"Cat & Flower Frame", file:"../assets/backgrounds/bg141.jpg"},
-    {key:"bg142", label:"Violet to Blush Fade", file:"../assets/backgrounds/bg142.jpg"},
-    {key:"bg143", label:"Rose & Letters Collage", file:"../assets/backgrounds/bg143.jpg"},
-    {key:"bg144", label:"Sage Blossoms", file:"../assets/backgrounds/bg144.jpg"},
-    {key:"bg145", label:"Pale Green Gingham", file:"../assets/backgrounds/bg145.jpg"},
-    {key:"bg146", label:"Dried Flower Paper", file:"../assets/backgrounds/bg146.jpg"},
-    {key:"bg147", label:"Snowy Evening", file:"../assets/backgrounds/bg147.jpg"},
-    {key:"bg148", label:"Ocean Frames", file:"../assets/backgrounds/bg148.jpg"}
-  ];
-
-  /* Backgrounds are grouped so similar papers sit together in the picker, exactly the way
-     FONT_GROUPS works for the font menu. Any key not listed falls into a trailing "More"
-     group, so a background can never go missing just because it was left out here. */
-  const BG_GROUPS = [
-    { label:"Soft & Watercolour", keys:["bg29","bg30","bg31","bg32","bg33","bg34","bg35"] },
-    { label:"Gradients & Washes", keys:["bg39","bg45","bg64","bg71","bg73","bg110","bg128","bg130","bg136","bg142"] },
-    { label:"Dreamy & Aesthetic", keys:["bg51","bg52","bg78","bg97","bg109","bg140"] },
-    { label:"Floral & Botanical", keys:["bg02","bg11","bg27","bg36","bg42","bg56","bg59","bg68","bg75","bg80","bg144"] },
-    { label:"Bows & Ribbons", keys:["bg07","bg16","bg19","bg37","bg41"] },
-    { label:"Checks, Dots & Stripes", keys:["bg46","bg47","bg50","bg61","bg91","bg93","bg106","bg116","bg118","bg133","bg138","bg145"] },
-    { label:"Cute & Playful", keys:["bg01","bg03","bg06","bg08","bg43","bg44","bg48","bg49","bg53","bg55","bg57","bg58","bg66","bg72","bg74","bg76","bg84","bg85","bg100","bg107","bg112","bg119","bg123","bg126"] },
-    { label:"Plush & 3D", keys:["bg60","bg67","bg89","bg95","bg101","bg113","bg122","bg141"] },
-    { label:"Notes & Planners", keys:["bg05","bg18","bg20","bg21","bg40","bg104","bg115","bg117","bg120","bg125","bg132"] },
-    { label:"Vintage & Paper", keys:["bg10","bg14","bg15","bg17","bg26","bg28","bg87","bg88","bg143","bg146"] },
-    { label:"Beach & Ocean", keys:["bg12","bg63","bg65","bg69","bg83","bg86","bg108","bg121","bg148"] },
-    { label:"Sky & Nature", keys:["bg04","bg38","bg79","bg81","bg82","bg90","bg92","bg94","bg99","bg105","bg127"] },
-    { label:"Travel & Places", keys:["bg09","bg13","bg54","bg77","bg96","bg98","bg103","bg111","bg129","bg137","bg147"] },
-    { label:"Cosy & Interiors", keys:["bg62","bg70","bg102","bg114","bg124","bg131","bg134","bg135","bg139"] },
-    { label:"Sport & Active", keys:["bg22","bg23","bg24","bg25"] }
-  ];
-  /* Picker thumbnails live in assets/bg-thumbs.js and are loaded by the editor alone —
-   the reader only ever needs each background's file path, and inlining 148 preview
-   images here would have put a few hundred KB on every story page for nothing. */
-  const BG_MAP = {}; const BG_THUMBS = window.JOURNAL_BG_THUMBS || {};
-  BACKGROUNDS.forEach(b=>{ if(BG_THUMBS[b.key]) b.thumb=BG_THUMBS[b.key]; BG_MAP[b.key]=b; });
+  /* ---- page backgrounds: listed in js/bg-list.js, which update-backgrounds.bat rebuilds ---- */
+  const BG_ROOT = '../assets/backgrounds/';
+  const BG_THUMBS = window.JOURNAL_BG_THUMBS || {};
+  const BACKGROUNDS = [], BG_GROUPS = [], BG_MAP = {};
+  (window.JOURNAL_BACKGROUNDS || []).forEach(b=>{
+    const bg = {key:b.name, label:b.name, file:BG_ROOT + b.file.split('/').map(encodeURIComponent).join('/'), thumb:BG_THUMBS[b.name]};
+    BACKGROUNDS.push(bg); BG_MAP[bg.key] = bg;
+    if(!b.group) return;
+    let g = BG_GROUPS.find(x=>x.label===b.group);
+    if(!g) BG_GROUPS.push(g = {label:b.group, keys:[]});
+    g.keys.push(bg.key);
+  });
   const BUILTIN_PAPERS = ['grid','dot','plain'];
 
   /* ---- doodles ----

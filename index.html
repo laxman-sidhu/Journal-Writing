@@ -10,9 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* The front door of the three journals: the three of them standing on a linen desk, with
-   the title written on a sheet taped above. Self-contained — it adds nothing to the shared
-   engine, and each book's colour is its own journal's theme in leather rather than paper. */
+/* The front door of the three journals: a paper title above three leather-bound books. Self-contained. */
 :root{
   --ink:#544464; --ink-soft:#7d6f8a; --linen:#f5f0ea;
   --gold:#c9a45c;
@@ -25,51 +23,52 @@
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{margin:0; min-height:100%;}
 body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f5f0eb;}
-/* the desk: a pastel wash held to the viewport, with the weave of the linen over it */
+/* the backdrop: a smooth pastel wash in the three journals' colours, held to the viewport */
 .bg{position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(64% 58% at 6% 16%,  rgba(196,174,236,.52) 0%, transparent 62%),
-    radial-gradient(58% 56% at 97% 26%, rgba(255,214,206,.62) 0%, transparent 62%),
-    radial-gradient(56% 50% at 92% 94%, rgba(255,206,190,.5)  0%, transparent 60%),
-    radial-gradient(60% 50% at 14% 96%, rgba(214,200,240,.42) 0%, transparent 62%),
-    linear-gradient(180deg,#f8f4f0,#f3ece7);}
-.bg::after{content:""; position:absolute; inset:0; opacity:.55;
-  background-image:
-    repeating-linear-gradient(90deg, rgba(120,98,116,.055) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(0deg,  rgba(120,98,116,.05)  0 1px, transparent 1px 3px);}
+    radial-gradient(46% 38% at 50% 18%, rgba(255,255,255,.7)  0%, transparent 70%),
+    radial-gradient(60% 55% at 4% 12%,  rgba(196,174,236,.55) 0%, transparent 65%),
+    radial-gradient(55% 50% at 98% 16%, rgba(248,196,212,.55) 0%, transparent 65%),
+    radial-gradient(60% 55% at 6% 96%,  rgba(178,208,240,.45) 0%, transparent 65%),
+    radial-gradient(55% 50% at 96% 94%, rgba(255,210,196,.5)  0%, transparent 65%),
+    linear-gradient(180deg,#faf6f3,#f3eee9);}
 .wrap{position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:0 22px;}
 
-/* ===== the title, on a sheet of paper taped up above the desk ===== */
+/* ===== the title, on a sheet of paper ===== */
 .hero{padding:58px 0 0; display:flex; justify-content:center;}
-.sheet-wrap{position:relative; width:min(560px,100%);
-  transform:translate3d(calc(var(--px,0px) * .6), calc(var(--py,0px) * .6), 0);}
-.sheet{position:relative; padding:46px 38px 36px; text-align:center; transform:rotate(-.5deg);
+.sheet-wrap{position:relative; width:min(780px,100%); transform:rotate(-.5deg);
+  filter:drop-shadow(0 18px 24px rgba(94,70,96,.16));}
+/* a second sheet tucked underneath, for a stacked-paper look */
+.sheet-wrap::before{content:""; position:absolute; inset:8px -10px -6px 12px; transform:rotate(1.2deg);
+  background:linear-gradient(175deg,#f1eafb,#e4d9f3);}
+.sheet{position:relative; padding:46px 38px 36px; text-align:center;
   background:linear-gradient(178deg,#fbf6e8,#f4ecd9);
-  box-shadow:0 20px 44px rgba(94,70,96,.2), inset 0 0 0 1px rgba(160,138,110,.16);}
-/* the deckle: a torn lower edge rather than a printed rectangle */
-.sheet{-webkit-mask-image:var(--deckle); mask-image:var(--deckle);
-  -webkit-mask-size:100% 100%; mask-size:100% 100%; --deckle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M2 3 L398 1 L397 249 Q300 256 250 251 Q190 245 140 253 Q80 259 3 252 Z'/%3E%3C/svg%3E");}
+  box-shadow:inset 0 0 0 1px rgba(160,138,110,.16);}
 .sheet::after{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
   mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");}
-.tape{position:absolute; left:50%; top:-16px; z-index:2; width:126px; height:32px; margin-left:-63px;
-  transform:rotate(-1.6deg); transform-origin:50% 0; opacity:.9; border-radius:1px;
-  background:repeating-linear-gradient(114deg,
-    rgba(196,172,232,.85) 0 7px, rgba(168,206,230,.85) 7px 14px,
-    rgba(245,200,214,.85) 14px 21px, rgba(226,214,240,.85) 21px 28px);
-  box-shadow:0 3px 9px rgba(94,70,96,.22);}
-.sheet h1{font-family:var(--display); font-weight:400; font-size:clamp(42px,6.6vw,68px);
+/* two gold sparkles tucked into the corners of the sheet */
+.sheet::before{content:""; position:absolute; inset:0; pointer-events:none;
+  background:var(--spark) 5% 12%/15px no-repeat, var(--spark) 94% 72%/11px no-repeat;
+  --spark:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23c9a45c' d='M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z'/%3E%3C/svg%3E");}
+.sheet h1{font-family:var(--display); font-weight:400; font-size:clamp(44px,7vw,78px);
   line-height:1; margin:0; color:#5f4b83; letter-spacing:.4px;}
-.sheet .rule{width:58px; height:1.5px; background:#b9a7d2; margin:16px auto 0; opacity:.85;}
-.sheet .lead{font-family:var(--serif); font-style:italic; font-weight:500; font-size:15px;
-  color:#6b5b7d; line-height:1.5; margin:14px auto 0;}
-.sheet .total{font-family:var(--hand); font-size:19px; color:#7a6499; margin:8px 0 0;
+.sheet .rule{width:150px; height:14px; margin:15px auto 0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 14'%3E%3Cdefs%3E%3ClinearGradient id='l' gradientUnits='userSpaceOnUse' x1='2' x2='60'%3E%3Cstop offset='0' stop-color='%23b9a7d2' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23b9a7d2'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' gradientUnits='userSpaceOnUse' x1='90' x2='148'%3E%3Cstop offset='0' stop-color='%23b9a7d2'/%3E%3Cstop offset='1' stop-color='%23b9a7d2' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M2 7h58' stroke='url(%23l)' stroke-width='1.3'/%3E%3Cpath d='M90 7h58' stroke='url(%23r)' stroke-width='1.3'/%3E%3Ccircle cx='64' cy='7' r='1.3' fill='%23b9a7d2'/%3E%3Ccircle cx='86' cy='7' r='1.3' fill='%23b9a7d2'/%3E%3Cpath fill='%23c9a45c' d='M75 1l1.8 4.2L81 7l-4.2 1.8L75 13l-1.8-4.2L69 7l4.2-1.8z'/%3E%3C/svg%3E") center/contain no-repeat;}
+.sheet .cta{font-family:var(--hand); font-size:22px; line-height:1.2; color:#8a6bb8; margin:14px 0 0;}
+.sheet .cta::after{content:""; display:inline-block; width:24px; height:20px; margin-left:6px; vertical-align:-7px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 22' fill='none' stroke='%238a6bb8' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4c8-2 16 2 17 13'/%3E%3Cpath d='M14.5 13.5 19 18l3.5-5'/%3E%3C/svg%3E") center/contain no-repeat;}
+.sheet .total{display:inline-flex; align-items:center; gap:7px; margin:16px 0 0; padding:3px 15px 4px 12px;
+  font-family:var(--hand); font-size:19px; color:#6f5c93; border-radius:999px;
+  background:rgba(196,174,236,.2); border:1px dashed rgba(122,100,153,.4);
   min-height:1em; opacity:0; transition:opacity .5s ease;}
+.sheet .total::before{content:""; width:18px; height:14px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 18' fill='none' stroke='%238a6bb8' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M12 4C9 2 5 1.5 1.5 2v13c3.5-.5 7.5 0 10.5 2 3-2 7-2.5 10.5-2V2C19 1.5 15 2 12 4zM12 4v13'/%3E%3C/svg%3E") center/contain no-repeat;}
 .sheet .total.on{opacity:1;}
 
 /* ===== the three journals ===== */
 .shelf{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end;
-  gap:44px 34px; margin:0; padding:58px 0 56px;}
+  gap:60px 56px; margin:0; padding:58px 0 56px;}
 .book{position:relative; display:block; width:276px; color:inherit; text-decoration:none;
   perspective:1100px;
   transition:transform .4s var(--ease);}
@@ -120,13 +119,12 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
   transition:opacity .4s var(--ease), transform .4s var(--ease);}
 .book:hover::after, .book:focus-visible::after{transform:translateY(10px) scale(1.06); opacity:.8;}
 
-/* the inlaid panel on the cover: the newest story's photo, behind a bevelled mat */
+/* the inlaid panel on the cover: the journal's own cover.jpg, behind a bevelled mat */
 .frame{position:relative; padding:11px; border-radius:2px;
   background:linear-gradient(150deg, rgba(255,255,255,.7), var(--mat) 34%, var(--mat));
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.6), inset 0 -2px 4px rgba(24,12,32,.14),
              0 3px 7px rgba(24,12,32,.34), 0 0 0 1px rgba(28,16,40,.26);}
-.art{display:grid; place-items:center; width:100%; aspect-ratio:4/3; overflow:hidden;
-  background:var(--mat-in); color:var(--pen); font-size:34px;
+.art{display:block; width:100%; aspect-ratio:4/3; overflow:hidden; background:var(--mat-in);
   box-shadow:inset 0 2px 6px rgba(24,12,32,.4), inset 0 0 0 1px rgba(28,16,40,.22);}
 .art img{display:block; width:100%; height:100%; object-fit:cover;
   transition:transform .6s var(--ease);}
@@ -148,23 +146,21 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
   --mat:#fbeef2; --mat-in:#f7dde5; --rib:#cf5b86; --rib-d:#a94369;}
 
 .foot{max-width:34em; margin:0 auto; text-align:center; color:var(--ink-soft); font-size:13px;
-  padding:10px 22px 56px;}
+  padding:44px 22px 26px;}
 
-/* ===== the page arrives once: the sheet is taped up, then the books are set down ===== */
+/* ===== the page arrives once: the sheet settles, then the books are set down ===== */
 @keyframes land{from{opacity:0; transform:rotate(-.5deg) translateY(16px) scale(.985);}
                   to{opacity:1; transform:rotate(-.5deg) translateY(0) scale(1);}}
-@keyframes press{from{transform:rotate(-1.6deg) scaleY(0);} to{transform:rotate(-1.6deg) scaleY(1);}}
 @keyframes stand{from{opacity:0; transform:translateY(34px) rotate(-1.5deg);}
                    to{opacity:1; transform:translateY(0) rotate(0deg);}}
-.sheet{animation:land .8s var(--ease) both;}
-.tape{animation:press .5s cubic-bezier(.34,1.4,.5,1) both; animation-delay:.42s;}
+.sheet-wrap{animation:land .8s var(--ease) both;}
 .shelf li{animation:stand .7s var(--ease) both;}
 .shelf li:nth-child(1){animation-delay:.5s;}
 .shelf li:nth-child(2){animation-delay:.63s;}
 .shelf li:nth-child(3){animation-delay:.76s;}
 
-@media(max-width:980px){
-  .shelf{gap:40px 24px;}
+@media(max-width:1010px){
+  .shelf{gap:60px 44px;}
   .book{width:250px;}
   .cover{height:352px; padding:15px 16px 20px 27px;}
   .book h2{font-size:29px;}
@@ -172,16 +168,14 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
 @media(max-width:760px){
   .hero{padding-top:44px;}
   .sheet{padding:42px 26px 34px;}
-  .shelf{padding:56px 0 44px; gap:52px;}
+  .shelf{padding:56px 0 44px; gap:72px;}
   .book{width:270px;}
   .cover{height:372px;}
   .book:hover, .book:focus-visible{transform:none;}
   .book:hover .cover, .book:focus-visible .cover{transform:none;}
 }
 @media(prefers-reduced-motion:reduce){
-  .sheet, .tape, .shelf li{animation:none; opacity:1;}
-  .sheet{transform:rotate(-.5deg);}
-  .tape{transform:rotate(-1.6deg);}
+  .sheet-wrap, .shelf li{animation:none; opacity:1;}
   .book, .cover, .ribbon, .art img{transition:none;}
   .book:hover, .book:focus-visible{transform:none;}
   .book:hover .cover, .book:focus-visible .cover{transform:none;}
@@ -193,11 +187,10 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
   <div class="wrap">
     <header class="hero">
       <div class="sheet-wrap">
-        <span class="tape" aria-hidden="true"></span>
         <div class="sheet">
           <h1>Journal Writing</h1>
           <div class="rule"></div>
-          <p class="lead">Three journals, each kept by its own author. Pick one and start reading.</p>
+          <p class="cta">Pick one and start reading</p>
           <p class="total" id="total"></p>
         </div>
       </div>
@@ -212,7 +205,7 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
           <span class="cover">
             <span class="spine" aria-hidden="true"></span>
             <span class="caps" aria-hidden="true"></span>
-            <span class="frame"><span class="art">✿</span></span>
+            <span class="frame"><span class="art"><img src="Dhanashri-Journal/cover.jpg" alt=""></span></span>
             <h2>Dhanashri</h2>
             <p class="tag">Stories, trips, and everyday memories.</p>
             <p class="note">Open to read the stories</p>
@@ -227,7 +220,7 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
           <span class="cover">
             <span class="spine" aria-hidden="true"></span>
             <span class="caps" aria-hidden="true"></span>
-            <span class="frame"><span class="art">✿</span></span>
+            <span class="frame"><span class="art"><img src="Pratiksha-Journal/cover.jpg" alt=""></span></span>
             <h2>Pratiksha</h2>
             <p class="tag">A scrapbook of places, people, and the days worth keeping.</p>
             <p class="note">Open to read the stories</p>
@@ -242,7 +235,7 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
           <span class="cover">
             <span class="spine" aria-hidden="true"></span>
             <span class="caps" aria-hidden="true"></span>
-            <span class="frame"><span class="art">✿</span></span>
+            <span class="frame"><span class="art"><img src="Siddhesh-Journal/cover.jpg" alt=""></span></span>
             <h2>Siddhesh</h2>
             <p class="tag">Notes, journeys, and moments worth remembering.</p>
             <p class="note">Open to read the stories</p>
@@ -255,14 +248,13 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
   </div>
 
 <script>
-/* Each book reads that journal's own index.json — the same file its homepage reads — so the
-   panel on the cover and the counts are always whatever is actually published right now. */
+/* Each book reads its journal's own data/index.json for the story count and the newest date. */
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthYear(iso){ const p=(iso||'').split('-'); const m=MONTHS[parseInt(p[1],10)-1]; return m ? m+' '+p[0] : ''; }
 
 const totalEl=document.getElementById('total');
 Promise.all([...document.querySelectorAll('.book')].map(async book=>{
-  const art=book.querySelector('.art'), note=book.querySelector('.note');
+  const note=book.querySelector('.note');
   try{
     const res=await fetch(book.dataset.folder+'/data/index.json?t='+Date.now(), {cache:'no-store'});
     if(!res.ok) throw new Error('no index');
@@ -271,7 +263,6 @@ Promise.all([...document.querySelectorAll('.book')].map(async book=>{
     list.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
     const newest=list[0], when=monthYear(newest.date);
     note.textContent=(list.length===1?'1 story':list.length+' stories')+(when?', newest in '+when:'');
-    if(newest.thumb){ const img=new Image(); img.alt=''; img.src=newest.thumb; art.replaceChildren(img); }
     return list.length;
   }catch(e){ return 0; }   // the book still opens the journal, so leave its default line
 })).then(counts=>{
@@ -280,27 +271,6 @@ Promise.all([...document.querySelectorAll('.book')].map(async book=>{
   totalEl.textContent=n+' '+(n===1?'story':'stories')+' so far';
   totalEl.classList.add('on');
 });
-
-/* The taped sheet answers the pointer, easing towards it rather than snapping. */
-const wrap=document.querySelector('.sheet-wrap'), hero=document.querySelector('.hero');
-const still=matchMedia('(prefers-reduced-motion: reduce)'), fine=matchMedia('(hover: hover) and (pointer: fine)');
-if(fine.matches && !still.matches){
-  let tx=0, ty=0, cx=0, cy=0, raf=null;
-  const clamp=v=> Math.max(-.5, Math.min(.5, v));
-  const tick=()=>{
-    cx+=(tx-cx)*.12; cy+=(ty-cy)*.12;
-    wrap.style.setProperty('--px', cx.toFixed(2)+'px');
-    wrap.style.setProperty('--py', cy.toFixed(2)+'px');
-    raf = (Math.abs(tx-cx)>.08 || Math.abs(ty-cy)>.08) ? requestAnimationFrame(tick) : null;
-  };
-  const wake=()=>{ if(!raf) raf=requestAnimationFrame(tick); };
-  window.addEventListener('pointermove', e=>{
-    const r=hero.getBoundingClientRect();
-    tx=clamp((e.clientX-r.left)/r.width-.5)*20;
-    ty=clamp((e.clientY-r.top)/r.height-.5)*14; wake();
-  }, {passive:true});
-  document.addEventListener('pointerleave', ()=>{ tx=0; ty=0; wake(); });
-}
 </script>
 </body>
 </html>
