@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* The front door of the three journals: a paper title above three leather-bound books. Self-contained. */
+/* The front door of the three journals: the title above three leather-bound books. Self-contained. */
 :root{
   --ink:#544464; --ink-soft:#7d6f8a; --linen:#f5f0ea;
   --gold:#c9a45c;
@@ -34,37 +34,22 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
     linear-gradient(180deg,#faf6f3,#f3eee9);}
 .wrap{position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:0 22px;}
 
-/* ===== the title, on a sheet of paper ===== */
+/* ===== the title, set straight on the page ===== */
 .hero{padding:58px 0 0; display:flex; justify-content:center;}
-.sheet-wrap{position:relative; width:min(780px,100%); transform:rotate(-.5deg);
-  filter:drop-shadow(0 18px 24px rgba(94,70,96,.16));}
-/* a second sheet tucked underneath, for a stacked-paper look */
-.sheet-wrap::before{content:""; position:absolute; inset:8px -10px -6px 12px; transform:rotate(1.2deg);
-  background:linear-gradient(175deg,#f1eafb,#e4d9f3);}
-.sheet{position:relative; padding:46px 38px 36px; text-align:center;
-  background:linear-gradient(178deg,#fbf6e8,#f4ecd9);
-  box-shadow:inset 0 0 0 1px rgba(160,138,110,.16);}
-.sheet::after{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
-  mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");}
-/* two gold sparkles tucked into the corners of the sheet */
-.sheet::before{content:""; position:absolute; inset:0; pointer-events:none;
-  background:var(--spark) 5% 12%/15px no-repeat, var(--spark) 94% 72%/11px no-repeat;
-  --spark:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23c9a45c' d='M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z'/%3E%3C/svg%3E");}
-.sheet h1{font-family:var(--display); font-weight:400; font-size:clamp(44px,7vw,78px);
+.intro{width:min(780px,100%); text-align:center;}
+.intro h1{font-family:var(--display); font-weight:400; font-size:clamp(44px,7vw,78px);
   line-height:1; margin:0; color:#5f4b83; letter-spacing:.4px;}
-.sheet .rule{width:150px; height:14px; margin:15px auto 0;
+.intro .rule{width:150px; height:14px; margin:15px auto 0;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 14'%3E%3Cdefs%3E%3ClinearGradient id='l' gradientUnits='userSpaceOnUse' x1='2' x2='60'%3E%3Cstop offset='0' stop-color='%23b9a7d2' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23b9a7d2'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' gradientUnits='userSpaceOnUse' x1='90' x2='148'%3E%3Cstop offset='0' stop-color='%23b9a7d2'/%3E%3Cstop offset='1' stop-color='%23b9a7d2' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M2 7h58' stroke='url(%23l)' stroke-width='1.3'/%3E%3Cpath d='M90 7h58' stroke='url(%23r)' stroke-width='1.3'/%3E%3Ccircle cx='64' cy='7' r='1.3' fill='%23b9a7d2'/%3E%3Ccircle cx='86' cy='7' r='1.3' fill='%23b9a7d2'/%3E%3Cpath fill='%23c9a45c' d='M75 1l1.8 4.2L81 7l-4.2 1.8L75 13l-1.8-4.2L69 7l4.2-1.8z'/%3E%3C/svg%3E") center/contain no-repeat;}
-.sheet .cta{font-family:var(--hand); font-size:22px; line-height:1.2; color:#8a6bb8; margin:14px 0 0;}
-.sheet .cta::after{content:""; display:inline-block; width:24px; height:20px; margin-left:6px; vertical-align:-7px;
+.intro .cta{font-family:var(--hand); font-size:22px; line-height:1.2; color:#8a6bb8; margin:14px 0 0;}
+.intro .cta::after{content:""; display:inline-block; width:24px; height:20px; margin-left:6px; vertical-align:-7px;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 22' fill='none' stroke='%238a6bb8' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4c8-2 16 2 17 13'/%3E%3Cpath d='M14.5 13.5 19 18l3.5-5'/%3E%3C/svg%3E") center/contain no-repeat;}
-.sheet .total{display:inline-flex; align-items:center; gap:7px; margin:16px 0 0; padding:3px 15px 4px 12px;
-  font-family:var(--hand); font-size:19px; color:#6f5c93; border-radius:999px;
-  background:rgba(196,174,236,.2); border:1px dashed rgba(122,100,153,.4);
+.intro .total{display:inline-flex; align-items:center; gap:7px; margin:12px 0 0;
+  font-family:var(--hand); font-size:19px; color:#6f5c93;
   min-height:1em; opacity:0; transition:opacity .5s ease;}
-.sheet .total::before{content:""; width:18px; height:14px;
+.intro .total::before{content:""; width:18px; height:14px;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 18' fill='none' stroke='%238a6bb8' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M12 4C9 2 5 1.5 1.5 2v13c3.5-.5 7.5 0 10.5 2 3-2 7-2.5 10.5-2V2C19 1.5 15 2 12 4zM12 4v13'/%3E%3C/svg%3E") center/contain no-repeat;}
-.sheet .total.on{opacity:1;}
+.intro .total.on{opacity:1;}
 
 /* ===== the three journals ===== */
 .shelf{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end;
@@ -148,12 +133,12 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
 .foot{max-width:34em; margin:0 auto; text-align:center; color:var(--ink-soft); font-size:13px;
   padding:44px 22px 26px;}
 
-/* ===== the page arrives once: the sheet settles, then the books are set down ===== */
-@keyframes land{from{opacity:0; transform:rotate(-.5deg) translateY(16px) scale(.985);}
-                  to{opacity:1; transform:rotate(-.5deg) translateY(0) scale(1);}}
+/* ===== the page arrives once: the title settles, then the books are set down ===== */
+@keyframes land{from{opacity:0; transform:translateY(16px) scale(.985);}
+                  to{opacity:1; transform:translateY(0) scale(1);}}
 @keyframes stand{from{opacity:0; transform:translateY(34px) rotate(-1.5deg);}
                    to{opacity:1; transform:translateY(0) rotate(0deg);}}
-.sheet-wrap{animation:land .8s var(--ease) both;}
+.intro{animation:land .8s var(--ease) both;}
 .shelf li{animation:stand .7s var(--ease) both;}
 .shelf li:nth-child(1){animation-delay:.5s;}
 .shelf li:nth-child(2){animation-delay:.63s;}
@@ -167,7 +152,6 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
 }
 @media(max-width:760px){
   .hero{padding-top:44px;}
-  .sheet{padding:42px 26px 34px;}
   .shelf{padding:56px 0 44px; gap:72px;}
   .book{width:270px;}
   .cover{height:372px;}
@@ -175,7 +159,7 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
   .book:hover .cover, .book:focus-visible .cover{transform:none;}
 }
 @media(prefers-reduced-motion:reduce){
-  .sheet-wrap, .shelf li{animation:none; opacity:1;}
+  .intro, .shelf li{animation:none; opacity:1;}
   .book, .cover, .ribbon, .art img{transition:none;}
   .book:hover, .book:focus-visible{transform:none;}
   .book:hover .cover, .book:focus-visible .cover{transform:none;}
@@ -186,13 +170,11 @@ body{font-family:var(--body); color:var(--ink); overflow-x:hidden; background:#f
   <div class="bg" aria-hidden="true"></div>
   <div class="wrap">
     <header class="hero">
-      <div class="sheet-wrap">
-        <div class="sheet">
-          <h1>Journal Writing</h1>
-          <div class="rule"></div>
-          <p class="cta">Pick one and start reading</p>
-          <p class="total" id="total"></p>
-        </div>
+      <div class="intro">
+        <h1>Journal Writing</h1>
+        <div class="rule"></div>
+        <p class="cta">Pick one and start reading</p>
+        <p class="total" id="total"></p>
       </div>
     </header>
 
